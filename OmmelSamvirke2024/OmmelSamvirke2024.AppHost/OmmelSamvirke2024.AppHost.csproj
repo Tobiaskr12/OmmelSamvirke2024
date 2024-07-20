@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsAspireHost>true</IsAspireHost>
+        <UserSecretsId>24C90949-07FF-4AA0-B0B2-9BB42ADE978C</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OmmelSamvirke2024.ApiService\OmmelSamvirke2024.ApiService.csproj"/>
+        <ProjectReference Include="..\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0-preview.5.24201.12"/>
+    </ItemGroup>
+
+</Project>
