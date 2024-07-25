@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Logging.IntegrationTests;
+namespace Logging.Tests;
 
 public class DevelopmentTests
 {
