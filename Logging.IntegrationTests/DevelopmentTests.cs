@@ -37,6 +37,19 @@ public class DevelopmentTests
         var loggedOutput = _output.ToString();
         Assert.That(loggedOutput, Is.SupersetOf(logMessage));
     }
+    
+    [Test]
+    public void GivenConfiguredConsoleLogger_WhenLoggingInfo_ConsoleTextDoesNotMatchRandomString()
+    {
+        const string logMessage = "This is a test log message";
+        _logger.LogInformation(logMessage);
+
+        // Reset console output
+        Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+        
+        var loggedOutput = _output.ToString();
+        Assert.That(loggedOutput, Is.Not.SupersetOf("This is a random string"));
+    }
 
     [TearDown]
     public void TearDown()
