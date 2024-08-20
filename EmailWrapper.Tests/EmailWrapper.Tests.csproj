@@ -29,12 +29,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EmailWrapper\EmailWrapper.csproj" />
+      <ProjectReference Include="..\SecretsManager\SecretsManager.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.Testing.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Update="TestDocuments\Test_PDF1.pdf">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>

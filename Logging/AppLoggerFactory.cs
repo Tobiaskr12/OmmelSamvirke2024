@@ -13,7 +13,7 @@ public static class AppLoggerFactory
         if (!isProduction) return ConsoleLogger.CreateLogger();
         
         // Case: Production
-        string? connectionString = configRoot.GetConnectionString("DefaultDbConnection");
+        var connectionString = configRoot.GetValue<string>("SqlServerConnectionString");
 
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentException("A valid connection string to the database could not be found");

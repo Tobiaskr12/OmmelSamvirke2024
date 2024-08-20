@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Logging\Logging.csproj" />
+      <ProjectReference Include="..\SecretsManager\SecretsManager.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,12 +37,6 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appsettings.Testing.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

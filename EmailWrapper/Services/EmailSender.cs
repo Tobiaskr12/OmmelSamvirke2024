@@ -17,7 +17,7 @@ public class EmailSender : IEmailSender
     public EmailSender(IConfiguration configuration, ILogger logger)
     {
         _logger = logger;
-        string? connectionString = configuration.GetConnectionString("AcsConnectionString");
+        string? connectionString = configuration.GetSection("AcsConnectionString").Value;
         if (string.IsNullOrEmpty(connectionString))
             throw new Exception("No connection string found for Azure Communication Services");
         

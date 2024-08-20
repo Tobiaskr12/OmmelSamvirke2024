@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using NSubstitute;
+using SecretsManager;
 
 namespace EmailWrapper.Tests;
 
@@ -34,8 +35,7 @@ public class IntegrationTests
     public void Setup()
     {
         _config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Testing.json")
-            .AddEnvironmentVariables()
+            .AddKeyVaultSecrets(ExecutionEnvironment.Testing)
             .Build();
 
         var logger = Substitute.For<ILogger>();
@@ -44,13 +44,13 @@ public class IntegrationTests
         SetupEmailTestAccount(
             testClient: out _testClientOne,
             emailAddress: "ommelsamvirketest1@gmail.com",
-            passwordConfigSection: "Passwords:EmailTestClientOnePassword"
+            passwordConfigSection: "EmailTestClientOneAppPassword"
         );
 
         SetupEmailTestAccount(
             testClient: out _testClientTwo,
             emailAddress: "ommelsamvirketest2@gmail.com",
-            passwordConfigSection: "Passwords:EmailTestClientTwoPassword"
+            passwordConfigSection: "EmailTestClientTwoAppPassword"
         );
     }
 
@@ -164,7 +164,7 @@ public class IntegrationTests
 
     private void SetupEmailTestAccount(out TestEmailClient testClient, string emailAddress, string passwordConfigSection)
     {
-        string? accountPassword = _config[passwordConfigSection];
+        string? accountPassword = _config.GetSection(passwordConfigSection).Value;
         if (accountPassword is null)
             throw new Exception($"Cannot read the password for the email test account at the config section {passwordConfigSection}");
 

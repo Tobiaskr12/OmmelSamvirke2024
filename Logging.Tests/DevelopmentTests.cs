@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SecretsManager;
 
 namespace Logging.Tests;
 
@@ -17,9 +18,9 @@ public class DevelopmentTests
         _output = new StringWriter();
         Console.SetOut(_output);
 
+        // While the ASPNETCORE_ENVIRONMENT is set to development, we still use the testing database
         IConfigurationRoot config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Testing.json")
-            .AddEnvironmentVariables() 
+            .AddKeyVaultSecrets(ExecutionEnvironment.Testing)
             .Build();
         
         _logger = AppLoggerFactory.CreateLogger(config);

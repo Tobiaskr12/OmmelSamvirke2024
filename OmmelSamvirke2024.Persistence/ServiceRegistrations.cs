@@ -28,7 +28,7 @@ public static class ServiceRegistrations
 
     private static async Task SetupPostgresConnection(IServiceCollection services, IConfigurationManager configurationManager)
     {
-        string? connectionString = configurationManager.GetConnectionString("DefaultDbConnection");
+        string? connectionString = configurationManager.GetSection("SqlServerConnectionString").Value;
         
         if (!string.IsNullOrEmpty(connectionString))
         {

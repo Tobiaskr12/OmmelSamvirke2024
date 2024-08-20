@@ -2,6 +2,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SecretsManager;
 
 namespace Logging.Tests;
 
@@ -15,9 +16,9 @@ public class ProductionTests
     {
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
         
+        // While the ASPNETCORE_ENVIRONMENT is set to production, we still use the testing database
         _config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Testing.json")
-            .AddEnvironmentVariables() 
+            .AddKeyVaultSecrets(ExecutionEnvironment.Testing)
             .Build();
         
         _logger = AppLoggerFactory.CreateLogger(_config);
@@ -37,7 +38,7 @@ public class ProductionTests
     
     private string GetLatestLogMessageInDatabase()
     {
-        using var connection = new SqlConnection(_config.GetConnectionString("DefaultDbConnection"));
+        using var connection = new SqlConnection(_config.GetValue<string>("SqlServerConnectionString"));
         connection.Open();
         
         IEnumerable<string> logEntries = connection.Query<string>("SELECT TOP 1 Message FROM Logs ORDER BY Id DESC");
