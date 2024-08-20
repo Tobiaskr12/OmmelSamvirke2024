@@ -1,5 +1,6 @@
 using Azure;
 using Azure.Communication.Email;
+using EmailWrapper.Constants;
 using EmailWrapper.Interfaces;
 using EmailWrapper.Models;
 using FluentResults;
@@ -27,19 +28,14 @@ public class EmailSender : IEmailSender
     {
         try
         {
-            await _emailClient.SendAsync(
-                wait: WaitUntil.Started,
-                senderAddress: "donotreply@9ea353ff-2cff-45ce-abbd-a63d077c3f07.azurecomm.net",
-                recipientAddress: email.Recipients.First().Email,
-                email.Subject,
-                htmlContent: email.Body
-            );
+            EmailMessage emailMessage = ConvertEmailToAzureEmailMessage(email);
+            await _emailClient.SendAsync(WaitUntil.Started, emailMessage);
             
             return Result.Ok();
         }
         catch (Exception e)
         {
-            _logger.LogError("Error while sending an email {message}", e.Message);
+            _logger.LogError("Error while sending an email: {message}", e.Message);
             return Result.Fail(e.Message);
         }
     }
@@ -50,8 +46,8 @@ public class EmailSender : IEmailSender
         
         foreach (Email email in emails)
         {
-            Result result = await SendEmail(email);
-            if (result.IsFailed)
+            Result sendingResult = await SendEmail(email);
+            if (sendingResult.IsFailed)
             {
                 failedEmails.Add(email);
             }
@@ -63,7 +59,39 @@ public class EmailSender : IEmailSender
             "The emails with the following subjects failed sending: {emails}",
             failedEmails.Select(x => x.Subject)
         );
-            
-        return Result.Fail($"{failedEmails.Count} failed sending");
+
+        var error = new Error(
+            $"{failedEmails.Count} emails failed sending. The emails can be extracted from this error's metadata"
+        );
+        failedEmails.ForEach(email => error.Metadata.Add(email.Id.ToString(), email));
+        
+        return Result.Fail(error);
+    }
+
+    private static EmailMessage ConvertEmailToAzureEmailMessage(Email email)
+    {
+        var emailMessage = new EmailMessage(
+            senderAddress: email.SenderEmailAddress,
+            recipients: new EmailRecipients(
+                to: email.Recipients.Select(recipient => new EmailAddress(recipient.Email))
+            ),
+            content: new EmailContent(subject: email.Subject)
+            {
+                Html = email.Body
+            }
+        );
+
+        List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
+            attachment.Name,
+            attachment.ContentType.Name,
+            BinaryData.FromStream(attachment.ContentStream)
+        )).ToList();
+
+        foreach (EmailAttachment emailAttachment in emailAttachments)
+        {
+            emailMessage.Attachments.Add(emailAttachment);
+        }
+
+        return emailMessage;
     }
 }

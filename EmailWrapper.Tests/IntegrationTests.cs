@@ -1,3 +1,5 @@
+using System.Net.Mail;
+using EmailWrapper.Constants;
 using EmailWrapper.Models;
 using EmailWrapper.Services;
 using EmailWrapper.Tests.Models;
@@ -16,102 +18,183 @@ namespace EmailWrapper.Tests;
 public class IntegrationTests
 {
     private EmailSender _emailSender;
-    private TestEmailClient _testClientOne;
-    private TestEmailClient _testClientTwo;
+    private TestEmailClient _testClientOne = null!;
+    private TestEmailClient _testClientTwo = null!;
     private IConfigurationRoot _config;
     
+    private static IEnumerable<string> SenderEmailAddressesSource => new[]
+    {
+        SenderEmailAddresses.Admins,
+        SenderEmailAddresses.Auto,
+        SenderEmailAddresses.Auth,
+        SenderEmailAddresses.Newsletter
+    };
+
     [SetUp]
     public void Setup()
     {
         _config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.Testing.json")
-            .AddEnvironmentVariables() 
+            .AddEnvironmentVariables()
             .Build();
 
         var logger = Substitute.For<ILogger>();
-        
         _emailSender = new EmailSender(_config, logger);
-        string? accountOnePassword = _config["Passwords:EmailTestClientOnePassword"];
-        if (accountOnePassword is null)
-            throw new Exception("Cannot read the password for email test account one");
-        
-        _testClientOne = new TestEmailClient
-        {
-            EmailAddress = "ommelsamvirketest1@gmail.com",
-            AccountPassword = accountOnePassword,
-            ImapHost = "imap.gmail.com",
-            ImapPort = 993
-        };
-        _testClientTwo = new TestEmailClient
-        {
-            EmailAddress = "ommelsamvirketest2@gmail.com",
-            AccountPassword = "",
-            ImapHost = "imap.gmail.com",
-            ImapPort = 993
-        };
+
+        SetupEmailTestAccount(
+            testClient: out _testClientOne,
+            emailAddress: "ommelsamvirketest1@gmail.com",
+            passwordConfigSection: "Passwords:EmailTestClientOnePassword"
+        );
+
+        SetupEmailTestAccount(
+            testClient: out _testClientTwo,
+            emailAddress: "ommelsamvirketest2@gmail.com",
+            passwordConfigSection: "Passwords:EmailTestClientTwoPassword"
+        );
+    }
+
+    [TestCaseSource(nameof(SenderEmailAddressesSource))]
+    public async Task GivenValidEmailIsSent_WhenCheckingEmailClient_TheEmailIsDelivered(string senderEmailAddress)
+    {
+        var messageGuid = Guid.NewGuid();
+        Email email = CreateAndSendEmail(senderEmailAddress, "Test Email", _testClientOne.EmailAddress, messageGuid);
+        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(_testClientOne, messageGuid);
+
+        AssertEmailReceived(receivedMessage, email);
     }
 
     [Test]
-    public async Task GivenValidEmailIsSent_WhenCheckingEmailClient_TheEmailIsDelivered()
+    public async Task GivenValidEmailIsSentToTwoClients_WhenCheckingEmailClients_TheEmailsAreDelivered()
     {
         var messageGuid = Guid.NewGuid();
-        var recipient = new Recipient
+        List<Recipient> recipients = Recipient.Create([_testClientOne.EmailAddress, _testClientTwo.EmailAddress]);
+        var email = CreateAndSendEmail(SenderEmailAddresses.Admins, "Test Email", recipients, messageGuid);
+
+        var testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_testClientOne, messageGuid);
+        var testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_testClientTwo, messageGuid);
+
+        AssertEmailReceived(testClientOneMessage, email);
+        AssertEmailReceived(testClientTwoMessage, email);
+    }
+
+    [TestCase(1, "./TestDocuments/Test_PDF1.pdf")]
+    [TestCase(2, "./TestDocuments/Test_PDF1.pdf", "./TestDocuments/Test_PDF2.pdf")]
+    public async Task GivenEmailHasAttachments_WhenCheckingEmailClient_TheEmailContainsAllAttachments(int attachmentCount, params string[] attachmentPaths)
+    {
+        var messageGuid = Guid.NewGuid();
+        Email email = CreateAndSendEmailWithAttachments(SenderEmailAddresses.Admins, "Test Email with Attachments", _testClientOne.EmailAddress, messageGuid, attachmentPaths);
+
+        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(_testClientOne, messageGuid);
+        AssertEmailReceived(receivedMessage, email);
+
+        Assert.Multiple(() =>
         {
-            Email = _testClientOne.EmailAddress
-        };
-        Result<Email> emailResult = Email.Create($"{messageGuid} - Test Email", "This is a test email.", recipient);
+            List<MimePart>? receivedAttachments = receivedMessage?.BodyParts.OfType<MimePart>().Where(bp => bp.IsAttachment).ToList();
+            Assert.That(receivedAttachments!.Count, Is.EqualTo(attachmentCount));
+            for (var i = 0; i < attachmentCount; i++)
+            {
+                AssertAttachment(receivedAttachments[i], email.Attachments[i]);
+            }
+        });
+    }
+
+    private Email CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, string recipientEmail, Guid messageGuid)
+    {
+        var recipient = new Recipient { Email = recipientEmail };
+        Result<Email> emailResult = Email.Create(
+            senderEmailAddress,
+            $"{messageGuid} - {emailSubjectSuffix}",
+            "This is a test email.",
+            recipient);
+
         if (emailResult.IsFailed)
         {
             Assert.Fail();
-            return;
         }
 
-        Email email = emailResult.Value;
-        await _emailSender.SendEmail(email);
+        Email? email = emailResult.Value;
+        _emailSender.SendEmail(email).Wait();
+        return email;
+    }
 
-        Result<MimeMessage> receivedMessageResult = await GetLatestEmailAsync(_testClientOne, messageGuid);
-        if (receivedMessageResult.IsFailed)
+    private Email CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, List<Recipient> recipients, Guid messageGuid)
+    {
+        Result<Email> emailResult = Email.Create(
+            senderEmailAddress,
+            $"{messageGuid} - {emailSubjectSuffix}",
+            "This is a test email.",
+            recipients);
+
+        if (emailResult.IsFailed)
         {
             Assert.Fail();
-            return;
         }
 
-        MimeMessage receivedMessage = receivedMessageResult.Value;
-        Assert.Multiple(() =>
+        Email? email = emailResult.Value;
+        _emailSender.SendEmail(email).Wait();
+        return email;
+    }
+
+    private Email CreateAndSendEmailWithAttachments(
+        string senderEmailAddress,
+        string emailSubjectSuffix,
+        string recipientEmail,
+        Guid messageGuid,
+        params string[] attachmentPaths)
+    {
+        var recipient = new Recipient { Email = recipientEmail };
+        List<Attachment> attachments = attachmentPaths.Select(path => new Attachment(path)).ToList();
+        Result<Email> emailResult = Email.Create(
+            senderEmailAddress,
+            $"{messageGuid} - {emailSubjectSuffix}",
+            "This is a test email with attachments.",
+            recipient,
+            attachments);
+
+        if (emailResult.IsFailed)
         {
-            Assert.That(receivedMessage, Is.Not.Null);
-            Assert.That(receivedMessage.Subject, Is.EqualTo(email.Subject));
-            Assert.That(receivedMessage.HtmlBody.Trim(), Is.EqualTo(email.Body));
-        });
+            Assert.Fail();
+        }
+
+        Email? email = emailResult.Value;
+        _emailSender.SendEmail(email).Wait();
+        return email;
     }
-    
-    [Test]
-    public void GivenEmailHasAnAttachment_WhenCheckingEmailClient_TheEmailContainsTheAttachment()
+
+    private void SetupEmailTestAccount(out TestEmailClient testClient, string emailAddress, string passwordConfigSection)
     {
-        Assert.Pass();
+        string? accountPassword = _config[passwordConfigSection];
+        if (accountPassword is null)
+            throw new Exception($"Cannot read the password for the email test account at the config section {passwordConfigSection}");
+
+        testClient = new TestEmailClient
+        {
+            EmailAddress = emailAddress,
+            AccountPassword = accountPassword,
+            ImapHost = "imap.gmail.com",
+            ImapPort = 993
+        };
     }
-    
-    [Test]
-    public void GivenEmailHasMultipleAttachments_WhenCheckingEmailClient_TheEmailContainsAllAttachments()
+
+    private async Task<MimeMessage?> ExtractLatestReceivedMessageFromInbox(TestEmailClient testEmailClient, Guid messageGuid)
     {
-        Assert.Pass();
+        Result<MimeMessage> receivedMessageResult = await GetLatestEmailAsync(testEmailClient, messageGuid);
+        if (receivedMessageResult.IsSuccess) return receivedMessageResult.Value;
+
+        Assert.Fail();
+        return null;
     }
-    
-    [Test]
-    public void GivenValidEmailIsSentToTwoClients_WhenCheckingEmailClients_TheEmailsAreDelivered()
-    {
-        Assert.Pass();
-    }
-    
-    private async Task<Result<MimeMessage>> GetLatestEmailAsync(TestEmailClient testClient, Guid messageGuid)
+
+    private static async Task<Result<MimeMessage>> GetLatestEmailAsync(TestEmailClient testClient, Guid messageGuid)
     {
         using var client = new ImapClient();
         await client.ConnectAsync(testClient.ImapHost, testClient.ImapPort, SecureSocketOptions.SslOnConnect);
         await client.AuthenticateAsync(testClient.EmailAddress, testClient.AccountPassword);
 
         IMailFolder? inbox = client.Inbox;
-        if (inbox is null) return Result.Fail("Inbox was null");
-    
+        if (inbox == null) return Result.Fail("Inbox was null");
+
         await inbox.OpenAsync(FolderAccess.ReadOnly);
 
         DateTime testTimeout = DateTime.UtcNow.AddMinutes(1);
@@ -133,5 +216,25 @@ public class IntegrationTests
 
         await client.DisconnectAsync(true);
         return Result.Fail("No recent email found within the last minute.");
+    }
+
+    private static void AssertEmailReceived(MimeMessage? receivedMessage, Email expectedEmail)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(receivedMessage, Is.Not.Null);
+            Assert.That(receivedMessage!.Subject, Is.EqualTo(expectedEmail.Subject));
+            Assert.That(receivedMessage.HtmlBody.Trim(), Is.EqualTo(expectedEmail.Body));
+        });
+    }
+
+    private static void AssertAttachment(MimePart receivedAttachment, Attachment expectedAttachment)
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(receivedAttachment.IsAttachment, Is.True);
+            Assert.That(receivedAttachment.ContentType.Name, Is.EqualTo(expectedAttachment.ContentType.Name));
+            Assert.That(receivedAttachment.FileName, Is.EqualTo(expectedAttachment.Name));
+        });
     }
 }
