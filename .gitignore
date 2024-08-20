@@ -1,5 +1,6 @@
 # Custom ignores:
 appsettings.*.json
+*.secrets.json
 *.secrets.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotnetcore,aspnetcore,windows,git,csharp
