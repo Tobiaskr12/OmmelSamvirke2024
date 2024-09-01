@@ -1,4 +1,7 @@
+using EmailWrapper;
 using Logging;
+using OmmelSamvirke.ErrorHandling;
+using OmmelSamvirke2024.ApiService.Middleware;
 using OmmelSamvirke2024.Persistence;
 using SecretsManager;
 
@@ -9,7 +12,10 @@ builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+});
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
@@ -31,8 +37,13 @@ builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
 // Register services
 await builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddSingleton(appLogger);
+builder.Services.InitializeErrorHandlingModule();
+builder.Services.InitializeEmailWrapperModule();
 
 WebApplication app = builder.Build();
+
+// Configure services after all services have been registered. For example: Register error messages
+app.ConfigureEmailWrapperModule();
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
@@ -44,6 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ResultExceptionHandlingMiddleware>();
 app.UseRouting();
 
 // app.UseAuthentication();

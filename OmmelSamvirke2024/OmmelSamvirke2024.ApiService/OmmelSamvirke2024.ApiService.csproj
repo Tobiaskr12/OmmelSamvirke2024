@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\EmailWrapper\EmailWrapper.csproj" />
         <ProjectReference Include="..\..\Logging\Logging.csproj" />
+        <ProjectReference Include="..\..\OmmelSamvirke.ErrorHandling\OmmelSamvirke.ErrorHandling.csproj" />
         <ProjectReference Include="..\..\OmmelSamvirke2024.Persistence\OmmelSamvirke2024.Persistence.csproj" />
         <ProjectReference Include="..\..\SecretsManager\SecretsManager.csproj" />
         <ProjectReference Include="..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj"/>

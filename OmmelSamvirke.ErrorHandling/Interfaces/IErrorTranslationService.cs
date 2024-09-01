@@ -1,0 +1,10 @@
+using OmmelSamvirke.ErrorHandling.Enums;
+
+namespace OmmelSamvirke.ErrorHandling.Interfaces;
+
+public interface IErrorTranslationService
+{
+    IErrorTranslationService ForError(Enum errorCode);
+    IErrorTranslationService WithTranslation(SupportedErrorLanguage language, string message);
+    string GetErrorMessage(Enum errorCode, SupportedErrorLanguage errorLanguage);
+}

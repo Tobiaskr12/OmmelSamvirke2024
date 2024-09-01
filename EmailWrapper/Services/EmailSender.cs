@@ -1,6 +1,5 @@
 using Azure;
 using Azure.Communication.Email;
-using EmailWrapper.Constants;
 using EmailWrapper.Interfaces;
 using EmailWrapper.Models;
 using FluentResults;
@@ -59,13 +58,10 @@ public class EmailSender : IEmailSender
             "The emails with the following subjects failed sending: {emails}",
             failedEmails.Select(x => x.Subject)
         );
-
-        var error = new Error(
-            $"{failedEmails.Count} emails failed sending. The emails can be extracted from this error's metadata"
-        );
-        failedEmails.ForEach(email => error.Metadata.Add(email.Id.ToString(), email));
         
-        return Result.Fail(error);
+        // TODO - Maybe partial success, how do we handle that?
+        
+        return Result.Fail($"{failedEmails.Count} failed sending");
     }
 
     private static EmailMessage ConvertEmailToAzureEmailMessage(Email email)

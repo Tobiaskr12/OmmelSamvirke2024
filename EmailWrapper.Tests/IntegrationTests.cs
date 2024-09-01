@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using EmailWrapper.Constants;
+using EmailWrapper.Interfaces;
 using EmailWrapper.Models;
 using EmailWrapper.Services;
 using EmailWrapper.Tests.Models;
@@ -18,7 +19,7 @@ namespace EmailWrapper.Tests;
 
 public class IntegrationTests
 {
-    private EmailSender _emailSender;
+    private IEmailSender _emailSender;
     private TestEmailClient _testClientOne = null!;
     private TestEmailClient _testClientTwo = null!;
     private IConfigurationRoot _config;

@@ -1,9 +1,10 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
+using OmmelSamvirke2024.Domain;
 
 namespace EmailWrapper.Models;
 
-public class Recipient
+public class Recipient : BaseEntity
 {
     public required string Email { get; set; }
 
