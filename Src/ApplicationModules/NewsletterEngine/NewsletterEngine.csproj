@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\EmailWrapper\EmailWrapper.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj" />
     </ItemGroup>
 
 </Project>

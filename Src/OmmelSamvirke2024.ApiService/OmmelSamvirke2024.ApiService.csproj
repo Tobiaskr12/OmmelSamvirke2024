@@ -12,7 +12,13 @@
         <ProjectReference Include="..\..\OmmelSamvirke.ErrorHandling\OmmelSamvirke.ErrorHandling.csproj" />
         <ProjectReference Include="..\..\OmmelSamvirke2024.Persistence\OmmelSamvirke2024.Persistence.csproj" />
         <ProjectReference Include="..\..\SecretsManager\SecretsManager.csproj" />
-        <ProjectReference Include="..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\..\Tests\SupportModules\Logging.Tests\Logging.Tests.csproj" />
+        <ProjectReference Include="..\ApplicationModules\EmailWrapper\EmailWrapper.csproj" />
+        <ProjectReference Include="..\OmmelSamvirke2024.Persistence\OmmelSamvirke2024.Persistence.csproj" />
+        <ProjectReference Include="..\..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\SupportModules\Logging\Logging.csproj" />
+        <ProjectReference Include="..\SupportModules\OmmelSamvirke.ErrorHandling\OmmelSamvirke.ErrorHandling.csproj" />
+        <ProjectReference Include="..\SupportModules\SecretsManager\SecretsManager.csproj" />
     </ItemGroup>
 
     <ItemGroup>

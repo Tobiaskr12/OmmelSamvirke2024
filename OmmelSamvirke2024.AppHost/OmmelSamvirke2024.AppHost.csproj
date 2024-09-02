@@ -10,8 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\OmmelSamvirke2024.ApiService\OmmelSamvirke2024.ApiService.csproj"/>
-        <ProjectReference Include="..\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj"/>
+        <ProjectReference Include="..\Src\OmmelSamvirke2024.ApiService\OmmelSamvirke2024.ApiService.csproj"/>
+        <ProjectReference Include="..\Src\Presentation\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

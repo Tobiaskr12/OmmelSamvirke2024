@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SecretsManager;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Logging.Tests;
 
