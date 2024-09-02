@@ -11,7 +11,7 @@ public static class ContactListErrors
         InvalidDescriptionLength
     }
     
-    public static void RegisterErrorMessages(IErrorTranslationService? errorTranslationService)
+    public static void RegisterErrorMessages(IErrorTranslationService errorTranslationService)
     {
         errorTranslationService
             // Name
