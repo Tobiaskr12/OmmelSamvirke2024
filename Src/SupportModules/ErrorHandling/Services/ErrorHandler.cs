@@ -22,7 +22,7 @@ public class ErrorHandler : IErrorHandler
 
     public Error CreateError(Exception exception)
     {
-        string? stackTrace = exception.StackTrace;
+        string stackTrace = exception.StackTrace ?? Environment.StackTrace;
 
         var error = new Error(exception.Message, 500, stackTrace);
         _logger.LogError("{errorMessage}", error.ToString());

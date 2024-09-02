@@ -6,7 +6,9 @@ namespace ErrorHandling.Services;
 public class ErrorTranslationService : IErrorTranslationService
 {
     private readonly Dictionary<Enum, Dictionary<SupportedErrorLanguage, string>> _translations = new();
-    
+
+    public const string FallBackErrorMessage = "Unknown error";
+
     public IErrorTranslationService ForError(Enum errorCode)
     {
         _translations[errorCode] = new Dictionary<SupportedErrorLanguage, string>();
@@ -28,6 +30,6 @@ public class ErrorTranslationService : IErrorTranslationService
             return localizedErrorMessage;
         }
 
-        return "Unknown error";
+        return FallBackErrorMessage;
     }
 }

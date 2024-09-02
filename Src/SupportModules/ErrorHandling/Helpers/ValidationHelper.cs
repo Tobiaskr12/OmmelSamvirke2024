@@ -5,11 +5,11 @@ namespace ErrorHandling.Helpers;
 
 public static class ValidationHelper
 {
-    public static Result<T> ValidateAndReturnResult<T>(T value, IValidator validator)
+    public static Result<T> GetValidationResult<T>(T valueToValidate, IValidator validator)
     {
         if (validator.IsSuccess())
         {
-            return Result.Ok(value);
+            return Result.Ok(valueToValidate);
         }
 
         // Extract errors and attach status code metadata

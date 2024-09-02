@@ -75,6 +75,6 @@ public class ContactListFactory
             .ValidateLength(contactList.Name, 3, 200, ContactListErrors.Enums.InvalidNameLength)
             .ValidateLength(contactList.Description, 5, 2000, ContactListErrors.Enums.InvalidDescriptionLength);
 
-        return ValidationHelper.ValidateAndReturnResult(contactList, _validator);
+        return ValidationHelper.GetValidationResult(contactList, _validator);
     }
 }
