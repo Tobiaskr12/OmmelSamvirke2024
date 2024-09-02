@@ -2,9 +2,9 @@ using EmailWrapper.Models;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using ErrorHandling.Interfaces;
-using OmmelSamvirke2024.ApiService.Controllers.Util;
+using OmmelSamvirke2024.Api.Controllers.Util;
 
-namespace OmmelSamvirke2024.ApiService.Controllers;
+namespace OmmelSamvirke2024.Api.Controllers;
 
 [ApiController]
 [Route("test")]

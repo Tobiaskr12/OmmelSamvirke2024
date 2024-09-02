@@ -1,7 +1,7 @@
 using System.Text.Json;
-using OmmelSamvirke2024.ApiService.Controllers.Util;
+using OmmelSamvirke2024.Api.Controllers.Util;
 
-namespace OmmelSamvirke2024.ApiService.Middleware;
+namespace OmmelSamvirke2024.Api.Middleware;
 
 public class ResultExceptionHandlingMiddleware
 {

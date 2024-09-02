@@ -1,6 +1,6 @@
 using FluentResults;
 
-namespace OmmelSamvirke2024.ApiService.Controllers.Util;
+namespace OmmelSamvirke2024.Api.Controllers.Util;
 
 public static class ResultHelper
 {

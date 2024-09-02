@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorHandling", "Src\Suppor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecretsManager", "Src\SupportModules\SecretsManager\SecretsManager.csproj", "{A7FA3F01-505D-42B5-9809-8A02C82245F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke2024.ApiService", "Src\OmmelSamvirke2024.ApiService\OmmelSamvirke2024.ApiService.csproj", "{BAE5F1C5-389D-4CB0-9E56-2ED8149D5EF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke2024.Api", "Src\OmmelSamvirke2024.Api\OmmelSamvirke2024.Api.csproj", "{BAE5F1C5-389D-4CB0-9E56-2ED8149D5EF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke2024.Domain", "Src\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj", "{32F668CE-CE70-4AE3-A451-78F39E924CA7}"
 EndProject
