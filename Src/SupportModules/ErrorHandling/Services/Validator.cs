@@ -1,8 +1,8 @@
-using OmmelSamvirke.ErrorHandling.Enums;
-using OmmelSamvirke.ErrorHandling.Interfaces;
-using OmmelSamvirke.ErrorHandling.Models;
+using ErrorHandling.Enums;
+using ErrorHandling.Interfaces;
+using ErrorHandling.Models;
 
-namespace OmmelSamvirke.ErrorHandling.Services;
+namespace ErrorHandling.Services;
 
 public class Validator : IValidator
 {

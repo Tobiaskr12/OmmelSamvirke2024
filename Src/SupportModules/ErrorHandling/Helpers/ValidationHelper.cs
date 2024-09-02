@@ -1,7 +1,7 @@
+using ErrorHandling.Interfaces;
 using FluentResults;
-using OmmelSamvirke.ErrorHandling.Interfaces;
 
-namespace OmmelSamvirke.ErrorHandling.Helpers;
+namespace ErrorHandling.Helpers;
 
 public static class ValidationHelper
 {

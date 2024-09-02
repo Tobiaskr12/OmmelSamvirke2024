@@ -1,6 +1,6 @@
-using OmmelSamvirke.ErrorHandling.Models;
+using ErrorHandling.Models;
 
-namespace OmmelSamvirke.ErrorHandling.Interfaces;
+namespace ErrorHandling.Interfaces;
 
 public interface IErrorHandler
 {

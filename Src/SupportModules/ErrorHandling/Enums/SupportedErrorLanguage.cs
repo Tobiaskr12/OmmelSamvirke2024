@@ -1,4 +1,4 @@
-namespace OmmelSamvirke.ErrorHandling.Enums;
+namespace ErrorHandling.Enums;
 
 public enum SupportedErrorLanguage
 {

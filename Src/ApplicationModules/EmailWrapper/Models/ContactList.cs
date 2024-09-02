@@ -1,8 +1,8 @@
 using EmailWrapper.Errors;
 using EmailWrapper.Services;
 using FluentResults;
-using OmmelSamvirke.ErrorHandling.Helpers;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Helpers;
+using ErrorHandling.Interfaces;
 using OmmelSamvirke2024.Domain;
 
 namespace EmailWrapper.Models;

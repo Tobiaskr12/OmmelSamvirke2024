@@ -1,7 +1,7 @@
 using EmailWrapper.Models;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces;
 using OmmelSamvirke2024.ApiService.Controllers.Util;
 
 namespace OmmelSamvirke2024.ApiService.Controllers;

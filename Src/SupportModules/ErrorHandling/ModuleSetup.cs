@@ -1,8 +1,8 @@
+using ErrorHandling.Interfaces;
+using ErrorHandling.Services;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.ErrorHandling.Interfaces;
-using OmmelSamvirke.ErrorHandling.Services;
 
-namespace OmmelSamvirke.ErrorHandling;
+namespace ErrorHandling;
 
 public static class ModuleSetup
 {

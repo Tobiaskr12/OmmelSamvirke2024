@@ -1,6 +1,6 @@
 using EmailWrapper;
 using Logging;
-using OmmelSamvirke.ErrorHandling;
+using ErrorHandling;
 using OmmelSamvirke2024.ApiService.Middleware;
 using OmmelSamvirke2024.Persistence;
 using SecretsManager;

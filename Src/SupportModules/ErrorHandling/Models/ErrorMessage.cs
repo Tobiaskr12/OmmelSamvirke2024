@@ -1,4 +1,4 @@
-namespace OmmelSamvirke.ErrorHandling.Models;
+namespace ErrorHandling.Models;
 
 public record ErrorMessage
 {

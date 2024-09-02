@@ -1,6 +1,6 @@
-using OmmelSamvirke.ErrorHandling.Enums;
+using ErrorHandling.Enums;
 
-namespace OmmelSamvirke.ErrorHandling.Interfaces;
+namespace ErrorHandling.Interfaces;
 
 public interface IErrorTranslationService
 {

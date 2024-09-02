@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace OmmelSamvirke.ErrorHandling.Models;
+namespace ErrorHandling.Models;
 
 public class Error
 {

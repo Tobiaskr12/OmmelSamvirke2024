@@ -14,8 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj" />
-      <ProjectReference Include="..\..\SupportModules\OmmelSamvirke.ErrorHandling\OmmelSamvirke.ErrorHandling.csproj" />
-      <ProjectReference Include="..\..\SupportModules\OmmelSamvirke.ErrorHandling\OmmelSamvirke.ErrorHandling.csproj" />
+      <ProjectReference Include="..\..\SupportModules\ErrorHandling\ErrorHandling.csproj" />
       <ProjectReference Include="..\..\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj" />
     </ItemGroup>
 

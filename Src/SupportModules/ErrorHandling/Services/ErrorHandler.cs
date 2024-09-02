@@ -1,8 +1,8 @@
+using ErrorHandling.Interfaces;
+using ErrorHandling.Models;
 using Microsoft.Extensions.Logging;
-using OmmelSamvirke.ErrorHandling.Interfaces;
-using OmmelSamvirke.ErrorHandling.Models;
 
-namespace OmmelSamvirke.ErrorHandling.Services;
+namespace ErrorHandling.Services;
 
 public class ErrorHandler : IErrorHandler
 {

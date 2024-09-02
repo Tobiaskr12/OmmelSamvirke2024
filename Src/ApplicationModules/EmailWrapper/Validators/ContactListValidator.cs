@@ -1,6 +1,6 @@
 using EmailWrapper.Errors;
 using FluentResults;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces;
 
 namespace EmailWrapper.Validators;
 

@@ -1,7 +1,7 @@
-using OmmelSamvirke.ErrorHandling.Enums;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Enums;
+using ErrorHandling.Interfaces;
 
-namespace OmmelSamvirke.ErrorHandling.Services;
+namespace ErrorHandling.Services;
 
 public class ErrorTranslationService : IErrorTranslationService
 {

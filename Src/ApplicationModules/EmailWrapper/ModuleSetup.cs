@@ -3,7 +3,7 @@ using EmailWrapper.Interfaces;
 using EmailWrapper.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces;
 
 namespace EmailWrapper;
 

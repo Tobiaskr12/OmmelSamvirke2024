@@ -1,5 +1,5 @@
-using OmmelSamvirke.ErrorHandling.Enums;
-using OmmelSamvirke.ErrorHandling.Interfaces;
+using ErrorHandling.Enums;
+using ErrorHandling.Interfaces;
 
 namespace EmailWrapper.Errors;
 
