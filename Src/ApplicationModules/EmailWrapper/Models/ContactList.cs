@@ -1,7 +1,6 @@
 using EmailWrapper.Errors;
 using EmailWrapper.Services;
 using FluentResults;
-using ErrorHandling.Helpers;
 using ErrorHandling.Interfaces;
 using OmmelSamvirke2024.Domain;
 
@@ -71,10 +70,12 @@ public class ContactListFactory
             contactList.AddContacts(recipients);
         }
 
-        _validator
-            .ValidateLength(contactList.Name, 3, 200, ContactListErrors.Enums.InvalidNameLength)
-            .ValidateLength(contactList.Description, 5, 2000, ContactListErrors.Enums.InvalidDescriptionLength);
-
-        return ValidationHelper.GetValidationResult(contactList, _validator);
+        return _validator
+            .ForClass(contactList)
+                .ForProperty(contactList.Name)
+                    .ValidateLength(3, 200, ContactListErrors.Enums.InvalidNameLength)
+                .ForProperty(contactList.Description)
+                    .ValidateLength(5, 2000, ContactListErrors.Enums.InvalidDescriptionLength)
+            .GetResult<ContactList>();
     }
 }
