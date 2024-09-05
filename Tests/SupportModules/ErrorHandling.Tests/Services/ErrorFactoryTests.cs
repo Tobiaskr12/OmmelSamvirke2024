@@ -1,20 +1,21 @@
 using ErrorHandling.Models;
 using ErrorHandling.Services;
+using ErrorHandling.Services.Errors;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace ErrorHandling.Tests.Services;
 
-public class ErrorHandlerTests
+public class ErrorFactoryTests
 {
     private ILogger _logger;
-    private ErrorHandler _errorHandler;
+    private ErrorFactory _errorFactory;
     
     [SetUp]
     public void Setup()
     {
         _logger = Substitute.For<ILogger>();
-        _errorHandler = new ErrorHandler(_logger);
+        _errorFactory = new ErrorFactory(_logger);
     }
     
     [Test]
@@ -23,7 +24,7 @@ public class ErrorHandlerTests
         const string errorMessage = "Test message";
         const int errorStatusCode = 500;
         
-        Error createdError = _errorHandler.CreateError(errorMessage, errorStatusCode);
+        Error createdError = _errorFactory.CreateError(errorMessage, errorStatusCode);
         
         Assert.Multiple(() =>
         {
@@ -38,7 +39,7 @@ public class ErrorHandlerTests
         const string errorMessage = "Test message";
         var exception = new Exception(errorMessage);
         
-        Error createdError = _errorHandler.CreateError(exception);
+        Error createdError = _errorFactory.CreateError(exception);
         
         Assert.Multiple(() =>
         {

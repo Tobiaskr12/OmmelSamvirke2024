@@ -2,6 +2,7 @@ using EmailWrapper.Errors;
 using EmailWrapper.Services;
 using FluentResults;
 using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 using OmmelSamvirke2024.Domain;
 
 namespace EmailWrapper.Models;

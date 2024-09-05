@@ -4,6 +4,7 @@ using EmailWrapper.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 
 namespace EmailWrapper;
 

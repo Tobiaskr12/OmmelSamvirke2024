@@ -1,6 +1,8 @@
 using ErrorHandling.Enums;
 using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 using ErrorHandling.Services;
+using ErrorHandling.Services.Validation;
 using FluentResults;
 using NSubstitute;
 using Error = ErrorHandling.Models.Error;
@@ -10,7 +12,7 @@ namespace ErrorHandling.Tests.Services;
 public class ValidatorTests
 {
     private IErrorTranslationService _errorTranslationService;
-    private IErrorHandler _errorHandler;
+    private IErrorFactory _errorFactory;
     private IValidator _validator;
 
     private Error _testError;
@@ -20,26 +22,27 @@ public class ValidatorTests
 
     private enum TestErrorCodes
     {
-        InvalidLength
+        InvalidLength,
+        InvalidRange
     }
     
     [SetUp]
     public void Setup()
     {
         _errorTranslationService = Substitute.For<IErrorTranslationService>();
-        _errorHandler = Substitute.For<IErrorHandler>();
+        _errorFactory = Substitute.For<IErrorFactory>();
 
         _testErrorMessage = "Test Error Message";
         _testErrorMessageTranslatedMessage = "Test Fejlbesked";
         _testErrorStatusCode = 400;
         _testError = new Error(_testErrorMessage, _testErrorStatusCode);
 
-        _errorHandler.CreateError(Arg.Any<string>(), Arg.Any<int>()).Returns(_testError);
+        _errorFactory.CreateError(Arg.Any<string>(), Arg.Any<int>()).Returns(_testError);
         _errorTranslationService
             .GetErrorMessage(Arg.Any<Enum>(), Arg.Any<SupportedErrorLanguage>())
             .Returns(_testErrorMessageTranslatedMessage);
         
-        _validator = new Validator(_errorTranslationService, _errorHandler);
+        _validator = new Validator(_errorTranslationService, _errorFactory);
     }
 
     // TODO - This is not valid anymore. Clearing in other situations should be tested instead!
@@ -65,6 +68,8 @@ public class ValidatorTests
         Result<string> validationResult = _validator
             .ForValue(testValue)
                 .ValidateLength(0, 10, TestErrorCodes.InvalidLength)
+            .ForValue(testValue)
+                .ValidateLength(0, 10, TestErrorCodes.InvalidLength)
             .GetResult<string>();
         
         Assert.Multiple(() =>
@@ -79,9 +84,10 @@ public class ValidatorTests
     {
         var testValue = 2;
 
+        // THIS SHOULD BE AN ERROR - DON'T WORRY!
         Result<int> validationResult = _validator
             .ForValue(testValue)
-                .ValidateLength(0, 10, TestErrorCodes.InvalidLength)
+                .ValidateRange(0, 100, TestErrorCodes.InvalidRange)
             .GetResult<int>();
         
         Assert.Multiple(() =>

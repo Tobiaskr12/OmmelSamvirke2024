@@ -1,6 +1,6 @@
 using ErrorHandling.Enums;
 
-namespace ErrorHandling.Interfaces;
+namespace ErrorHandling.Interfaces.Contracts;
 
 public interface IErrorTranslationService
 {

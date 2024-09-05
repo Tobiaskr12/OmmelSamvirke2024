@@ -1,7 +1,7 @@
 using ErrorHandling.Enums;
-using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 
-namespace ErrorHandling.Services;
+namespace ErrorHandling.Services.Errors;
 
 public class ErrorTranslationService : IErrorTranslationService
 {

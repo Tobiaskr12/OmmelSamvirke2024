@@ -1,5 +1,6 @@
 using ErrorHandling.Enums;
 using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 
 namespace EmailWrapper.Errors;
 

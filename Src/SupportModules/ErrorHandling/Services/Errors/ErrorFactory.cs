@@ -1,14 +1,14 @@
-using ErrorHandling.Interfaces;
+using ErrorHandling.Interfaces.Contracts;
 using ErrorHandling.Models;
 using Microsoft.Extensions.Logging;
 
-namespace ErrorHandling.Services;
+namespace ErrorHandling.Services.Errors;
 
-public class ErrorHandler : IErrorHandler
+public class ErrorFactory : IErrorFactory
 {
     private readonly ILogger _logger;
     
-    public ErrorHandler(ILogger logger)
+    public ErrorFactory(ILogger logger)
     {
         _logger = logger;
     }
