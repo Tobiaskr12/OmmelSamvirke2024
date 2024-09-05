@@ -1,5 +1,4 @@
 using ErrorHandling.Enums;
-using ErrorHandling.Services;
 using ErrorHandling.Services.Errors;
 
 namespace ErrorHandling.Tests.Services;

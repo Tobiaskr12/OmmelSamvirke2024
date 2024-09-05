@@ -2,7 +2,6 @@ using ErrorHandling.Interfaces;
 using ErrorHandling.Interfaces.Contracts;
 using ErrorHandling.Interfaces.TypeValidators;
 using ErrorHandling.Models;
-using FluentResults;
 
 namespace ErrorHandling.Services.Validation;
 
@@ -19,37 +18,37 @@ public class ValueValidator : IValueValidator
         _errorAggregate = errorAggregate;
     }
 
-    public IValueValidator ValidateLength(int minLength, int maxLength, Enum errorCode)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IValueValidator ValidateRange(int min, int max, Enum errorCode)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IValueValidator ValidateRequired(Enum errorCode)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Result<TU> GetResult<TU>()
-    {
-        throw new NotImplementedException();
-    }
-
     public IStringValidator<IValueValidatorStageTwoStringType> ForValue(string value)
     {
         throw new NotImplementedException();
     }
 
-    public INumericValidator<IValueValidatorStageTwoNumericType> ForValue(int value)
+    public INumericValidator<IValueValidatorStageTwoIntType> ForValue(int value)
     {
         throw new NotImplementedException();
     }
 
-    public INumericValidator<IValueValidatorStageTwoObjectType> ForValue(object value)
+    public INumericValidator<IValueValidatorStageTwoLongType> ForValue(long value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public INumericValidator<IValueValidatorStageTwoFloatType> ForValue(float value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public INumericValidator<IValueValidatorStageTwoDoubleType> ForValue(double value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public INumericValidator<IValueValidatorStageTwoDecimalType> ForValue(decimal value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IObjectValidator<IValueValidatorStageTwoObjectType> ForValue(object value)
     {
         throw new NotImplementedException();
     }

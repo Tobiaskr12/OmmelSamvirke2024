@@ -2,7 +2,7 @@ using FluentResults;
 
 namespace ErrorHandling.Interfaces.Util;
 
-public interface IResultableValidator
+public interface IResultableValidator<T>
 {
-    Result<T> GetResult<T>();
+    Result<T> GetResult();
 }

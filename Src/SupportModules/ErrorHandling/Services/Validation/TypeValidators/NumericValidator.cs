@@ -14,11 +14,6 @@ public class NumericValidator<T> : INumericValidator<T>
         throw new NotImplementedException();
     }
 
-    public T ValidateRange(short min, short max, Enum errorCode)
-    {
-        throw new NotImplementedException();
-    }
-
     public T ValidateRange(float min, float max, Enum errorCode)
     {
         throw new NotImplementedException();

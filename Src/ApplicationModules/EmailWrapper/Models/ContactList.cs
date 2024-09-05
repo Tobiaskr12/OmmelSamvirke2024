@@ -1,7 +1,6 @@
 using EmailWrapper.Errors;
 using EmailWrapper.Services;
 using FluentResults;
-using ErrorHandling.Interfaces;
 using ErrorHandling.Interfaces.Contracts;
 using OmmelSamvirke2024.Domain;
 
@@ -77,6 +76,6 @@ public class ContactListFactory
                     .ValidateLength(3, 200, ContactListErrors.Enums.InvalidNameLength)
                 .ForProperty(contactList.Description)
                     .ValidateLength(5, 2000, ContactListErrors.Enums.InvalidDescriptionLength)
-            .GetResult<ContactList>();
+            .GetResult();
     }
 }

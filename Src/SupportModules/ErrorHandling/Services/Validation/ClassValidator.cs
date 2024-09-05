@@ -23,11 +23,6 @@ public class ClassValidator<T> : IClassValidator<T>, IClassValidatorStageTwo<T> 
     {
         throw new NotImplementedException();
     }
-    
-    public Result<TU> GetResult<TU>()
-    {
-        throw new NotImplementedException();
-    }
 
     public IStringValidator<IClassValidatorStageThreeStringType<T>> ForProperty(string value)
     {
@@ -39,7 +34,12 @@ public class ClassValidator<T> : IClassValidator<T>, IClassValidatorStageTwo<T> 
         throw new NotImplementedException();
     }
 
-    public INumericValidator<IClassValidatorStageThreeObjectType<T>> ForProperty(object value)
+    public IObjectValidator<IClassValidatorStageThreeObjectType<T>> ForProperty(object value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Result<T> GetResult()
     {
         throw new NotImplementedException();
     }

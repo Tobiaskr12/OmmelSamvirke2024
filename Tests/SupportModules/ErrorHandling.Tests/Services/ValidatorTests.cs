@@ -1,7 +1,5 @@
 using ErrorHandling.Enums;
-using ErrorHandling.Interfaces;
 using ErrorHandling.Interfaces.Contracts;
-using ErrorHandling.Services;
 using ErrorHandling.Services.Validation;
 using FluentResults;
 using NSubstitute;
@@ -70,7 +68,7 @@ public class ValidatorTests
                 .ValidateLength(0, 10, TestErrorCodes.InvalidLength)
             .ForValue(testValue)
                 .ValidateLength(0, 10, TestErrorCodes.InvalidLength)
-            .GetResult<string>();
+            .GetResult();
         
         Assert.Multiple(() =>
         {
@@ -88,7 +86,7 @@ public class ValidatorTests
         Result<int> validationResult = _validator
             .ForValue(testValue)
                 .ValidateRange(0, 100, TestErrorCodes.InvalidRange)
-            .GetResult<int>();
+            .GetResult();
         
         Assert.Multiple(() =>
         {
@@ -105,7 +103,7 @@ public class ValidatorTests
         Result<string> validationResult = _validator
             .ForValue(testValue)
                 .ValidateLength(10, 100, TestErrorCodes.InvalidLength)
-            .GetResult<string>();
+            .GetResult();
         
         Assert.Multiple(() =>
         {

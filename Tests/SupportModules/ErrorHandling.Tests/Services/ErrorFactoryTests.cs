@@ -1,5 +1,4 @@
 using ErrorHandling.Models;
-using ErrorHandling.Services;
 using ErrorHandling.Services.Errors;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
