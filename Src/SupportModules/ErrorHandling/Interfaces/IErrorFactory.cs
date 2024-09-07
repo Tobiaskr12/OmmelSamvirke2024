@@ -1,6 +1,6 @@
 using ErrorHandling.Models;
 
-namespace ErrorHandling.Interfaces.Contracts;
+namespace ErrorHandling.Interfaces;
 
 public interface IErrorFactory
 {

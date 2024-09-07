@@ -1,8 +1,8 @@
-using ErrorHandling.Interfaces.Contracts;
+using ErrorHandling.Interfaces;
 using ErrorHandling.Models;
 using Microsoft.Extensions.Logging;
 
-namespace ErrorHandling.Services.Errors;
+namespace ErrorHandling;
 
 public class ErrorFactory : IErrorFactory
 {

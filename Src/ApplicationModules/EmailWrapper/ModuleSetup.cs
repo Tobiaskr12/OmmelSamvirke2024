@@ -1,27 +1,17 @@
-using EmailWrapper.Errors;
 using EmailWrapper.Interfaces;
 using EmailWrapper.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using ErrorHandling.Interfaces;
-using ErrorHandling.Interfaces.Contracts;
 
 namespace EmailWrapper;
 
 public static class ModuleSetup
 {
     
-    public static void InitializeEmailWrapperModule(this IServiceCollection serviceCollection)
+    public static IServiceCollection InitializeEmailWrapperModule(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<IEmailSender, EmailSender>();
-    }
+        serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorHandling/ErrorMessages");
 
-    public static void ConfigureEmailWrapperModule(this WebApplication application)
-    {
-        var errorTranslationService = application.Services.GetService<IErrorTranslationService>();
-        if (errorTranslationService is null)
-            throw new ApplicationException("IErrorTranslationService has not been registered correctly");
-        
-        ContactListErrors.RegisterErrorMessages(errorTranslationService);
+        return serviceCollection;
     }
 }

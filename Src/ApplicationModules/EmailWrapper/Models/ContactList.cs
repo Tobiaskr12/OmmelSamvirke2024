@@ -1,7 +1,7 @@
-using EmailWrapper.Errors;
+using EmailWrapper.ErrorHandling.Validators;
 using EmailWrapper.Services;
+using ErrorHandling;
 using FluentResults;
-using ErrorHandling.Interfaces.Contracts;
 using OmmelSamvirke2024.Domain;
 
 namespace EmailWrapper.Models;
@@ -53,13 +53,6 @@ public class ContactList : BaseEntity
 
 public class ContactListFactory
 {
-    private readonly IValidator _validator;
-
-    public ContactListFactory(IValidator validator)
-    {
-        _validator = validator;
-    }
-
     public Result<ContactList> Create(string name, string description, List<Recipient>? recipients = null)
     {
         var contactList = new ContactList(name, description);
@@ -70,12 +63,7 @@ public class ContactListFactory
             contactList.AddContacts(recipients);
         }
 
-        return _validator
-            .ForClass(contactList)
-                .ForProperty(contactList.Name)
-                    .ValidateLength(3, 200, ContactListErrors.Enums.InvalidNameLength)
-                .ForProperty(contactList.Description)
-                    .ValidateLength(5, 2000, ContactListErrors.Enums.InvalidDescriptionLength)
-            .GetResult();
+        var contactListValidator = new ContactListValidator();
+        return contactListValidator.Validate(contactList).GetResult(contactList);
     }
 }

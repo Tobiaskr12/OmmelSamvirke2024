@@ -1,6 +1,8 @@
+using System.Globalization;
 using EmailWrapper;
 using Logging;
 using ErrorHandling;
+using Microsoft.AspNetCore.Localization;
 using OmmelSamvirke2024.Api.Middleware;
 using OmmelSamvirke2024.Persistence;
 using SecretsManager;
@@ -22,12 +24,31 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 
+// Setup Configuration
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false)
     .AddKeyVaultSecrets(builder.Environment.IsDevelopment() ? ExecutionEnvironment.Development : ExecutionEnvironment.Production)
     .AddEnvironmentVariables()
     .Build();
+
+// Register supported languages
+const string defaultCulture = "en";
+
+var supportedCultures = new[]
+{
+    new CultureInfo(defaultCulture),
+    new CultureInfo("da")
+};
+
+builder.Services.Configure<RequestLocalizationOptions>(options => {
+    options.DefaultRequestCulture = new RequestCulture(defaultCulture);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    
+    // Use Accept-Language header
+    options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
+});
 
 // Register custom logger
 ILogger appLogger = AppLoggerFactory.CreateLogger(builder.Configuration);
@@ -42,8 +63,7 @@ builder.Services.InitializeEmailWrapperModule();
 
 WebApplication app = builder.Build();
 
-// Configure services after all services have been registered. For example: Register error messages
-app.ConfigureEmailWrapperModule();
+app.UseRequestLocalization();
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();

@@ -1,8 +1,6 @@
 using EmailWrapper.Models;
-using FluentResults;
 using Microsoft.AspNetCore.Mvc;
-using ErrorHandling.Interfaces;
-using ErrorHandling.Interfaces.Contracts;
+using Microsoft.Extensions.Localization;
 using OmmelSamvirke2024.Api.Controllers.Util;
 
 namespace OmmelSamvirke2024.Api.Controllers;
@@ -12,30 +10,19 @@ namespace OmmelSamvirke2024.Api.Controllers;
 public class TestController : ControllerBase
 {
     private readonly ILogger _logger;
-    private readonly IValidator _validator;
+    private readonly IStringLocalizer _localizer;
 
-    public TestController(ILogger logger, IValidator validator)
+    public TestController(ILogger logger, IStringLocalizer<TestController> localizer)
     {
         _logger = logger;
-        _validator = validator;
+        _localizer = localizer;
     }
     
-    [HttpGet("hello-world")]
-    public ActionResult<string> HelloWorld()
-    {
-        return Problem();
-        
-        _logger.LogInformation("This is a test");
-        return Ok("Hello World!");
-    }
-
-    [HttpGet("fail")]
+    [HttpGet("test")]
     public ActionResult<string> Fail(string name, string description)
     {
-        var contactListFactory = new ContactListFactory(_validator);
-        Result<ContactList> contactListResult = contactListFactory.Create(name, description);
-        
-        ContactList contactList = ResultHelper.ThrowIfResultIsFailed(contactListResult);
+        var contactListFactory = new ContactListFactory();
+        ContactList contactList = ResultHelper.ThrowIfResultIsFailed(contactListFactory.Create(name, description));
 
         return Ok(contactList);
     }
