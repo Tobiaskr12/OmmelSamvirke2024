@@ -20,7 +20,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj" />
       <ProjectReference Include="..\EmailWrapper.DataAccess\EmailWrapper.DataAccess.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke2024.Domain\OmmelSamvirke2024.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -8,25 +8,10 @@ public static class ServiceRegistrations
 {
     public static async Task AddPersistenceServices(this IServiceCollection services, IConfigurationManager configurationManager)
     {
-        bool isTesting = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing";
-        
-        if (isTesting)
-        {
-            SetupInMemoryDatabaseConnection(services);
-        }
-        else
-        {
-            await SetupPostgresConnection(services, configurationManager);
-        }
+        await SetupDbConnection(services, configurationManager);
     }
 
-    private static void SetupInMemoryDatabaseConnection(IServiceCollection services)
-    {
-        services.AddDbContext<OmmelSamvirkeDbContext>(options => 
-            options.UseInMemoryDatabase("OmmelSamvirke"));
-    }
-
-    private static async Task SetupPostgresConnection(IServiceCollection services, IConfigurationManager configurationManager)
+    private static async Task SetupDbConnection(IServiceCollection services, IConfigurationManager configurationManager)
     {
         string? connectionString = configurationManager.GetSection("SqlServerConnectionString").Value;
         
