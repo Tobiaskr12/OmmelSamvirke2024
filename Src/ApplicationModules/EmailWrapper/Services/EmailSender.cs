@@ -1,5 +1,6 @@
 using Azure;
 using Azure.Communication.Email;
+using EmailWrapper.DTOs;
 using EmailWrapper.Interfaces;
 using EmailWrapper.Models;
 using FluentResults;
@@ -28,7 +29,7 @@ public class EmailSender : IEmailSender
         try
         {
             EmailMessage emailMessage = ConvertEmailToAzureEmailMessage(email);
-            await _emailClient.SendAsync(WaitUntil.Started, emailMessage);
+            EmailSendOperation? res = await _emailClient.SendAsync(WaitUntil.Started, emailMessage);
             
             return Result.Ok();
         }
@@ -77,17 +78,27 @@ public class EmailSender : IEmailSender
             }
         );
 
-        List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
-            attachment.Name,
-            attachment.ContentType.Name,
-            BinaryData.FromStream(attachment.ContentStream)
-        )).ToList();
-
-        foreach (EmailAttachment emailAttachment in emailAttachments)
-        {
-            emailMessage.Attachments.Add(emailAttachment);
-        }
+        // List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
+        //     attachment.Name,
+        //     attachment.ContentType.Name,
+        //     BinaryData.FromStream(attachment.ContentStream)
+        // )).ToList();
+        //
+        // foreach (EmailAttachment emailAttachment in emailAttachments)
+        // {
+        //     emailMessage.Attachments.Add(emailAttachment);
+        // }
 
         return emailMessage;
+    }
+
+    public Task<Result> SendEmail(EmailDto email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result> SendEmails(List<EmailDto> emails)
+    {
+        throw new NotImplementedException();
     }
 }

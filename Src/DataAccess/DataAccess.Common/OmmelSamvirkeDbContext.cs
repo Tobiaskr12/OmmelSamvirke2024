@@ -1,18 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmailWrapper.DataAccess.Configuration;
+using EmailWrapper.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OmmelSamvirke2024.Domain;
 
-namespace OmmelSamvirke2024.Persistence;
+namespace DataAccess.Common;
 
 public class OmmelSamvirkeDbContext : DbContext
 {
-    public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options)
-    {
-    }
+    public DbSet<Email> Emails { get; init; }
+    
+    public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmmelSamvirkeDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(EmailEntityTypeConfiguration).Assembly);
         base.OnModelCreating(modelBuilder);
     }
     

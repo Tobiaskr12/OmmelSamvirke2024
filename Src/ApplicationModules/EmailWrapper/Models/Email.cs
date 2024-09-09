@@ -12,7 +12,7 @@ public class Email : BaseEntity
     public required string Subject { get; set; }
     public required string Body { get; set; }
     public required List<Recipient> Recipients { get; set; }
-    public required List<Attachment> Attachments { get; set; }
+    // public required List<Attachment> Attachments { get; set; }
     
     public static Result<Email> Create(
         string fromAddress,
@@ -21,14 +21,14 @@ public class Email : BaseEntity
         Recipient recipient,
         List<Attachment>? attachments = null)
     {
-        return Create(fromAddress, subject, body, new List<Recipient> { recipient }, attachments);
+        return Create(fromAddress, subject, body, [recipient], attachments);
     }
 
     public static Result<Email> Create(
         string fromAddress,
         string subject,
         string body,
-        List<Recipient>? recipients,
+        List<Recipient> recipients,
         List<Attachment>? attachments = null)
     {
         const int twentyMb = 20 * 1024 * 1024;
@@ -41,7 +41,7 @@ public class Email : BaseEntity
             return Result.Fail("Subject must not be longer than 80 characters");
         if (string.IsNullOrWhiteSpace(body))
             return Result.Fail("Body is required.");
-        if (recipients == null || recipients.Count == 0)
+        if (recipients.Count == 0)
             return Result.Fail("At least one recipient is required.");
         if (attachments == null && Encoding.Unicode.GetByteCount(subject + body) > twentyMb)
             return Result.Fail("The total size of the email cannot exceed 20MB.");
@@ -54,7 +54,7 @@ public class Email : BaseEntity
             Subject = subject,
             Body = body,
             Recipients = recipients,
-            Attachments = attachments ?? []
+            // Attachments = attachments ?? []
         };
 
         return Result.Ok(email);

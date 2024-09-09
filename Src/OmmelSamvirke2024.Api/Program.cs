@@ -4,7 +4,7 @@ using Logging;
 using ErrorHandling;
 using Microsoft.AspNetCore.Localization;
 using OmmelSamvirke2024.Api.Middleware;
-using OmmelSamvirke2024.Persistence;
+using DataAccess.Common;
 using SecretsManager;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

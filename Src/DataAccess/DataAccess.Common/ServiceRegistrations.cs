@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace OmmelSamvirke2024.Persistence;
+namespace DataAccess.Common;
 
 public static class ServiceRegistrations
 {

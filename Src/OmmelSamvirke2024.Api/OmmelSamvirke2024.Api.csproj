@@ -9,7 +9,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Tests\SupportModules\Logging.Tests\Logging.Tests.csproj" />
         <ProjectReference Include="..\ApplicationModules\EmailWrapper\EmailWrapper.csproj" />
-        <ProjectReference Include="..\OmmelSamvirke2024.Persistence\OmmelSamvirke2024.Persistence.csproj" />
+        <ProjectReference Include="..\DataAccess\DataAccess.Common\DataAccess.Common.csproj" />
+        <ProjectReference Include="..\OmmelSamvirke2024.DataAccess\OmmelSamvirke2024.DataAccess.csproj" />
         <ProjectReference Include="..\..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj"/>
         <ProjectReference Include="..\SupportModules\Logging\Logging.csproj" />
         <ProjectReference Include="..\SupportModules\ErrorHandling\ErrorHandling.csproj" />

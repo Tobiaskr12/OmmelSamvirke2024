@@ -62,7 +62,7 @@ public class EmailConstructionUnitTests
     [Test]
     public void GivenEmailWithoutRecipient_WhenCreatingEmail_ReturnsError()
     {
-        Result<Email> result = Email.Create(SenderEmailAddresses.Admins,"subject", "body", recipients: null);
+        Result<Email> result = Email.Create(SenderEmailAddresses.Admins,"subject", "body", recipients: []);
         Assert.That(result.IsSuccess, Is.False);
     }
         
