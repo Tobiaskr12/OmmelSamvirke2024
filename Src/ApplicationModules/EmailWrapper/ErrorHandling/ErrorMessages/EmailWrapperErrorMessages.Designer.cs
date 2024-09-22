@@ -60,6 +60,15 @@ namespace EmailWrapper.ErrorHandling.ErrorMessages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email attachment has no content, making it invalid.
+        /// </summary>
+        internal static string Attachment_HasNoBinaryContent {
+            get {
+                return ResourceManager.GetString("Attachment_HasNoBinaryContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The description of a contact list must be between 5-2000 characters long.
         /// </summary>
         internal static string ContactList_InvalidDescriptionLength {

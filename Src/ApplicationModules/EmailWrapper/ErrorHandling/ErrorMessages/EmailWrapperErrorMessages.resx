@@ -24,4 +24,7 @@
     <data name="ContactList_InvalidDescriptionLength" xml:space="preserve">
         <value>The description of a contact list must be between 5-2000 characters long</value>
     </data>
+    <data name="Attachment_HasNoBinaryContent" xml:space="preserve">
+        <value>The email attachment has no content, making it invalid</value>
+    </data>
 </root>

@@ -60,6 +60,15 @@ namespace EmailWrapper.ErrorHandling.ErrorMessages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Den vedhæftede fil har ikke noget indhold. Filen er derfor ikke gyldig.
+        /// </summary>
+        internal static string Attachment_HasNoBinaryContent {
+            get {
+                return ResourceManager.GetString("Attachment_HasNoBinaryContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beskrivelsen af en kontaktliste skal være mellem 5-2000 tegn lang.
         /// </summary>
         internal static string ContactList_InvalidDescriptionLength {

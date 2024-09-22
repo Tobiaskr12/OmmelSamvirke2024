@@ -29,9 +29,9 @@ public class TestDatabaseFixture
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                context.AddRange(
-                    AddEntityData(Email.Create("admins@ommelsamvirke.com", "test2", "test body 2", Recipient.Create(["tobias@example.com"])).Value)
-                );
+                // context.AddRange(
+                //     AddEntityData(Email.Create("admins@ommelsamvirke.com", "test2", "test body 2", Recipient.Create(["tobias@example.com"])).Value)
+                // );
                 
                 context.SaveChanges();
             }

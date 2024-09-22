@@ -21,9 +21,9 @@ public class TestController : ControllerBase
     [HttpGet("test")]
     public ActionResult<string> Fail(string name, string description)
     {
-        var contactListFactory = new ContactListFactory();
-        ContactList contactList = ResultHelper.ThrowIfResultIsFailed(contactListFactory.Create(name, description));
+        // var contactListFactory = new ContactListFactory();
+        // ContactList contactList = ResultHelper.ThrowIfResultIsFailed(contactListFactory.Create(name, description));
 
-        return Ok(contactList);
+        return Ok();
     }
 }

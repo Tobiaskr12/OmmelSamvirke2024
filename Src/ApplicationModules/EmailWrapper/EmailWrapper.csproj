@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
       <PackageReference Include="FluentResults" Version="3.16.0" />
+      <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.8" />
     </ItemGroup>
@@ -56,7 +57,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\Mappers\" />
+      <Folder Include="Features\Analytics\Commands\" />
+      <Folder Include="Features\Analytics\Queries\" />
+      <Folder Include="Features\ContactLists\Commands\" />
+      <Folder Include="Features\ContactLists\Queries\" />
+      <Folder Include="Features\Sending\Queries\" />
+      <Folder Include="Features\EmailValidation\Commands\" />
+      <Folder Include="Features\EmailValidation\Queries\" />
     </ItemGroup>
 
 </Project>

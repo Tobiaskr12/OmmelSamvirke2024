@@ -1,6 +1,8 @@
+using OmmelSamvirke2024.Domain;
+
 namespace EmailWrapper.Models;
 
-public class SentEmailsReport
+public class SentEmailsReport : BaseEntity
 {
     
 }
