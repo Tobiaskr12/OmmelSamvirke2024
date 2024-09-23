@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Src\DataAccess\DataAccess.Common\DataAccess.Common.csproj" />
+      <ProjectReference Include="..\..\Src\DomainModules\Domain.Common\Domain.Common.csproj" />
       <ProjectReference Include="..\..\Src\SupportModules\SecretsManager\SecretsManager.csproj" />
     </ItemGroup>
 

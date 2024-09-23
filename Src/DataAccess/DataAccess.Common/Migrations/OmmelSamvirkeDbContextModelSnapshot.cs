@@ -22,7 +22,7 @@ namespace DataAccess.Common.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EmailWrapper.Models.Email", b =>
+            modelBuilder.Entity("Emails.Services.Models.Email", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace DataAccess.Common.Migrations
                     b.ToTable("Emails");
                 });
 
-            modelBuilder.Entity("EmailWrapper.Models.Recipient", b =>
+            modelBuilder.Entity("Emails.Services.Models.Recipient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,14 +81,14 @@ namespace DataAccess.Common.Migrations
                     b.ToTable("Recipient");
                 });
 
-            modelBuilder.Entity("EmailWrapper.Models.Recipient", b =>
+            modelBuilder.Entity("Emails.Services.Models.Recipient", b =>
                 {
-                    b.HasOne("EmailWrapper.Models.Email", null)
+                    b.HasOne("Emails.Services.Models.Email", null)
                         .WithMany("Recipients")
                         .HasForeignKey("EmailId");
                 });
 
-            modelBuilder.Entity("EmailWrapper.Models.Email", b =>
+            modelBuilder.Entity("Emails.Services.Models.Email", b =>
                 {
                     b.Navigation("Recipients");
                 });

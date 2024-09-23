@@ -1,8 +1,7 @@
 ﻿using DataAccess.Common;
-using EmailWrapper.Models;
+using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using OmmelSamvirke2024.Domain;
 using SecretsManager;
 
 namespace TestDatabaseFixtures;

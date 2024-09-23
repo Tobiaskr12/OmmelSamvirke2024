@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
+      <PackageReference Include="FluentResults" Version="3.16.0" />
+      <PackageReference Include="FluentValidation" Version="11.10.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+      <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+      <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\DomainModules\Emails.Domain\Emails.Domain.csproj" />
+      <ProjectReference Include="..\..\SupportModules\MediatrConfig\MediatrConfig.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore">
+        <HintPath>..\..\..\..\..\Users\tobia\.dotnet\shared\Microsoft.AspNetCore.App\8.0.3\Microsoft.AspNetCore.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="ErrorMessages\EmailWrapperErrorMessages.da.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>EmailWrapperErrorMessages.da.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="ErrorMessages\EmailWrapperErrorMessages.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>EmailWrapperErrorMessages.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="ErrorMessages\EmailWrapperErrorMessages.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EmailWrapperErrorMessages.resx</DependentUpon>
+      </Compile>
+      <Compile Update="ErrorMessages\EmailWrapperErrorMessages.da.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>EmailWrapperErrorMessages.da.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(MSBuildProjectName).Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features\Analytics\Commands\" />
+      <Folder Include="Features\Analytics\Queries\" />
+      <Folder Include="Features\ContactLists\Commands\" />
+      <Folder Include="Features\ContactLists\Queries\" />
+      <Folder Include="Features\Sending\Queries\" />
+      <Folder Include="Features\EmailValidation\Commands\" />
+      <Folder Include="Features\EmailValidation\Queries\" />
+    </ItemGroup>
+
+</Project>

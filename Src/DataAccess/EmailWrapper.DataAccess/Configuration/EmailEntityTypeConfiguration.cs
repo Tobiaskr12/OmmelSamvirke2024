@@ -1,4 +1,4 @@
-﻿using EmailWrapper.Models;
+﻿using Emails.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,8 +1,8 @@
-﻿using EmailWrapper.DataAccess.Configuration;
-using EmailWrapper.Models;
+﻿using Domain.Common;
+using Emails.Domain.Entities;
+using EmailWrapper.DataAccess.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using OmmelSamvirke2024.Domain;
 
 namespace DataAccess.Common;
 

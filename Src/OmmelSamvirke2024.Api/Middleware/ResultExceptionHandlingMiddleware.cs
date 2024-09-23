@@ -1,5 +1,5 @@
 using System.Text.Json;
-using OmmelSamvirke2024.Api.Controllers.Util;
+using MediatrConfig.Exceptions;
 
 namespace OmmelSamvirke2024.Api.Middleware;
 
@@ -28,15 +28,9 @@ public class ResultExceptionHandlingMiddleware
     {
         // Extract errors and status codes
         List<string> errors = ex.Result.Errors.Select(err => err.Message).ToList();
-        List<int> statusCodes = ex.Result.Errors.SelectMany(err => err.Metadata)
-            .Where(meta => meta.Key == "StatusCode")
-            .Select(meta => (int)meta.Value)
-            .ToList();
-
-        int finalStatusCode = statusCodes.Any(code => code == 400) ? 400 : 500;
 
         // Return the error response
-        context.Response.StatusCode = finalStatusCode;
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
 
         var errorResponse = new { Errors = errors };

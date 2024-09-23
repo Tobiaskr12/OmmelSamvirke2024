@@ -1,7 +1,8 @@
-using EmailWrapper.Models;
+using Emails.Domain.Entities;
+using Emails.Services.Features.Sending.Commands;
+using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using OmmelSamvirke2024.Api.Controllers.Util;
 
 namespace OmmelSamvirke2024.Api.Controllers;
 
@@ -9,21 +10,17 @@ namespace OmmelSamvirke2024.Api.Controllers;
 [Route("test")]
 public class TestController : ControllerBase
 {
-    private readonly ILogger _logger;
-    private readonly IStringLocalizer _localizer;
+    private readonly IMediator _mediator;
 
-    public TestController(ILogger logger, IStringLocalizer<TestController> localizer)
+    public TestController(IMediator mediator)
     {
-        _logger = logger;
-        _localizer = localizer;
+        _mediator = mediator;
     }
     
-    [HttpGet("test")]
-    public ActionResult<string> Fail(string name, string description)
+    [HttpPost("test")]
+    public async Task<ActionResult<string>> Fail([FromBody] SendEmailCommand sendEmailCommand)
     {
-        // var contactListFactory = new ContactListFactory();
-        // ContactList contactList = ResultHelper.ThrowIfResultIsFailed(contactListFactory.Create(name, description));
-
-        return Ok();
+        Result<EmailSendingStatus> result = await _mediator.Send(sendEmailCommand);
+        return Ok(result.Value);
     }
 }

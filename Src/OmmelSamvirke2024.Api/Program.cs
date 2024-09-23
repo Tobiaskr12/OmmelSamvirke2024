@@ -1,11 +1,14 @@
 using System.Globalization;
-using EmailWrapper;
+using System.Reflection;
+using Emails.Services;
 using Logging;
-using ErrorHandling;
 using Microsoft.AspNetCore.Localization;
 using OmmelSamvirke2024.Api.Middleware;
 using DataAccess.Common;
+using Emails.Domain;
+using OmmelSamvirke2024.ServiceDefaults;
 using SecretsManager;
+using Swashbuckle.AspNetCore.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +22,12 @@ builder.Services.AddControllers(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.ExampleFilters();
+});
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
@@ -58,8 +66,8 @@ builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
 // Register services
 await builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddSingleton(appLogger);
-builder.Services.InitializeErrorHandlingModule();
-builder.Services.InitializeEmailWrapperModule();
+builder.Services.InitializeEmailServicesModule();
+builder.Services.InitializeEmailDomainModule();
 
 WebApplication app = builder.Build();
 
@@ -73,8 +81,20 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    // Redirect from "/" to swagger dashboard
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger/index.html");
+            return;
+        }
+        await next();
+    });
 }
 
+app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
 app.UseMiddleware<ResultExceptionHandlingMiddleware>();
 app.UseRouting();
 
