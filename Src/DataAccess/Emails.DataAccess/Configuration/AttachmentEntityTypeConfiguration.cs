@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EmailWrapper.DataAccess.Configuration;
+namespace Emails.DataAccess.Configuration;
 
 public class AttachmentEntityTypeConfiguration : IEntityTypeConfiguration<Attachment>
 {

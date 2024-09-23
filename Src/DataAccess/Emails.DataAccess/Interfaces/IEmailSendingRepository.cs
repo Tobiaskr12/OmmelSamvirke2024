@@ -1,4 +1,4 @@
-namespace EmailWrapper.DataAccess.Interfaces;
+namespace Emails.DataAccess.Interfaces;
 
 public interface IEmailSendingRepository
 {

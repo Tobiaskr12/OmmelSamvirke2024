@@ -1,6 +1,6 @@
 ﻿using Domain.Common;
 using Emails.Domain.Entities;
-using EmailWrapper.DataAccess.Configuration;
+using Emails.DataAccess.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 

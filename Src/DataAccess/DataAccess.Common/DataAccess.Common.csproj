@@ -20,7 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\DomainModules\Domain.Common\Domain.Common.csproj" />
       <ProjectReference Include="..\..\DomainModules\Emails.Domain\Emails.Domain.csproj" />
-      <ProjectReference Include="..\EmailWrapper.DataAccess\EmailWrapper.DataAccess.csproj" />
+      <ProjectReference Include="..\Emails.DataAccess\Emails.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

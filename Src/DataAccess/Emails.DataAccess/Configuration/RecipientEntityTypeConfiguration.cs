@@ -2,7 +2,7 @@ using Emails.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EmailWrapper.DataAccess.Configuration;
+namespace Emails.DataAccess.Configuration;
 
 public class RecipientEntityTypeConfiguration : IEntityTypeConfiguration<Recipient>
 {
