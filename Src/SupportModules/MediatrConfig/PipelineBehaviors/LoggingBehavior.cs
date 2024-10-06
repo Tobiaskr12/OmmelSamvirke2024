@@ -16,10 +16,10 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var startTime = DateTime.UtcNow;
-        var requestID = startTime.ToString("mm-ss.fffff");
+        DateTime startTime = DateTime.UtcNow;
+        var requestId = startTime.ToString("mm-ss.fffff");
 
-        _logger.LogInformation($"({requestID}) Started handling \"{typeof(TRequest).Name}\"."); 
+        _logger.LogInformation($"({requestId}) Started handling \"{typeof(TRequest).Name}\"."); 
         
         var stopwatch = Stopwatch.StartNew();
 
@@ -28,13 +28,13 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
             var response = await next();
             stopwatch.Stop();
 
-            _logger.LogInformation($"({requestID}) Finished handling \"{typeof(TResponse).Name}\". Request took {stopwatch.Elapsed.TotalMilliseconds}ms");
+            _logger.LogInformation($"({requestId}) Finished handling \"{typeof(TResponse).Name}\". Request took {stopwatch.Elapsed.TotalMilliseconds}ms");
             return response;
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
-            _logger.LogError(ex, $"({requestID}) Error handling \"{typeof(TRequest).Name}\". Request failed after {stopwatch.Elapsed.TotalMilliseconds}ms");
+            _logger.LogError(ex, $"({requestId}) Error handling \"{typeof(TRequest).Name}\". Request failed after {stopwatch.Elapsed.TotalMilliseconds}ms");
 
             throw;
         }
