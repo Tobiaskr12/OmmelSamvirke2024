@@ -2,12 +2,12 @@ using Emails.Domain.Entities;
 
 namespace Emails.DTOs;
 
-public class EmailSendingStatus
-{
-    public required Email Email { get; init; }
-    public required List<Recipient> InvalidRecipients { get; init; }
-    public required SendingStatus Status { get; init; }
-}
+public record EmailSendingStatus
+(
+    Email Email,
+    SendingStatus Status,
+    List<Recipient> InvalidRecipients
+);
 
 public enum SendingStatus
 {

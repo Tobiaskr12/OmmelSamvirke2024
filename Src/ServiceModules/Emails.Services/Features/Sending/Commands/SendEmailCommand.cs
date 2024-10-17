@@ -8,10 +8,7 @@ using MediatR;
 
 namespace Emails.Services.Features.Sending.Commands;
 
-public class SendEmailCommand : IRequest<Result<EmailSendingStatus>>
-{
-    public required Email Email { get; init; }
-}
+public record SendEmailCommand(Email Email) : IRequest<Result<EmailSendingStatus>>;
 
 [UsedImplicitly]
 public class SendEmailCommandValidator : AbstractValidator<SendEmailCommand>
@@ -34,12 +31,9 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         
         // Result<EmailSendingStatus> result = Result.Fail(errorMessage);
         
-        Result<EmailSendingStatus> result = Result.Ok(new EmailSendingStatus
-        {
-            Email = request.Email,
-            Status = SendingStatus.Succeeded,
-            InvalidRecipients = []
-        });
+        Result<EmailSendingStatus> result = Result.Ok(
+            new EmailSendingStatus(request.Email, SendingStatus.Succeeded, [])
+        );
         
         return result;
     }

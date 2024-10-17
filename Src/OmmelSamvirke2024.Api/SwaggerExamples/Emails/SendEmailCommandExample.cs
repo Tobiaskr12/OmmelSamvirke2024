@@ -10,14 +10,14 @@ public class SendEmailCommandExample : IExamplesProvider<SendEmailCommand>
 {
     public SendEmailCommand GetExamples()
     {
-        return new SendEmailCommand
-        {
-            Email = new Email
+        return new SendEmailCommand(
+            new Email
             {
                 Subject = "Test email subject",
                 Body = "This is a test email",
                 Attachments = [],
-                Recipients = [
+                Recipients =
+                [
                     new Recipient
                     {
                         EmailAddress = "test@example.com"
@@ -25,6 +25,6 @@ public class SendEmailCommandExample : IExamplesProvider<SendEmailCommand>
                 ],
                 SenderEmailAddress = "test@ommelsamvirke.com"
             }
-        };
+        );
     }
 }

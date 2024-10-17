@@ -5,11 +5,11 @@ using MediatR;
 
 namespace Emails.Services.Features.Sending.Commands;
 
-public class SendEmailToContactListCommand : IRequest<Result<EmailSendingStatus>>
-{
-    public required Email Email { get; set; }
-    public required List<int> ContactListIds { get; set; }
-}
+public record SendEmailToContactListCommand
+(
+    Email Email,
+    List<int> ContactListIds
+) : IRequest<Result<EmailSendingStatus>>;
 
 public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToContactListCommand, Result<EmailSendingStatus>>
 {
