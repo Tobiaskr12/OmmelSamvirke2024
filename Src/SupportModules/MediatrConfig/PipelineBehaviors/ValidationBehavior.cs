@@ -23,9 +23,9 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         );
 
         List<ValidationFailure> failures = validationResults
-           .SelectMany(result => result.Errors)
-           .Where(failure => failure is not null)
-           .ToList();
+                                           .SelectMany(result => result.Errors)
+                                           .Where(failure => failure is not null)
+                                           .ToList();
 
         if (failures.Count != 0)
         {

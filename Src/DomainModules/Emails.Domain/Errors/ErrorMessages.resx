@@ -18,13 +18,43 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="Attachment_HasNoBinaryContent" xml:space="preserve">
+    <data name="Attachment_BinaryContent_IsEmpty" xml:space="preserve">
         <value>The email attachment has no content, making it invalid</value>
     </data>
-    <data name="ContactList_InvalidDescriptionLength" xml:space="preserve">
+    <data name="ContactList_Description_InvalidLength" xml:space="preserve">
         <value>The description of a contact list must be between 5-2000 characters long</value>
     </data>
-    <data name="ContactList_InvalidNameLength" xml:space="preserve">
+    <data name="ContactList_Name_InvalidLength" xml:space="preserve">
         <value>The name of a contact list must be between 3-200 characters long</value>
+    </data>
+    <data name="Email_SenderAddress_MustNotBeEmpty" xml:space="preserve">
+        <value>The sender address must not be empty</value>
+    </data>
+    <data name="Email_SenderAddress_MustBeApproved" xml:space="preserve">
+        <value>The sender address is not approved for sending emails</value>
+    </data>
+    <data name="Email_Subject_InvalidLength" xml:space="preserve">
+        <value>The subject must be between 3-80 characters long</value>
+    </data>
+    <data name="Email_Body_InvalidLength" xml:space="preserve">
+        <value>The body content must be at least 20 characters long and the content size must be less than 7MB</value>
+    </data>
+    <data name="Email_Recipient_InvalidSize" xml:space="preserve">
+        <value>The email must have between 1-50 recipients</value>
+    </data>
+    <data name="Email_Attachments_InvalidSize" xml:space="preserve">
+        <value>The email can not have more than 10 attachments</value>
+    </data>
+    <data name="Email_ContentSize_TooLarge" xml:space="preserve">
+        <value>The total size of the email must be less than 7.5MB</value>
+    </data>
+    <data name="Attachment_Name_InvalidLength" xml:space="preserve">
+        <value>The email attachment name must be between 5-256 characters long</value>
+    </data>
+    <data name="Attachment_BinaryContent_TooLarge" xml:space="preserve">
+        <value>The email attachment can not be larger than 7.5MB</value>
+    </data>
+    <data name="Recipient_EmailAddress_MustBeValid" xml:space="preserve">
+        <value>At least one recipient email address is invalid</value>
     </data>
 </root>

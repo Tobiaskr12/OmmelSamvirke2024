@@ -17,7 +17,12 @@ public class SendEmailCommandExample : IExamplesProvider<SendEmailCommand>
                 Subject = "Test email subject",
                 Body = "This is a test email",
                 Attachments = [],
-                Recipients = [],
+                Recipients = [
+                    new Recipient
+                    {
+                        EmailAddress = "test@example.com"
+                    }
+                ],
                 SenderEmailAddress = "test@ommelsamvirke.com"
             }
         };

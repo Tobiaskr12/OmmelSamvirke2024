@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\DomainModules\Emails.Domain\Emails.Domain.csproj" />
+      <ProjectReference Include="..\..\DTOs\Emails.DTOs\Emails.DTOs.csproj" />
       <ProjectReference Include="..\..\SupportModules\MediatrConfig\MediatrConfig.csproj" />
     </ItemGroup>
 
@@ -60,7 +61,6 @@
 
     <ItemGroup>
       <Folder Include="Features\Analytics\Commands\" />
-      <Folder Include="Features\Analytics\Queries\" />
       <Folder Include="Features\ContactLists\Commands\" />
       <Folder Include="Features\ContactLists\Queries\" />
       <Folder Include="Features\Sending\Queries\" />

@@ -21,7 +21,7 @@ namespace Emails.Domain.Errors {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ErrorMessages {
+    public class ErrorMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace Emails.Domain.Errors {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Emails.Domain.Errors.ErrorMessages", typeof(ErrorMessages).Assembly);
@@ -50,7 +50,7 @@ namespace Emails.Domain.Errors {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,27 +62,117 @@ namespace Emails.Domain.Errors {
         /// <summary>
         ///   Looks up a localized string similar to The email attachment has no content, making it invalid.
         /// </summary>
-        internal static string Attachment_HasNoBinaryContent {
+        public static string Attachment_BinaryContent_IsEmpty {
             get {
-                return ResourceManager.GetString("Attachment_HasNoBinaryContent", resourceCulture);
+                return ResourceManager.GetString("Attachment_BinaryContent_IsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email attachment can not be larger than 7.5MB.
+        /// </summary>
+        public static string Attachment_BinaryContent_TooLarge {
+            get {
+                return ResourceManager.GetString("Attachment_BinaryContent_TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email attachment name must be between 5-256 characters long.
+        /// </summary>
+        public static string Attachment_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Attachment_Name_InvalidLength", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The description of a contact list must be between 5-2000 characters long.
         /// </summary>
-        internal static string ContactList_InvalidDescriptionLength {
+        public static string ContactList_Description_InvalidLength {
             get {
-                return ResourceManager.GetString("ContactList_InvalidDescriptionLength", resourceCulture);
+                return ResourceManager.GetString("ContactList_Description_InvalidLength", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The name of a contact list must be between 3-200 characters long.
         /// </summary>
-        internal static string ContactList_InvalidNameLength {
+        public static string ContactList_Name_InvalidLength {
             get {
-                return ResourceManager.GetString("ContactList_InvalidNameLength", resourceCulture);
+                return ResourceManager.GetString("ContactList_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email can not have more than 10 attachments.
+        /// </summary>
+        public static string Email_Attachments_InvalidSize {
+            get {
+                return ResourceManager.GetString("Email_Attachments_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The body content must be at least 20 characters long and the content size must be less than 7MB.
+        /// </summary>
+        public static string Email_Body_InvalidLength {
+            get {
+                return ResourceManager.GetString("Email_Body_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The total size of the email must be less than 7.5MB.
+        /// </summary>
+        public static string Email_ContentSize_TooLarge {
+            get {
+                return ResourceManager.GetString("Email_ContentSize_TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email must have between 1-50 recipients.
+        /// </summary>
+        public static string Email_Recipient_InvalidSize {
+            get {
+                return ResourceManager.GetString("Email_Recipient_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sender address is not approved for sending emails.
+        /// </summary>
+        public static string Email_SenderAddress_MustBeApproved {
+            get {
+                return ResourceManager.GetString("Email_SenderAddress_MustBeApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sender address must not be empty.
+        /// </summary>
+        public static string Email_SenderAddress_MustNotBeEmpty {
+            get {
+                return ResourceManager.GetString("Email_SenderAddress_MustNotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The subject must be between 3-80 characters long.
+        /// </summary>
+        public static string Email_Subject_InvalidLength {
+            get {
+                return ResourceManager.GetString("Email_Subject_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one recipient email address is invalid.
+        /// </summary>
+        public static string Recipient_EmailAddress_MustBeValid {
+            get {
+                return ResourceManager.GetString("Recipient_EmailAddress_MustBeValid", resourceCulture);
             }
         }
     }

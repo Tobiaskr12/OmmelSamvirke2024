@@ -9,5 +9,5 @@ public class Attachment : BaseEntity
     public required Uri ContentPath { get; set; }
     public required ContentType ContentType { get; set; }
     public byte[]? BinaryContent { get; set; }
-    public long ContentSize { get; set; } = 0;
+    public long ContentSize => BinaryContent?.Length ?? 0;
 }

@@ -1,4 +1,5 @@
 using Emails.Domain.Entities;
+using Emails.DTOs;
 using FluentResults;
 using MediatR;
 

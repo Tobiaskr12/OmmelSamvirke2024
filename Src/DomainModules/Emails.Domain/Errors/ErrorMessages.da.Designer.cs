@@ -21,7 +21,7 @@ namespace Emails.Domain.Errors {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ErrorMessages_da {
+    public class ErrorMessages_da {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +35,7 @@ namespace Emails.Domain.Errors {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Emails.Domain.Errors.ErrorMessages.da", typeof(ErrorMessages_da).Assembly);
@@ -50,7 +50,7 @@ namespace Emails.Domain.Errors {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -62,27 +62,117 @@ namespace Emails.Domain.Errors {
         /// <summary>
         ///   Looks up a localized string similar to Den vedhæftede fil har ikke noget indhold. Filen er derfor ikke gyldig.
         /// </summary>
-        internal static string Attachment_HasNoBinaryContent {
+        public static string Attachment_BinaryContent_IsEmpty {
             get {
-                return ResourceManager.GetString("Attachment_HasNoBinaryContent", resourceCulture);
+                return ResourceManager.GetString("Attachment_BinaryContent_IsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to En vedhæftet fil må ikke være større end 7.5MB.
+        /// </summary>
+        public static string Attachment_BinaryContent_TooLarge {
+            get {
+                return ResourceManager.GetString("Attachment_BinaryContent_TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Den vedhæftede fils navn skal være mellem 5-256 tegn langt.
+        /// </summary>
+        public static string Attachment_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Attachment_Name_InvalidLength", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Beskrivelsen af en kontaktliste skal være mellem 5-2000 tegn lang.
         /// </summary>
-        internal static string ContactList_InvalidDescriptionLength {
+        public static string ContactList_Description_InvalidLength {
             get {
-                return ResourceManager.GetString("ContactList_InvalidDescriptionLength", resourceCulture);
+                return ResourceManager.GetString("ContactList_Description_InvalidLength", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Navnet på en kontaktliste skal være mellem 3-200 tegn langt.
         /// </summary>
-        internal static string ContactList_InvalidNameLength {
+        public static string ContactList_Name_InvalidLength {
             get {
-                return ResourceManager.GetString("ContactList_InvalidNameLength", resourceCulture);
+                return ResourceManager.GetString("ContactList_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emailen kan ikke have mere end 10 vedhæftede filer.
+        /// </summary>
+        public static string Email_Attachments_InvalidSize {
+            get {
+                return ResourceManager.GetString("Email_Attachments_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indholdet skal være mindst 20 tegn langt og det må ikke fylde mere end 7MB.
+        /// </summary>
+        public static string Email_Body_InvalidLength {
+            get {
+                return ResourceManager.GetString("Email_Body_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emailen må ikke overstige en størrelse på 7.5MB.
+        /// </summary>
+        public static string Email_ContentSize_TooLarge {
+            get {
+                return ResourceManager.GetString("Email_ContentSize_TooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emailen skal have mellem 1-50 modtagere.
+        /// </summary>
+        public static string Email_Recipient_InvalidSize {
+            get {
+                return ResourceManager.GetString("Email_Recipient_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afsendingsadressen er ikke godkendt til af sende emails .
+        /// </summary>
+        public static string Email_SenderAddress_MustBeApproved {
+            get {
+                return ResourceManager.GetString("Email_SenderAddress_MustBeApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Afsendingsadressen må ikke være tom.
+        /// </summary>
+        public static string Email_SenderAddress_MustNotBeEmpty {
+            get {
+                return ResourceManager.GetString("Email_SenderAddress_MustNotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emnefeltet skal være mellem 3-80 tegn langt.
+        /// </summary>
+        public static string Email_Subject_InvalidLength {
+            get {
+                return ResourceManager.GetString("Email_Subject_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der er mindst én modtager-emailadresse som ikke er gyldig.
+        /// </summary>
+        public static string Recipient_EmailAddress_MustBeValid {
+            get {
+                return ResourceManager.GetString("Recipient_EmailAddress_MustBeValid", resourceCulture);
             }
         }
     }

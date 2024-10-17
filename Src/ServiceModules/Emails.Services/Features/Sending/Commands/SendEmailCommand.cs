@@ -1,4 +1,5 @@
 using Emails.Domain.Entities;
+using Emails.DTOs;
 using Emails.Services.Errors;
 using FluentResults;
 using FluentValidation;
@@ -36,7 +37,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         Result<EmailSendingStatus> result = Result.Ok(new EmailSendingStatus
         {
             Email = request.Email,
-            Status = SendingStatus.SucceededValue,
+            Status = SendingStatus.Succeeded,
             InvalidRecipients = []
         });
         

@@ -19,6 +19,12 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>ErrorMessages.da.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="Errors\ErrorMessages.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Errors\ErrorMessages.da.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>

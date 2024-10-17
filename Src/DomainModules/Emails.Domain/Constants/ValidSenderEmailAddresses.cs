@@ -1,6 +1,6 @@
-namespace Emails.Services.Constants;
+namespace Emails.Domain.Constants;
 
-public static class SenderEmailAddresses
+public static class ValidSenderEmailAddresses
 {
     public static string Auto => "auto@ommelsamvirke.com";
     public static string Admins => "admins@ommelsamvirke.com";

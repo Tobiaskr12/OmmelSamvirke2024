@@ -65,9 +65,9 @@ builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
 
 // Register services
 await builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddSingleton(appLogger);
-builder.Services.InitializeEmailServicesModule();
-builder.Services.InitializeEmailDomainModule();
+builder.Services.AddSingleton(appLogger)
+   .InitializeEmailServicesModule()
+   .InitializeEmailDomainModule();
 
 WebApplication app = builder.Build();
 

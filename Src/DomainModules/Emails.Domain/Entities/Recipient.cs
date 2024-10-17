@@ -4,5 +4,5 @@ namespace Emails.Domain.Entities;
 
 public class Recipient : BaseEntity
 {
-    public required string Email { get; set; }
+    public required string EmailAddress { get; set; }
 }

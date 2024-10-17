@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using MediatrConfig.PipelineBehaviors;
 using FluentValidation;
+using MediatrConfig;
 
 namespace Emails.Services;
 
@@ -11,13 +11,7 @@ public static class ModuleSetup
         serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorMessages");
         serviceCollection.AddValidatorsFromAssembly(typeof(ModuleSetup).Assembly);
         
-        serviceCollection.AddMediatR(config =>
-        {
-            config.RegisterServicesFromAssembly(typeof(ModuleSetup).Assembly);
-            config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            config.AddOpenBehavior(typeof(ResultExceptionThrowingBehavior<,>));
-        });
+        MediatrConfigSetup.Setup(serviceCollection, typeof(ModuleSetup).Assembly);
 
         return serviceCollection;
     }

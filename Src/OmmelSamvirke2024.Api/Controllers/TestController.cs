@@ -1,4 +1,4 @@
-using Emails.Domain.Entities;
+using Emails.DTOs;
 using Emails.Services.Features.Sending.Commands;
 using FluentResults;
 using MediatR;

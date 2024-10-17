@@ -41,13 +41,13 @@ public static class RecipientValidator
     {
         // Validation is performed based on the following article:
         // https://learn.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
-        if (string.IsNullOrWhiteSpace(recipient.Email)) return false;
+        if (string.IsNullOrWhiteSpace(recipient.EmailAddress)) return false;
 
         try
         {
             // Normalize the domain
-            recipient.Email = Regex.Replace(
-                input: recipient.Email,
+            recipient.EmailAddress = Regex.Replace(
+                input: recipient.EmailAddress,
                 pattern: "(@)(.+)$", DomainMapper,
                 options: RegexOptions.None, 
                 matchTimeout: TimeSpan.FromMilliseconds(200));
@@ -76,7 +76,7 @@ public static class RecipientValidator
         try
         {
             return Regex.IsMatch(
-                input: recipient.Email,
+                input: recipient.EmailAddress,
                 pattern: @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
                 options: RegexOptions.IgnoreCase,
                 matchTimeout: TimeSpan.FromMilliseconds(250));
