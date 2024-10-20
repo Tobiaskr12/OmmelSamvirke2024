@@ -8,8 +8,11 @@ public class RecipientEntityTypeConfiguration : IEntityTypeConfiguration<Recipie
 {
     public void Configure(EntityTypeBuilder<Recipient> builder)
     {
-        //builder.HasKey(e => e.Id);
-        //builder.Property(e => e.Email)
-        //       .IsRequired();
+        builder.ToTable("Recipients");
+        builder.HasKey(r => r.Id);
+        
+        builder.Property(r => r.EmailAddress)
+               .IsRequired()
+               .HasMaxLength(256);
     }
 }

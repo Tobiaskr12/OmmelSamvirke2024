@@ -7,8 +7,7 @@ namespace MediatrConfig.PipelineBehaviors;
 public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly ILogger _logger;
-
-
+    
     public LoggingBehavior(ILogger logger)
     {
         _logger = logger; 

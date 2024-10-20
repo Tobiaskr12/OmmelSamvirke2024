@@ -9,6 +9,9 @@ namespace DataAccess.Common;
 public class OmmelSamvirkeDbContext : DbContext
 {
     public DbSet<Email> Emails { get; init; }
+    public DbSet<Recipient> Recipients { get; init; }
+    public DbSet<Attachment> Attachments { get; init; }
+    public DbSet<ContactList> ContactLists { get; init; }
     
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     
@@ -16,6 +19,7 @@ public class OmmelSamvirkeDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmmelSamvirkeDbContext).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(EmailEntityTypeConfiguration).Assembly);
+        
         base.OnModelCreating(modelBuilder);
     }
     

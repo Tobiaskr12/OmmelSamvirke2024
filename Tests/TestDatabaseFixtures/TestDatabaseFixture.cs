@@ -1,71 +1,55 @@
-﻿using DataAccess.Common;
-using Domain.Common;
+﻿using System.Reflection;
+using DataAccess.Common;
+using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using SecretsManager;
 
 namespace TestDatabaseFixtures;
 
-public class TestDatabaseFixture
+public abstract class TestDatabaseFixture
 {
-    private static readonly object Lock = new();
-    private static bool _databaseInitialized;
-    private static TestDatabaseFixture? _instance;
-    private readonly string _connectionString;
+    protected OmmelSamvirkeDbContext Context { get; private set; }
 
-    public static TestDatabaseFixture GetInstance() => _instance ??= new TestDatabaseFixture();
-    
-    private TestDatabaseFixture()
+    [SetUp]
+    public async Task TestSetup()
     {
-        _connectionString = GetDbConnectionString();
-        
-        lock (Lock)
+        DbContextOptions<OmmelSamvirkeDbContext> options = 
+            new DbContextOptionsBuilder<OmmelSamvirkeDbContext>()
+                .UseSqlite("Data Source=:memory:")
+                .EnableSensitiveDataLogging()
+                .Options;
+
+        Context = new OmmelSamvirkeDbContext(options);
+
+        await Context.Database.OpenConnectionAsync();
+        await Context.Database.EnsureCreatedAsync();
+
+        await SeedDatabase();
+        await Context.SaveChangesAsync();
+    }
+
+    [TearDown]
+    public async Task TestTearDown()
+    {
+        if (!IsContextDisposed())
         {
-            if (_databaseInitialized) return;
-            
-            using (OmmelSamvirkeDbContext context = GetContext())
-            {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-
-                // context.AddRange(
-                //     AddEntityData(Email.Create("admins@ommelsamvirke.com", "test2", "test body 2", Recipient.Create(["tobias@example.com"])).Value)
-                // );
-                
-                context.SaveChanges();
-            }
-
-            _databaseInitialized = true;
+            await Context.Database.CloseConnectionAsync();
+            await Context.DisposeAsync();
         }
     }
-
-    public OmmelSamvirkeDbContext GetContext()
+    
+    protected abstract Task SeedDatabase();
+    
+    private bool IsContextDisposed()
     {
-        return new OmmelSamvirkeDbContext(
-            new DbContextOptionsBuilder<OmmelSamvirkeDbContext>()
-                .UseSqlServer(_connectionString)
-                .Options);
-    }
+        var result = true;            
+        Type typeDbContext = typeof(DbContext);
+        FieldInfo? isDisposedTypeField = typeDbContext.GetField("_disposed", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    private static BaseEntity AddEntityData(BaseEntity entity)
-    {
-        DateTime now = DateTime.UtcNow;
-        entity.DateCreated = now;
-        entity.DateModified = now;
+        if (isDisposedTypeField != null)
+        {
+            result = (bool)(isDisposedTypeField.GetValue(Context) ?? true);
+        }
 
-        return entity;
-    }
-
-    private static string GetDbConnectionString()
-    {
-        IConfigurationRoot config = new ConfigurationBuilder()
-            .AddKeyVaultSecrets(ExecutionEnvironment.Testing)
-            .Build();
-        
-        string? connectionString = config.GetSection("SqlServerConnectionString").Value;
-        if (connectionString is null)
-            throw new Exception($"Cannot create {nameof(TestDatabaseFixture)}. No DB connection string could be found");
-
-        return connectionString;
+        return result;
     }
 }
