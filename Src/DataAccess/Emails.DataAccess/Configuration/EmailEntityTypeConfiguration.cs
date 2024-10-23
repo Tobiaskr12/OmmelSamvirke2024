@@ -10,6 +10,8 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
     {
         builder.ToTable("Emails");
         builder.HasKey(e => e.Id);
+
+        builder.HasIndex(e => e.DateCreated);
         
         builder.Property(e => e.SenderEmailAddress)
                .IsRequired()

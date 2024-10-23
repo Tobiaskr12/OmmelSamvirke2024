@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Domain.Common;
 using FluentResults;
 
-namespace DataAccess.Common;
+namespace DataAccess.Base;
 
 /// <summary>
 /// Represents a generic repository for entities of type <typeparamref name="T"/>.

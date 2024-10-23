@@ -1,12 +1,12 @@
-using DataAccess.Common.Errors;
 using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using FluentResults;
 using System.Linq.Expressions;
+using DataAccess.Common.Errors;
 
-namespace DataAccess.Common;
+namespace DataAccess.Base;
 
 public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 {

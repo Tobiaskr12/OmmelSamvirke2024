@@ -1,3 +1,4 @@
+using DataAccess.Base;
 using Emails.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

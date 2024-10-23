@@ -1,6 +1,6 @@
 using System.Data.Common;
 using System.Net.Mime;
-using DataAccess.Common;
+using DataAccess.Base;
 using DataAccess.Common.Errors;
 using Emails.Domain.Entities;
 using FluentResults;

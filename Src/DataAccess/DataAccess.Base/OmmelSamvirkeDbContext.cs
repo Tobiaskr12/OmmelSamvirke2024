@@ -4,7 +4,7 @@ using Emails.DataAccess.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace DataAccess.Common;
+namespace DataAccess.Base;
 
 public class OmmelSamvirkeDbContext : DbContext
 {

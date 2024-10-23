@@ -9,15 +9,37 @@
     <ItemGroup>
       <ProjectReference Include="..\..\DomainModules\Domain.Common\Domain.Common.csproj" />
       <ProjectReference Include="..\..\DomainModules\Emails.Domain\Emails.Domain.csproj" />
+      <ProjectReference Include="..\DataAccess.Common\DataAccess.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentResults" Version="3.16.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
+      <EmbeddedResource Update="Errors\ErrorMessages.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Errors\ErrorMessages.da.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ErrorMessages.da.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Errors\ErrorMessages.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ErrorMessages.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Errors\ErrorMessages.da.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ErrorMessages.da.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

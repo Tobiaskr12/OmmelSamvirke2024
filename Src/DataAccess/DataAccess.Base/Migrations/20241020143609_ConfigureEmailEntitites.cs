@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DataAccess.Common.Migrations
+namespace DataAccess.Base.Migrations
 {
     /// <inheritdoc />
     public partial class ConfigureEmailEntitites : Migration

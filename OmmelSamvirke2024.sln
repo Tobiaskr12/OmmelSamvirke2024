@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.AppHost",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{0DBC8E53-3576-4EBB-879E-524A43C3075D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Common", "Src\DataAccess\DataAccess.Common\DataAccess.Common.csproj", "{4B41C0EE-7055-465F-B601-63CC20A74FCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Base", "Src\DataAccess\DataAccess.Base\DataAccess.Base.csproj", "{4B41C0EE-7055-465F-B601-63CC20A74FCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emails.DataAccess", "Src\DataAccess\Emails.DataAccess\Emails.DataAccess.csproj", "{36731A22-87B1-4457-8531-4268E7C34866}"
 EndProject
@@ -66,6 +66,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Common.Tests", "Tests\DataAccess\DataAccess.Common.Tests\DataAccess.Common.Tests.csproj", "{CA8C8070-5278-4B42-BCB9-0737D442142E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emails.DataAccess.Tests", "Tests\DataAccess\Emails.DataAccess.Tests\Emails.DataAccess.Tests.csproj", "{EFE0679A-F810-4EFF-9C69-AAC765FF3692}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Common", "Src\DataAccess\DataAccess.Common\DataAccess.Common.csproj", "{49341DC5-ED2F-400C-A670-0FE80EF9DB54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,6 +151,10 @@ Global
 		{EFE0679A-F810-4EFF-9C69-AAC765FF3692}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFE0679A-F810-4EFF-9C69-AAC765FF3692}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFE0679A-F810-4EFF-9C69-AAC765FF3692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49341DC5-ED2F-400C-A670-0FE80EF9DB54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49341DC5-ED2F-400C-A670-0FE80EF9DB54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49341DC5-ED2F-400C-A670-0FE80EF9DB54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49341DC5-ED2F-400C-A670-0FE80EF9DB54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,6 +188,7 @@ Global
 		{0B68BEC0-6074-405D-AD26-6A804FB9FC44} = {51DCD7E6-DB72-4424-921F-5F5164D6B003}
 		{CA8C8070-5278-4B42-BCB9-0737D442142E} = {2A9F08E7-8FF3-48B6-8D0B-44A3340EB10F}
 		{EFE0679A-F810-4EFF-9C69-AAC765FF3692} = {2A9F08E7-8FF3-48B6-8D0B-44A3340EB10F}
+		{49341DC5-ED2F-400C-A670-0FE80EF9DB54} = {0DBC8E53-3576-4EBB-879E-524A43C3075D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43FB53F9-CA0A-48E8-AAC8-360182CF1E7E}

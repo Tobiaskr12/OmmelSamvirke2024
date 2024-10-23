@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace DataAccess.Common;
+namespace DataAccess.Base;
 
 [UsedImplicitly]
 public class OmmelSamvirkeDesignTimeDbContextFactory : IDesignTimeDbContextFactory<OmmelSamvirkeDbContext>

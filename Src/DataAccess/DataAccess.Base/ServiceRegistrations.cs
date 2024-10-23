@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataAccess.Common;
+namespace DataAccess.Base;
 
 public static class ServiceRegistrations
 {

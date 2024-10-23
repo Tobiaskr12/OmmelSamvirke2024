@@ -4,7 +4,7 @@ using Emails.Services;
 using Logging;
 using Microsoft.AspNetCore.Localization;
 using OmmelSamvirke2024.Api.Middleware;
-using DataAccess.Common;
+using DataAccess.Base;
 using Emails.Domain;
 using OmmelSamvirke2024.ServiceDefaults;
 using SecretsManager;

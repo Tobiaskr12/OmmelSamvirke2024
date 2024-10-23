@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Src\DataAccess\DataAccess.Common\DataAccess.Common.csproj" />
+      <ProjectReference Include="..\..\..\Src\DataAccess\DataAccess.Base\DataAccess.Base.csproj" />
       <ProjectReference Include="..\..\TestDatabaseFixtures\TestDatabaseFixtures.csproj" />
     </ItemGroup>
 
