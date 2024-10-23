@@ -107,15 +107,12 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
     [Test]
     public async Task CalculateServiceLimitAfterSendingEmails_NegativeEmailsToSend_ReturnsFailure()
     {
-        // Arrange
-        double currentUsage = 0.50;
+        const double currentUsage = 0.50;
         await InsertEmailsInDatabase(currentUsage, ServiceLimitInterval.PerMinute);
-        int emailsToSend = -100; // Invalid input
-
-        // Act
+        const int emailsToSend = -100;
+        
         Result<double> usageResult = await _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, emailsToSend);
-
-        // Assert
+        
         Assert.Multiple(() =>
         {
             Assert.That(usageResult.IsSuccess, Is.False, "Result should fail for negative emails to send.");
