@@ -1,5 +1,5 @@
 using System.Text.Json;
-using MediatrConfig.Exceptions;
+using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
 
 namespace OmmelSamvirke2024.Api.Middleware;
 

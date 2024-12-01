@@ -7,15 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Src\DataAccess\DataAccess.Base\DataAccess.Base.csproj" />
-      <ProjectReference Include="..\..\Src\DomainModules\Domain.Common\Domain.Common.csproj" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.10" />
+      <PackageReference Include="NUnit" Version="4.2.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-      <PackageReference Include="NUnit" Version="4.2.2" />
+      <ProjectReference Include="..\..\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

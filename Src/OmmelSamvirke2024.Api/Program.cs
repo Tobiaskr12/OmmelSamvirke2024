@@ -1,13 +1,15 @@
 using System.Globalization;
 using System.Reflection;
-using Emails.Services;
-using Logging;
 using Microsoft.AspNetCore.Localization;
+using OmmelSamvirke.DataAccess;
+using OmmelSamvirke.DataAccess.Base;
+using OmmelSamvirke.DomainModules;
+using OmmelSamvirke.Infrastructure;
+using OmmelSamvirke.ServiceModules;
+using OmmelSamvirke.SupportModules.Logging;
+using OmmelSamvirke.SupportModules.SecretsManager;
 using OmmelSamvirke2024.Api.Middleware;
-using DataAccess.Base;
-using Emails.Domain;
 using OmmelSamvirke2024.ServiceDefaults;
-using SecretsManager;
 using Swashbuckle.AspNetCore.Filters;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -64,10 +66,11 @@ builder.Logging.ClearProviders();
 builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
 
 // Register services
-await builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddSingleton(appLogger)
-   .InitializeEmailServicesModule()
-   .InitializeEmailDomainModule();
+       .InitializeDataAccessModule(builder.Configuration).Result
+       .InitializeInfrastructureModule()
+       .InitializeEmailDomainModule()
+       .InitializeEmailServicesModule();
 
 WebApplication app = builder.Build();
 

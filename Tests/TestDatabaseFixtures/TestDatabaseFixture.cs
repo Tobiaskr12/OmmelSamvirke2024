@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using DataAccess.Base;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
+using OmmelSamvirke.DataAccess.Base;
 
 namespace TestDatabaseFixtures;
 
@@ -42,7 +42,7 @@ public abstract class TestDatabaseFixture
     private bool IsContextDisposed()
     {
         var result = true;            
-        Type typeDbContext = typeof(DbContext);
+        Type typeDbContext = typeof(OmmelSamvirkeDbContext);
         FieldInfo? isDisposedTypeField = typeDbContext.GetField("_disposed", BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (isDisposedTypeField != null)

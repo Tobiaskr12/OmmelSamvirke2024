@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
+        <PackageReference Include="NSubstitute" Version="5.3.0" />
+        <PackageReference Include="NUnit" Version="4.0.1"/>
+        <PackageReference Include="NUnit.Analyzers" Version="4.0.1"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj" />
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj" />
+      <ProjectReference Include="..\..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj" />
+    </ItemGroup>
+
+</Project>

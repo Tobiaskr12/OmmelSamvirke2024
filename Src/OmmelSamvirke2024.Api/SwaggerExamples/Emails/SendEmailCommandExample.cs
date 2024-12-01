@@ -1,6 +1,6 @@
-using Emails.Domain.Entities;
-using Emails.Services.Features.Sending.Commands;
 using JetBrains.Annotations;
+using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.ServiceModules.Emails.Features.Sending.Commands;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace OmmelSamvirke2024.Api.SwaggerExamples.Emails;

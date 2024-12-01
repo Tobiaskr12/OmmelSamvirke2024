@@ -11,11 +11,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Src\OmmelSamvirke2024.Api\OmmelSamvirke2024.Api.csproj" />
-        <ProjectReference Include="..\Src\Presentation\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj"/>
+        <ProjectReference Include="..\Src\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.0-preview.5.24201.12"/>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.1"/>
     </ItemGroup>
 
 </Project>
