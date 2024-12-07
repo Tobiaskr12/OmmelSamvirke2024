@@ -11,12 +11,12 @@ namespace OmmelSamvirke.Infrastructure.Emails;
 
 public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
 {
-    private readonly ILogger<AzureEmailServiceWrapper> _logger;
+    private readonly ILogger _logger;
     private readonly EmailClient _emailClient;
 
-    public AzureEmailServiceWrapper(IConfiguration configuration, ILogger<AzureEmailServiceWrapper> logger)
+    public AzureEmailServiceWrapper(IConfiguration configuration, ILogger logger)
     {
-        string? connectionString = configuration.GetConnectionString("AcsConnectionString");
+        string? connectionString = configuration.GetSection("AcsConnectionString").Value;
         if (string.IsNullOrEmpty(connectionString))
             throw new Exception("No connection string found for Azure Communication Services");
         

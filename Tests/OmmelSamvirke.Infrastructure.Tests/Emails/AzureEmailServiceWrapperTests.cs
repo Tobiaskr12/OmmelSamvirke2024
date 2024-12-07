@@ -24,16 +24,16 @@ public class AzureEmailServiceWrapperTests
     [SetUp]
     public void SetUp()
     {
-        _configurationMock = new Mock<IConfiguration>();
         _loggerMock = new Mock<ILogger<AzureEmailServiceWrapper>>();
         _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
-
-        // Mock the ConnectionStrings section
-        var connectionStringsSectionMock = new Mock<IConfigurationSection>();
-        connectionStringsSectionMock.Setup(a => a["AcsConnectionString"]).Returns(ValidConnectionString);
-
-        _configurationMock.Setup(c => c.GetSection("ConnectionStrings"))
-                          .Returns(connectionStringsSectionMock.Object);
+        
+        var acsConnectionStringSectionMock = new Mock<IConfigurationSection>();
+        acsConnectionStringSectionMock.Setup(s => s.Value).Returns(ValidConnectionString);
+        
+        _configurationMock = new Mock<IConfiguration>();
+        _configurationMock
+            .Setup(c => c.GetSection("AcsConnectionString"))
+            .Returns(acsConnectionStringSectionMock.Object);
     }
 
     [Test]

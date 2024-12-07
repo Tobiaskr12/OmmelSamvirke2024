@@ -8,7 +8,7 @@ namespace OmmelSamvirke.DataAccess;
 
 public static class ModuleSetup
 {
-    public static async Task<IServiceCollection> InitializeDataAccessModule(this IServiceCollection serviceCollection, IConfigurationManager configurationManager)
+    public static async Task<IServiceCollection> InitializeDataAccessModule(this IServiceCollection serviceCollection, IConfigurationRoot configurationManager)
     {
         await DbContextSetup.Setup(serviceCollection, configurationManager);
         

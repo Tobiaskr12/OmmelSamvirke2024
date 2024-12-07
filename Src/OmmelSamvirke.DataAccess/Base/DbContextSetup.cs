@@ -6,7 +6,7 @@ namespace OmmelSamvirke.DataAccess.Base;
 
 public static class DbContextSetup
 {
-    public static async Task Setup(IServiceCollection services, IConfigurationManager configurationManager)
+    public static async Task Setup(IServiceCollection services, IConfigurationRoot configurationManager)
     {
         string? connectionString = configurationManager.GetSection("SqlServerConnectionString").Value;
         
