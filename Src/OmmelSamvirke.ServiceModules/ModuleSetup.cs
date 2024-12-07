@@ -1,12 +1,12 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.SupportModules.MediatRConfig;
+using OmmelSamvirke.SupportModules.MediatorConfig;
 
 namespace OmmelSamvirke.ServiceModules;
 
 public static class ModuleSetup
 {
-    public static IServiceCollection InitializeEmailServicesModule(this IServiceCollection serviceCollection)
+    public static IServiceCollection InitializeServicesModule(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorMessages");
         serviceCollection.AddValidatorsFromAssembly(typeof(ModuleSetup).Assembly);

@@ -24,6 +24,10 @@ public class SendEmailCommandValidator : AbstractValidator<SendEmailCommand>
     }
 }
 
+/// <summary>
+/// This commands sends an <see cref="Email"/>.
+/// The email is only sent if sending the email doesn't exceed the service limits.
+/// </summary>
 public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<EmailSendingStatus>>
 {
     private readonly ILogger<SendEmailCommandHandler> _logger;

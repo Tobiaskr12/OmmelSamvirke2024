@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.AspNetCore.Localization;
 using OmmelSamvirke.DataAccess;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules;
 using OmmelSamvirke.Infrastructure;
 using OmmelSamvirke.ServiceModules;
@@ -69,8 +68,8 @@ builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
 builder.Services.AddSingleton(appLogger)
        .InitializeDataAccessModule(builder.Configuration).Result
        .InitializeInfrastructureModule()
-       .InitializeEmailDomainModule()
-       .InitializeEmailServicesModule();
+       .InitializeDomainModule()
+       .InitializeServicesModule();
 
 WebApplication app = builder.Build();
 

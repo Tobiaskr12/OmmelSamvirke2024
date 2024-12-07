@@ -60,6 +60,15 @@ namespace OmmelSamvirke.DataAccess.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email attachments must be unique.
+        /// </summary>
+        public static string Email_Attachments_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Email_Attachments_MustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of emails to send can not be negative.
         /// </summary>
         public static string NumberOfEmailsToSend_Negative {

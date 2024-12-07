@@ -2,7 +2,7 @@ using FluentResults;
 using MediatR;
 using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
 
-namespace OmmelSamvirke.SupportModules.MediatRConfig.PipelineBehaviors;
+namespace OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
 public class ResultExceptionThrowingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

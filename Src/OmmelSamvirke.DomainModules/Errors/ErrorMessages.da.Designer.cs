@@ -114,6 +114,15 @@ namespace OmmelSamvirke.DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Emailens vedhæftede filer skal være unikke.
+        /// </summary>
+        public static string Email_Attachments_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Email_Attachments_MustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Indholdet skal være mindst 20 tegn langt og det må ikke fylde mere end 7MB.
         /// </summary>
         public static string Email_Body_InvalidLength {
@@ -137,6 +146,15 @@ namespace OmmelSamvirke.DomainModules.Errors {
         public static string Email_Recipient_InvalidSize {
             get {
                 return ResourceManager.GetString("Email_Recipient_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Emailens modtagere skal være unikke.
+        /// </summary>
+        public static string Email_Recipients_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Email_Recipients_MustBeUnique", resourceCulture);
             }
         }
         

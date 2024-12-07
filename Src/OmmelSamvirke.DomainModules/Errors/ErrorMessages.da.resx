@@ -57,4 +57,10 @@
     <data name="Recipient_EmailAddress_MustBeValid" xml:space="preserve">
         <value>Der er mindst én modtager-emailadresse som ikke er gyldig</value>
     </data>
+    <data name="Email_Recipients_MustBeUnique" xml:space="preserve">
+        <value>Emailens modtagere skal være unikke</value>
+    </data>
+    <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
+        <value>Emailens vedhæftede filer skal være unikke</value>
+    </data>
 </root>

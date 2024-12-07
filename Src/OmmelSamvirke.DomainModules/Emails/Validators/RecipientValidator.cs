@@ -31,12 +31,8 @@ public class RecipientValidator : AbstractValidator<Recipient>
             string localPart = emailAddress[..index];
             string domainPart = emailAddress[(index + 1)..];
 
-            // Check for consecutive dots in local part
-            if (localPart.Contains(".."))
-                return false;
-
-            // Check for consecutive dots in domain part
-            return !domainPart.Contains("..");
+            // Check for consecutive dots in local and domain parts
+            return !localPart.Contains("..") && !domainPart.Contains("..");
         }
         catch (FormatException)
         {

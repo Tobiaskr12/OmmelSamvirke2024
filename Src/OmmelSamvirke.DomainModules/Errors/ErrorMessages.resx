@@ -57,4 +57,10 @@
     <data name="Recipient_EmailAddress_MustBeValid" xml:space="preserve">
         <value>At least one recipient email address is invalid</value>
     </data>
+    <data name="Email_Recipients_MustBeUnique" xml:space="preserve">
+        <value>The email recipients must be unique</value>
+    </data>
+    <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
+        <value>The email attachments must be unique</value>
+    </data>
 </root>

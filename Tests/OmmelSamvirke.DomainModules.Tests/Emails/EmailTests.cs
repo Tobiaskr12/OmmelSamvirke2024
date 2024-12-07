@@ -234,18 +234,76 @@ public class EmailTests
         });
     }
 
+    [Test]
+    public void Email_HasDuplicateRecipients_FailsValidationWithExpectedErrorMessage()
+    {
+        var duplicatedEmailAddress = "testemail@example.com";
+        List<Recipient> recipients = CreateRecipients(3);
+        recipients[0].EmailAddress = duplicatedEmailAddress;
+        recipients[1].EmailAddress = duplicatedEmailAddress;
+        
+        Email email = _baseValidEmail;
+        email.Recipients = recipients;
+        
+        ValidationResult validationResult = _validator.Validate(email);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(validationResult.IsValid, Is.False);
+            Assert.That(validationResult.Errors.Any(x =>
+                x.ErrorMessage.Equals(ErrorMessages.Email_Recipients_MustBeUnique)
+            ));
+        });
+    }
+    
+    [Test]
+    public void Email_HasDuplicateAttachments_FailsValidationWithExpectedErrorMessage()
+    {
+        var duplicatedAttachmentNames = "testemailattachment";
+        List<Attachment> attachments = CreateAttachments(3, 2_000);
+        attachments[0].Name = duplicatedAttachmentNames;
+        attachments[1].Name = duplicatedAttachmentNames;
+        
+        Email email = _baseValidEmail;
+        email.Attachments = attachments;
+        
+        ValidationResult validationResult = _validator.Validate(email);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(validationResult.IsValid, Is.False);
+            Assert.That(validationResult.Errors.Any(x =>
+                x.ErrorMessage.Equals(ErrorMessages.Email_Attachments_MustBeUnique)
+            ));
+        });
+    }
+
     private List<Recipient> CreateRecipients(int count)
     {
         _baseValidEmail.Recipients.Clear();
-        return Enumerable.Repeat(new Recipient
+        var recipients = new List<Recipient>();
+        
+        for (var i = 0; i < count; i++)
         {
-            EmailAddress = "test@example.com"
-        }, count).ToList();
+            recipients.Add(new Recipient()
+            {
+                EmailAddress = $"test{i}@example.com",
+            });
+        }
+        
+        return recipients;
     }
 
-    private static List<Attachment> CreateAttachments(int count, int size)
+    private static List<Attachment> CreateAttachments(int count, int sizeInBytes)
     {
-        return Enumerable.Repeat(CreateAttachmentOfSize(size), count).ToList();
+        var attachments = new List<Attachment>();
+        
+        for (var i = 0; i < count; i++)
+        {
+            attachments.Add(CreateAttachmentOfSize(sizeInBytes));
+        }
+
+        return attachments;
     } 
     
     private static Attachment CreateAttachmentOfSize(int sizeInBytes)

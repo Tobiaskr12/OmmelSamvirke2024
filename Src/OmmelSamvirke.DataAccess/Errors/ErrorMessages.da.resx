@@ -24,4 +24,7 @@
     <data name="NumberOfEmailsToSend_Negative" xml:space="preserve">
         <value>Det er ikke muligt at sende et negativt antal emails</value>
     </data>
+    <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
+        <value>Emailens vedhæftede filer skal være unikke</value>
+    </data>
 </root>

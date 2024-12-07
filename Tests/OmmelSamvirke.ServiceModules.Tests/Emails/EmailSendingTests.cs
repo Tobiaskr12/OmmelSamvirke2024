@@ -21,7 +21,7 @@ public class EmailSendingTests
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
     private SendEmailCommandHandler _handler;
-
+    
     [SetUp]
     public void Setup()
     {
@@ -36,8 +36,6 @@ public class EmailSendingTests
             _emailSendingRepository,
             _externalEmailServiceWrapper);
     }
-
-    // TODO - Add test for validator
     
     [Test]
     public async Task SendEmailCommand_ValidInput_ReturnsSuccess()

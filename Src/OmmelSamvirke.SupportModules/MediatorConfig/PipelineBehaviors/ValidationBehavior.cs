@@ -2,7 +2,7 @@
 using FluentValidation.Results;
 using MediatR;
 
-namespace OmmelSamvirke.SupportModules.MediatRConfig.PipelineBehaviors;
+namespace OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {

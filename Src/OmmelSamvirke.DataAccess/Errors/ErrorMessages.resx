@@ -24,4 +24,7 @@
     <data name="NumberOfEmailsToSend_Negative" xml:space="preserve">
         <value>The number of emails to send can not be negative</value>
     </data>
+    <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
+        <value>The email attachments must be unique</value>
+    </data>
 </root>

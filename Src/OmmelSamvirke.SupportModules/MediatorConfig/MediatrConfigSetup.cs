@@ -1,8 +1,8 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.SupportModules.MediatRConfig.PipelineBehaviors;
+using OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
-namespace OmmelSamvirke.SupportModules.MediatRConfig;
+namespace OmmelSamvirke.SupportModules.MediatorConfig;
 
 public static class MediatrConfigSetup
 {

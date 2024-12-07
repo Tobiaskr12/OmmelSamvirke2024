@@ -33,20 +33,34 @@ public class EmailValidator : AbstractValidator<Email>
             .NotNull()
             .WithMessage(ErrorMessages.Email_Recipient_InvalidSize)
             .Must(x => x.Count is >= 1 and <= 50)
-            .WithMessage(ErrorMessages.Email_Recipient_InvalidSize);
+            .WithMessage(ErrorMessages.Email_Recipient_InvalidSize)
+            .Must(MustBeUnique)
+            .WithMessage(ErrorMessages.Email_Recipients_MustBeUnique);
         
         RuleFor(x => x.Attachments)
             .NotNull()
             .WithMessage(ErrorMessages.Email_Attachments_InvalidSize)
             .Must(x => x.Count <= 10)
-            .WithMessage(ErrorMessages.Email_Attachments_InvalidSize);
+            .WithMessage(ErrorMessages.Email_Attachments_InvalidSize)
+            .Must(MustBeUnique)
+            .WithMessage(ErrorMessages.Email_Attachments_MustBeUnique);
 
         RuleFor(x => x)
             .Must(HaveValidContentSize)
             .WithMessage(ErrorMessages.Email_ContentSize_TooLarge);
-
+        
         RuleForEach(x => x.Recipients).SetValidator(recipientValidator);
         RuleForEach(x => x.Attachments).SetValidator(attachmentValidator);
+    }
+
+    private static bool MustBeUnique(List<Recipient> recipients)
+    {
+        return !recipients.GroupBy(x => x.EmailAddress).Any(x => x.Count() > 1);
+    }
+    
+    private static bool MustBeUnique(List<Attachment> attachments)
+    {
+        return !attachments.GroupBy(x => x.Name).Any(x => x.Count() > 1);
     }
 
     private static bool SenderEmailAddressMustBeInValidSenderEmailAddresses(string emailAddress)

@@ -114,6 +114,15 @@ namespace OmmelSamvirke.DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email attachments must be unique.
+        /// </summary>
+        public static string Email_Attachments_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Email_Attachments_MustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The body content must be at least 20 characters long and the content size must be less than 7MB.
         /// </summary>
         public static string Email_Body_InvalidLength {
@@ -137,6 +146,15 @@ namespace OmmelSamvirke.DomainModules.Errors {
         public static string Email_Recipient_InvalidSize {
             get {
                 return ResourceManager.GetString("Email_Recipient_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email recipients must be unique.
+        /// </summary>
+        public static string Email_Recipients_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Email_Recipients_MustBeUnique", resourceCulture);
             }
         }
         

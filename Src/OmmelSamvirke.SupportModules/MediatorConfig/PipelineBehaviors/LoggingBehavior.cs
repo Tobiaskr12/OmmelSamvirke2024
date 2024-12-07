@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace OmmelSamvirke.SupportModules.MediatRConfig.PipelineBehaviors;
+namespace OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
 public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
@@ -18,22 +18,22 @@ public sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
         DateTime startTime = DateTime.UtcNow;
         var requestId = startTime.ToString("mm-ss.fffff");
 
-        _logger.LogInformation($"({requestId}) Started handling \"{typeof(TRequest).Name}\"."); 
+        _logger.LogInformation("({requestId}) Started handling \"{requestName}\".", requestId, typeof(TRequest).Name); 
         
         var stopwatch = Stopwatch.StartNew();
 
         try
         {
-            var response = await next();
+            TResponse response = await next();
             stopwatch.Stop();
 
-            _logger.LogInformation($"({requestId}) Finished handling \"{typeof(TResponse).Name}\". Request took {stopwatch.Elapsed.TotalMilliseconds}ms");
+            _logger.LogInformation("({requestId}) Finished handling \"{requestName}\". Request took {executionTime}ms", requestId, typeof(TRequest).Name, stopwatch.Elapsed.TotalMilliseconds);
             return response;
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
-            _logger.LogError(ex, $"({requestId}) Error handling \"{typeof(TRequest).Name}\". Request failed after {stopwatch.Elapsed.TotalMilliseconds}ms");
+            _logger.LogError(ex, "(requestId{}) Error handling \"{requestName}\". Request failed after {executionTime}ms", requestId, typeof(TRequest).Name, stopwatch.Elapsed.TotalMilliseconds);
 
             throw;
         }
