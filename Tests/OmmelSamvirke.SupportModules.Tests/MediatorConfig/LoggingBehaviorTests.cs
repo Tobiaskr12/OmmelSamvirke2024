@@ -5,7 +5,7 @@ using OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 
-[TestFixture, Category("UnitTest")]
+[TestFixture, Category("UnitTests")]
 public class LoggingBehaviorTests
 {
     private ILogger _loggerMock;

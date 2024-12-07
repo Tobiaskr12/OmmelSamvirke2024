@@ -8,7 +8,7 @@ using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 
-[TestFixture, Category("IntegrationTest")]
+[TestFixture, Category("IntegrationTests")]
 public class MediatorPipelineIntegrationTests
 {
     private IMediator _mediator;

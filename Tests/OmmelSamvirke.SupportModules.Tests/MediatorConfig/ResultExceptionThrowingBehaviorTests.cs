@@ -5,7 +5,7 @@ using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 
-[TestFixture, Category("UnitTest")]
+[TestFixture, Category("UnitTests")]
 public class ResultExceptionThrowingBehaviorTests
 {
     private ResultExceptionThrowingBehavior<TestRequest, TestResponse> _behavior;

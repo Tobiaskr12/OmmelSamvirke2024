@@ -6,7 +6,7 @@ using OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 
-[TestFixture, Category("UnitTest")]
+[TestFixture, Category("UnitTests")]
 public class ValidationBehaviorTests
 {
     private ValidationBehavior<TestRequest, TestResponse> _behavior;
