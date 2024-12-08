@@ -11,7 +11,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Errors;
 
-namespace OmmelSamvirke.ServiceModules.Emails.Features.Sending.Commands;
+namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 public record SendEmailCommand(Email Email) : IRequest<Result<EmailSendingStatus>>;
 
@@ -60,7 +60,6 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
             if (addResult.IsFailed)
             {
                 Result failedResult = Result.Fail(addResult.Errors);
-                failedResult.Errors.AddRange(addResult.Errors);
                 return failedResult;
             }
 

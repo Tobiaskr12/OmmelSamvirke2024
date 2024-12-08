@@ -3,7 +3,7 @@ using MediatR;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 
-namespace OmmelSamvirke.ServiceModules.Emails.Features.Sending.Commands;
+namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 public record SendEmailToContactListCommand
 (

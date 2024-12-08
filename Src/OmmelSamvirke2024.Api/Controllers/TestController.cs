@@ -2,7 +2,7 @@ using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OmmelSamvirke.DTOs.Emails;
-using OmmelSamvirke.ServiceModules.Emails.Features.Sending.Commands;
+using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke2024.Api.Controllers;
 

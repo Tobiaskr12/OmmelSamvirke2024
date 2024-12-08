@@ -2,7 +2,7 @@ using FluentResults;
 using MediatR;
 using OmmelSamvirke.DTOs.Emails;
 
-namespace OmmelSamvirke.ServiceModules.Emails.Features.Analytics.Queries;
+namespace OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 
 public class EmailSendingStatusQuery : IRequest<Result<EmailSendingStatus>>
 {

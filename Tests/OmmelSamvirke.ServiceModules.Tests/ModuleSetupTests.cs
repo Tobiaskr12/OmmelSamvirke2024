@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.ServiceModules.Emails.Features.Sending.Commands;
+using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
 
