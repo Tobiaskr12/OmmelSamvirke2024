@@ -1,13 +1,8 @@
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.ServiceModules;
-using OmmelSamvirke.SupportModules.Logging;
 using OmmelSamvirke.SupportModules.MediatorConfig;
-using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 

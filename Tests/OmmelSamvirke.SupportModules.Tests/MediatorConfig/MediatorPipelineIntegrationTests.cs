@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
+using OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 

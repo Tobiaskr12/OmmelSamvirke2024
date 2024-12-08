@@ -61,29 +61,6 @@ public class AzureEmailServiceWrapperTests
     }
 
     [Test]
-    public async Task SendAsync_ReturnedSendOperationHasNoValue_ReturnsFail()
-    {
-        Email email = CreateValidEmail();
-
-        // Mock EmailClient.SendAsync to return an operation with HasValue = false
-        _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
-        var emailSendOperationMock = new Mock<EmailSendOperation>();
-        emailSendOperationMock.SetupGet(op => op.HasValue).Returns(false);
-
-        _emailClientMock.Setup(client => client.SendAsync(
-            It.IsAny<WaitUntil>(),
-            It.IsAny<EmailMessage>(),
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(emailSendOperationMock.Object);
-        
-        var serviceWrapper = new AzureEmailServiceWrapper(_configurationMock.Object, _loggerMock.Object);
-        InjectEmailClient(serviceWrapper, _emailClientMock.Object);
-        Result<EmailSendingStatus> result = await serviceWrapper.SendAsync(email);
-        
-        Assert.That(result.IsFailed);
-    }
-
-    [Test]
     public async Task ConvertEmailToAzureEmailMessage_InvalidAttachment_ReturnsFail()
     {
         Email email = CreateValidEmail();

@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using Microsoft.EntityFrameworkCore;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 

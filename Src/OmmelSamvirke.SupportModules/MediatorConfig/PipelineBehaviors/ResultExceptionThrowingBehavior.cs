@@ -1,6 +1,6 @@
 using FluentResults;
 using MediatR;
-using OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
+using OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 namespace OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
 

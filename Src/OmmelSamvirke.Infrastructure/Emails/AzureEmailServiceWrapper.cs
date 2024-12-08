@@ -29,15 +29,9 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         try
         {
             EmailMessage emailMessage = ConvertEmailToAzureEmailMessage(email);
-            EmailSendOperation sendOperation = await _emailClient.SendAsync(WaitUntil.Started, emailMessage, cancellationToken);
+            await _emailClient.SendAsync(WaitUntil.Started, emailMessage, cancellationToken);
 
-            if (!sendOperation.HasValue) throw new Exception("The send operation did not produce a value");
-
-            var sendingStatus = new EmailSendingStatus(
-                email,
-                ConvertAzureStatusToSendingStatus(sendOperation.Value.Status),
-                []
-            );
+            var sendingStatus = new EmailSendingStatus(email, SendingStatus.NotStarted, []);
             return Result.Ok(sendingStatus);
         }
         catch (Exception ex)
@@ -45,6 +39,19 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
             _logger.LogError("Could not send email via Azure: {message}", ex.Message);
             return Result.Fail(ErrorMessages.AzureEmailSendingFailed);
         }
+    }
+    
+    public static SendingStatus ConvertAzureStatusToSendingStatus(EmailSendStatus status)
+    {
+        return status.ToString() switch
+        {
+            "NotStarted" => SendingStatus.NotStarted,
+            "Running" => SendingStatus.Running,
+            "Succeeded" => SendingStatus.Succeeded,
+            "Failed" => SendingStatus.Failed,
+            "Canceled" => SendingStatus.Canceled,
+            _ => SendingStatus.Unknown
+        };
     }
     
     private static EmailMessage ConvertEmailToAzureEmailMessage(Email email)
@@ -62,7 +69,7 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
 
         List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
             attachment.Name,
-            attachment.ContentType.Name,
+            attachment.ContentType.MediaType,
             BinaryData.FromBytes(attachment.BinaryContent ?? throw new InvalidOperationException("Email attachment cannot be empty"))
         )).ToList();
 
@@ -72,18 +79,5 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         }
 
         return emailMessage;
-    }
-
-    private static SendingStatus ConvertAzureStatusToSendingStatus(EmailSendStatus status)
-    {
-        return status.ToString() switch
-        {
-            "NotStarted" => SendingStatus.NotStarted,
-            "Running" => SendingStatus.Running,
-            "Succeeded" => SendingStatus.Succeeded,
-            "Failed" => SendingStatus.Failed,
-            "Canceled" => SendingStatus.Canceled,
-            _ => SendingStatus.Unknown
-        };
     }
 }

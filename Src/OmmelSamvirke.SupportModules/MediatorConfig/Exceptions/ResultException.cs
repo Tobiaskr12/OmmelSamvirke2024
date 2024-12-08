@@ -1,6 +1,6 @@
 using FluentResults;
 
-namespace OmmelSamvirke.SupportModules.MediatRConfig.Exceptions;
+namespace OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 public class ResultException : Exception
 {

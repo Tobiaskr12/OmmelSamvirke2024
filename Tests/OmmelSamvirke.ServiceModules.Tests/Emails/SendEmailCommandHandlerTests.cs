@@ -14,7 +14,7 @@ using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 namespace OmmelSamvirke.ServiceModules.Tests.Emails;
 
 [TestFixture, Category("UnitTests")]
-public class EmailSendingTests
+public class SendEmailCommandHandlerTests
 {
     private ILogger<SendEmailCommandHandler> _logger;
     private IRepository<Email> _genericEmailRepository;
