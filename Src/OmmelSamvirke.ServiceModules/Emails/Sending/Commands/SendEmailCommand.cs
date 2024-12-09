@@ -9,6 +9,7 @@ using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
@@ -76,6 +77,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
 
     private async Task<Result> ValidateRequestIsWithinServiceLimits(SendEmailCommand request, CancellationToken cancellationToken)
     {
+        // Calculate the effect of sending the email against the service limits
         Result<double> minuteLimitResult = await _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(
             ServiceLimitInterval.PerMinute,
             numberOfEmailsToSend: 1,
@@ -85,6 +87,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
             numberOfEmailsToSend: 1,
             cancellationToken);
 
+        // If the usage can't be calculated, log the error and return failure
         if (minuteLimitResult.IsFailed || hourlyLimitResult.IsFailed)
         {
             _logger.LogError(
@@ -95,10 +98,28 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
                 return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
             }
         }
+        
+        // Log and send high service limit usage warning to developer if service limit usage exceed threshold
+        const double warningThreshold = 80.0;
+        await ServiceLimitAlerter.AlertIfServiceUsageIsAboveThreshold(
+            ServiceLimitInterval.PerHour,
+            _externalEmailServiceWrapper,
+            warningThreshold,
+            hourlyLimitResult.Value,
+            _logger,
+            cancellationToken);
+        await ServiceLimitAlerter.AlertIfServiceUsageIsAboveThreshold(
+            ServiceLimitInterval.PerMinute,
+            _externalEmailServiceWrapper,
+            warningThreshold,
+            minuteLimitResult.Value,
+            _logger,
+            cancellationToken);
 
-        // Early return
+        // Return if both values are below 100%
         if (minuteLimitResult.Value < 100.00 && hourlyLimitResult.Value < 100.00) return Result.Ok();
         
+        // Else, Log error and return failure 
         _logger.LogError(
             "Tried sending an email, but doing so would exceed at least one service limit." +
             "\nEmail: {email}" +

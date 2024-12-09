@@ -81,9 +81,13 @@ public class SendEmailCommandHandlerTests
         Assert.That(result.IsFailed);
     }
 
-    // TODO - Split test in 2 - One for minute limit and one for hourly
-    [Test]
-    public async Task SendEmailCommand_SendingEmailExceedsServiceLimits_ReturnsFail()
+    // Test for Hourly Interval
+    [TestCase(0.0)]
+    [TestCase(79.99)]
+    [TestCase(80.0)]
+    [TestCase(80.1)]
+    [TestCase(100.0)]
+    public async Task SendEmailCommand_ServiceLimitIs80PercentUsed_PerHour_SendEmailToDev(double percentageUsed)
     {
         var email = new Email
         {
@@ -95,10 +99,116 @@ public class SendEmailCommandHandlerTests
         };
         var command = new SendEmailCommand(email);
         _genericEmailRepository.AddAsync(email).Returns(email);
+
+        // Simulate service limit for PerHour interval
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(percentageUsed);
+        // Ensure PerMinute is not affecting this test
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(0.0);
         
-        // Simulate service limits exceeded
+        await _handler.Handle(command, CancellationToken.None);
+        
+        if (percentageUsed >= 80.0)
+        {
+            await _externalEmailServiceWrapper.Received(1).SendAsync(
+                Arg.Is<Email>(e =>
+                    e.Recipients.Count == 1 &&
+                    e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
+        }
+        else
+        {
+            await _externalEmailServiceWrapper.DidNotReceive().SendAsync(
+                Arg.Is<Email>(e =>
+                    e.Recipients.Count == 1 &&
+                    e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
+        }
+    }
+
+    // Test for Minute Interval
+    [TestCase(0.0)]
+    [TestCase(79.99)]
+    [TestCase(80.0)]
+    [TestCase(80.1)]
+    [TestCase(100.0)]
+    public async Task SendEmailCommand_ServiceLimitIs80PercentUsed_PerMinute_SendEmailToDev(double percentageUsed)
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
+
+        // Simulate service limit for PerMinute interval
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(percentageUsed);
+        // Ensure PerHour is not affecting this test
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(0.0);
+        
+        await _handler.Handle(command, CancellationToken.None);
+        
+        if (percentageUsed >= 80.0)
+        {
+            await _externalEmailServiceWrapper.Received(1).SendAsync(
+                Arg.Is<Email>(e =>
+                    e.Recipients.Count == 1 &&
+                    e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
+        }
+        else
+        {
+            await _externalEmailServiceWrapper.DidNotReceive().SendAsync(
+                Arg.Is<Email>(e =>
+                    e.Recipients.Count == 1 &&
+                    e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
+        }
+    }
+    
+    // Test for Exceeding PerHour Service Limits
+    [Test]
+    public async Task SendEmailCommand_SendingEmailExceedsHourlyServiceLimit_ReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
+
+        // Simulate service limit exceeded for PerHour
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(101);
+        // Ensure PerMinute does not affect this test
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(0);
+        
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+        
+        Assert.That(result.IsFailed);
+    }
+
+    // Test for Exceeding PerMinut Service Limits
+    [Test]
+    public async Task SendEmailCommand_SendingEmailExceedsMinuteServiceLimit_ReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
+
+        // Simulate service limit exceeded for PerMinute
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(101);
+        // Ensure PerHour does not affect this test
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(0);
         
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
         
