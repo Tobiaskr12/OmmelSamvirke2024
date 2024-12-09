@@ -27,7 +27,7 @@ public static class ServiceLimitAlerter
         if (currentUsage >= threshold)
         {
             var warningMessage =
-                $"The service limit for email sending is close to being reached for the '{nameof(interval)}'-interval. Current usage is {currentUsage:P}";
+                $"The service limit for email sending is close to being reached for the '{Enum.GetName(typeof(ServiceLimitInterval), interval)}'-interval. Current usage is {currentUsage:0.00}%";
             
             logger.LogWarning("{}", warningMessage);
             await externalEmailServiceWrapper.SendAsync(new Email
