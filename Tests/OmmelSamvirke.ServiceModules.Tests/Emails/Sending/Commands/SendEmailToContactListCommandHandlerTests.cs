@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -17,6 +18,7 @@ public class SendEmailToContactListCommandHandlerTests
 {
     private ILogger<SendEmailCommandHandler> _logger;
     private IRepository<Email> _genericEmailRepository;
+    private IRepository<Recipient> _genericRecipientRepository;
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
     private SendEmailToContactListCommandHandler _handler;
@@ -48,14 +50,23 @@ public class SendEmailToContactListCommandHandlerTests
     {
         _logger = Substitute.For<ILogger<SendEmailCommandHandler>>();
         _genericEmailRepository = Substitute.For<IRepository<Email>>();
+        _genericRecipientRepository = Substitute.For<IRepository<Recipient>>();
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
         _externalEmailServiceWrapper = Substitute.For<IExternalEmailServiceWrapper>();
 
         _handler = new SendEmailToContactListCommandHandler(
             _logger,
             _genericEmailRepository,
+            _genericRecipientRepository,
             _emailSendingRepository,
             _externalEmailServiceWrapper);
+        
+        _genericRecipientRepository
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>())
+            .Returns(new List<Recipient>());
     }
     
     [Test]

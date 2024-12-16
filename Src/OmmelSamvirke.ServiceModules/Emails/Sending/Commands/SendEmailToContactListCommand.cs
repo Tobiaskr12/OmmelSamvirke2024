@@ -9,7 +9,6 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.ServiceModules.Emails.Util;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
@@ -53,17 +52,20 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
 {
     private readonly ILogger<SendEmailCommandHandler> _logger;
     private readonly IRepository<Email> _genericEmailRepository;
+    private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
     private readonly IExternalEmailServiceWrapper _externalEmailServiceWrapper;
 
     public SendEmailToContactListCommandHandler(
         ILogger<SendEmailCommandHandler> logger,
         IRepository<Email> genericEmailRepository,
+        IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
         IExternalEmailServiceWrapper externalEmailServiceWrapper)
     {
         _logger = logger;
         _genericEmailRepository = genericEmailRepository;
+        _genericRecipientRepository = genericRecipientRepository;
         _emailSendingRepository = emailSendingRepository;
         _externalEmailServiceWrapper = externalEmailServiceWrapper;
     }
@@ -76,7 +78,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
             request.Email.Recipients.Clear();
             
             // Check if email can be sent or if service limits have been exhausted
-            Result isRequestWithinServiceLimits = await ServiceLimitValidator.ValidateRequestIsWithinServiceLimits(
+            Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
                 request.ContactList.Contacts.Count,
                 _emailSendingRepository,
                 _logger,
@@ -107,6 +109,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
             // Add email(s) to database
             foreach (Email email in emails)
             {
+                await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _genericRecipientRepository, cancellationToken);
                 Result<Email> addResult = await _genericEmailRepository.AddAsync(email, cancellationToken);
                 if (addResult.IsFailed)
                 {

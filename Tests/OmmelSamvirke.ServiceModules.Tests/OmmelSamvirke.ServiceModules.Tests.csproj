@@ -39,4 +39,13 @@
       <Folder Include="Emails\Sending\Queries\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Emails\Sending\Commands\E2E\TestDocuments\Test_PDF1.pdf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Emails\Sending\Commands\E2E\TestDocuments\Test_PDF2.pdf">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

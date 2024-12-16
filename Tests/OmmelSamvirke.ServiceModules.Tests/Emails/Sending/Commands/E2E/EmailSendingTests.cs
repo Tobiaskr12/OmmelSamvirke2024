@@ -17,7 +17,7 @@ public class EmailSendingTests : IntegrationTestingBase
 {
     private TestEmailClient _testClientOne = null!;
     private TestEmailClient _testClientTwo = null!;
-    private const string BaseTestDocumentsPath = "./Emails/E2E/TestDocuments/";
+    private const string BaseTestDocumentsPath = "./Emails/Sending/Commands/E2E/TestDocuments/";
     
     private static IEnumerable<string> SenderEmailAddressesSource =>
     [

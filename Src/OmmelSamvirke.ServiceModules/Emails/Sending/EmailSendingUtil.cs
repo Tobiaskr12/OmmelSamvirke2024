@@ -1,16 +1,18 @@
 using FluentResults;
 using Microsoft.Extensions.Logging;
+using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
+using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
 
-namespace OmmelSamvirke.ServiceModules.Emails.Util;
+namespace OmmelSamvirke.ServiceModules.Emails.Sending;
 
-internal static class ServiceLimitValidator
+public static class EmailSendingUtil
 {
-    internal static async Task<Result> ValidateRequestIsWithinServiceLimits(
+    public static async Task<Result> ValidateRequestIsWithinServiceLimits(
         int numberOfEmailsToSend,
         IEmailSendingRepository emailSendingRepository,
         ILogger logger,
@@ -70,5 +72,37 @@ internal static class ServiceLimitValidator
             hourlyLimitResult.Value.ToString("0.00") + "%");
 
         return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
+    }
+
+    /// <summary>
+    /// Find existing recipients in the database and replace the provided recipients with the found entities
+    /// to avoid saving duplicated recipients
+    /// </summary>
+    public static async Task<Result> FetchAndReplaceExistingRecipients(Email email, IRepository<Recipient> repository, CancellationToken cancellationToken)
+    {
+        List<string> recipientEmails = email.Recipients.Select(r => r.EmailAddress).ToList();
+        Result<List<Recipient>> existingRecipientsResult = await repository.FindAsync(
+            r => recipientEmails.Contains(r.EmailAddress),
+            cancellationToken: cancellationToken);
+            
+        if (existingRecipientsResult.IsFailed)
+        {
+            return Result.Fail(existingRecipientsResult.Errors);
+        }
+            
+        List<Recipient>? existingRecipients = existingRecipientsResult.Value;
+            
+        for (var i = 0; i < email.Recipients.Count; i++)
+        {
+            Recipient newRecipient = email.Recipients[i];
+            Recipient? existingRecipient = existingRecipients.FirstOrDefault(r => r.EmailAddress == newRecipient.EmailAddress);
+
+            if (existingRecipient is not null)
+            {
+                email.Recipients[i] = existingRecipient;
+            }
+        }
+        
+        return Result.Ok();
     }
 }
