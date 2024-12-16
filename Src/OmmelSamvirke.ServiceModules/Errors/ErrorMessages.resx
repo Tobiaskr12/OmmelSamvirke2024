@@ -24,4 +24,7 @@
     <data name="EmailSending_Exception" xml:space="preserve">
         <value>An error occurred while attempting to send the email. Error code: </value>
     </data>
+    <data name="EmailSendingToContactList_ContactListMustNotBeEmpty" xml:space="preserve">
+        <value>There are no contacts in the contact list</value>
+    </data>
 </root>

@@ -24,4 +24,7 @@
     <data name="EmailSending_Exception" xml:space="preserve">
         <value>Der opstod en fejl under afsendelse af emailen. Fejlkode: </value>
     </data>
+    <data name="EmailSendingToContactList_ContactListMustNotBeEmpty" xml:space="preserve">
+        <value>Der er ingen kontakter i kontaktlisten</value>
+    </data>
 </root>

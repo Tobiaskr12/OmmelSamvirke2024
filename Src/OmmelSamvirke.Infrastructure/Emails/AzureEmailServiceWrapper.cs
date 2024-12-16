@@ -24,11 +24,11 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         _logger = logger;
     }
     
-    public async Task<Result<EmailSendingStatus>> SendAsync(Email email, CancellationToken cancellationToken = default)
+    public async Task<Result<EmailSendingStatus>> SendAsync(Email email, bool useBcc = false, CancellationToken cancellationToken = default)
     {
         try
         {
-            EmailMessage emailMessage = ConvertEmailToAzureEmailMessage(email);
+            EmailMessage emailMessage = ConvertEmailToAzureEmailMessage(email, useBcc);
             await _emailClient.SendAsync(WaitUntil.Started, emailMessage, cancellationToken);
 
             var sendingStatus = new EmailSendingStatus(email, SendingStatus.NotStarted, []);
@@ -54,18 +54,36 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         };
     }
     
-    private static EmailMessage ConvertEmailToAzureEmailMessage(Email email)
+    private static EmailMessage ConvertEmailToAzureEmailMessage(Email email, bool useBcc)
     {
-        var emailMessage = new EmailMessage(
-            senderAddress: email.SenderEmailAddress,
-            recipients: new EmailRecipients(
-                to: email.Recipients.Select(recipient => new EmailAddress(recipient.EmailAddress))
-            ),
-            content: new EmailContent(subject: email.Subject)
-            {
-                Html = email.Body
-            }
-        );
+        EmailMessage emailMessage;
+        
+        if (useBcc)
+        {
+            emailMessage= new EmailMessage(
+                senderAddress: email.SenderEmailAddress,
+                recipients: new EmailRecipients(
+                    bcc: email.Recipients.Select(recipient => new EmailAddress(recipient.EmailAddress))
+                ),
+                content: new EmailContent(subject: email.Subject)
+                {
+                    Html = email.Body
+                }
+            );
+        } 
+        else
+        {
+            emailMessage = new EmailMessage(
+                senderAddress: email.SenderEmailAddress,
+                recipients: new EmailRecipients(
+                    to: email.Recipients.Select(recipient => new EmailAddress(recipient.EmailAddress))
+                ),
+                content: new EmailContent(subject: email.Subject)
+                {
+                    Html = email.Body
+                }
+            );
+        }
 
         List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
             attachment.Name,

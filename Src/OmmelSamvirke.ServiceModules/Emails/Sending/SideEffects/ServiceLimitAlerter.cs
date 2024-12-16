@@ -37,7 +37,7 @@ public static class ServiceLimitAlerter
                 Body = warningMessage,
                 Attachments = [],
                 Recipients = [new Recipient { EmailAddress = "tobiaskristensen12@gmail.com" }]
-            }, cancellationToken);
+            }, cancellationToken: cancellationToken);
         }
     }
 }

@@ -1,4 +1,5 @@
 using FluentResults;
+using FluentValidation;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
@@ -93,6 +94,87 @@ public class EmailSendingTests : IntegrationTestingBase
             }
         });
     }
+
+    [Test]
+    public void GivenContactListIsEmpty_WhenSendingToContactList_ValidationFails()
+    {
+        var messageGuid = Guid.NewGuid();
+        Assert.ThrowsAsync<ValidationException>(async () =>
+        {
+            await CreateAndSendEmailToContactList(
+                ValidSenderEmailAddresses.Admins,
+                "Test Email with Attachments",
+                messageGuid, new ContactList
+                {
+                    Name = "Test Name",
+                    Description = "Test Description",
+                    Contacts = []
+                }
+            );
+        });
+    }
+
+    [Test]
+    public async Task GivenEmailIsSentViaContactList_AllRecipientsReceiveTheEmail()
+    {
+        var messageGuid = Guid.NewGuid();
+        string[] attachmentPaths = [$"{BaseTestDocumentsPath}Test_PDF1.pdf", $"{BaseTestDocumentsPath}Test_PDF2.pdf"];
+        var contactList = new ContactList
+        {
+            Name = "Test Name",
+            Description = "Test Description",
+            Contacts =
+            [
+                new Recipient { EmailAddress = _testClientOne.EmailAddress },
+                new Recipient { EmailAddress = _testClientTwo.EmailAddress }
+            ]
+        };
+        
+         Email email = await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: false, attachmentPaths);
+
+         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_testClientOne, messageGuid);
+         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_testClientTwo, messageGuid);
+
+         
+         Assert.Multiple(() =>
+         {
+             AssertEmailReceived(testClientOneMessage, email);
+             AssertEmailReceived(testClientTwoMessage, email);
+             
+             Assert.That(testClientOneMessage?.To.Count, Is.EqualTo(2));
+             Assert.That(testClientTwoMessage?.To.Count, Is.EqualTo(2));
+         });
+    }
+    
+    [Test]
+    public async Task GivenEmailIsSentViaContactListUsingBcc_AllRecipientsReceiveTheEmailAsBccRecipients()
+    {
+        var messageGuid = Guid.NewGuid();
+        string[] attachmentPaths = [$"{BaseTestDocumentsPath}Test_PDF1.pdf", $"{BaseTestDocumentsPath}Test_PDF2.pdf"];
+        var contactList = new ContactList
+        {
+            Name = "Test Name",
+            Description = "Test Description",
+            Contacts =
+            [
+                new Recipient { EmailAddress = _testClientOne.EmailAddress },
+                new Recipient { EmailAddress = _testClientTwo.EmailAddress }
+            ]
+        };
+        
+        await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: true, attachmentPaths);
+
+        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_testClientOne, messageGuid);
+        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_testClientTwo, messageGuid);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(testClientOneMessage?.To.Count, Is.EqualTo(1));
+            Assert.That(testClientTwoMessage?.To.Count, Is.EqualTo(1));
+            Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
+            Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
+        });
+    }
     
     private async Task<Email> CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, string recipientEmail, Guid messageGuid)
     {
@@ -127,6 +209,22 @@ public class EmailSendingTests : IntegrationTestingBase
         
         return email;
     }
+    
+    private async Task CreateAndSendEmailToContactList(string senderEmailAddress, string emailSubjectSuffix,
+        Guid messageGuid, ContactList contactList)
+    {
+        var email = new Email
+        {
+            SenderEmailAddress = senderEmailAddress,
+            Subject = $"{messageGuid} - {emailSubjectSuffix}",
+            Body = "This is a test email",
+            Recipients = [],
+            Attachments = []
+        };
+
+        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailToContactListCommand(email, contactList));
+        if (result.IsFailed) throw new Exception("Sending failed");
+    }
 
     private async Task<Email> CreateAndSendEmailWithAttachments(
         string senderEmailAddress,
@@ -148,6 +246,31 @@ public class EmailSendingTests : IntegrationTestingBase
         
         Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
+        return email;
+    }
+    
+    private async Task<Email> CreateAndSendEmailToContactListWithAttachments(
+        string senderEmailAddress,
+        string emailSubjectSuffix,
+        Guid messageGuid,
+        ContactList contactList,
+        int batchSize,
+        bool useBcc = false,
+        params string[] attachmentPaths)
+    {
+        List<Attachment> attachments = attachmentPaths.Select(CreateAttachementFromPath).ToList();
+        var email = new Email
+        {
+            SenderEmailAddress = senderEmailAddress,
+            Subject = $"{messageGuid} - {emailSubjectSuffix}",
+            Body = "This is a test email",
+            Recipients = [],
+            Attachments = attachments
+        };
+        
+        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
+        if (result.IsFailed) throw new Exception("Sending failed");
+
         return email;
     }
 

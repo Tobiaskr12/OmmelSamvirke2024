@@ -137,7 +137,7 @@ public class EmailTests
     }
     
     [TestCase(1)]
-    [TestCase(50)]
+    [TestCase(ServiceLimits.RecipientsPerEmail)]
     public void Recipients_HasValidSize_PassesValidation(int numberOfRecipients)
     {
         List<Recipient> recipients = CreateRecipients(numberOfRecipients);
@@ -150,7 +150,7 @@ public class EmailTests
     }
     
     [TestCase(0)]
-    [TestCase(51)]
+    [TestCase(ServiceLimits.RecipientsPerEmail + 1)]
     public void Recipient_InvalidSize_FailsValidationWithExpectedErrorMessage(int numberOfRecipients)
     {
         List<Recipient> recipients = CreateRecipients(numberOfRecipients);

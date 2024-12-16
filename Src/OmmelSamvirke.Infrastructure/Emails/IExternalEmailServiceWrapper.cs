@@ -6,5 +6,5 @@ namespace OmmelSamvirke.Infrastructure.Emails;
 
 public interface IExternalEmailServiceWrapper
 {
-    Task<Result<EmailSendingStatus>> SendAsync(Email email, CancellationToken cancellationToken = default);
+    Task<Result<EmailSendingStatus>> SendAsync(Email email, bool useBcc = false, CancellationToken cancellationToken = default);
 }

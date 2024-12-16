@@ -32,7 +32,7 @@ public class EmailValidator : AbstractValidator<Email>
         RuleFor(x => x.Recipients)
             .NotNull()
             .WithMessage(ErrorMessages.Email_Recipient_InvalidSize)
-            .Must(x => x.Count is >= 1 and <= 50)
+            .Must(x => x.Count is >= 1 and <= ServiceLimits.RecipientsPerEmail)
             .WithMessage(ErrorMessages.Email_Recipient_InvalidSize)
             .Must(MustBeUnique)
             .WithMessage(ErrorMessages.Email_Recipients_MustBeUnique);

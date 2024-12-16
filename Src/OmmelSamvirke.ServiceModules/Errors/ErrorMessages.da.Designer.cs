@@ -76,5 +76,14 @@ namespace OmmelSamvirke.ServiceModules.Errors {
                 return ResourceManager.GetString("EmailSending_ServiceLimitError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der er ingen kontakter i kontaktlisten.
+        /// </summary>
+        public static string EmailSendingToContactList_ContactListMustNotBeEmpty {
+            get {
+                return ResourceManager.GetString("EmailSendingToContactList_ContactListMustNotBeEmpty", resourceCulture);
+            }
+        }
     }
 }
