@@ -20,6 +20,11 @@ public class ContactListValidator : AbstractValidator<ContactList>
             .Length(5, 2000)
             .WithMessage(ErrorMessages.ContactList_Description_InvalidLength);
 
+        // No error messages, as this can't be corrected by the user
+        RuleFor(x => x.UnsubscribeToken)
+            .NotNull()
+            .NotEqual(Guid.Empty);
+
         RuleForEach(x => x.Contacts).SetValidator(recipientValidator);
     }
 }

@@ -18,6 +18,9 @@ public class ContactListEntityTypeConfiguration : IEntityTypeConfiguration<Conta
         builder.Property(cl => cl.Description)
                .IsRequired()
                .HasMaxLength(2000);
+        
+        builder.Property(cl => cl.UnsubscribeToken)
+               .IsRequired();
 
         // Many-to-Many relationship with Recipients
         builder.HasMany(cl => cl.Contacts)

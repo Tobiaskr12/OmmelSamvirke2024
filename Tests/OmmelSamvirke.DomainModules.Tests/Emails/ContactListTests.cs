@@ -168,6 +168,21 @@ public class ContactListTests
         });
     }
 
+    [Test]
+    public void WhenCreatingContactList_UnsubscribeToken_IsValid()
+    {
+        ContactList contactList = _baseValidContactList;
+        
+        ValidationResult? validationResult = _validator.Validate(contactList);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(contactList.UnsubscribeToken, Is.Not.EqualTo(null));
+            Assert.That(contactList.UnsubscribeToken, Is.Not.EqualTo(Guid.Empty));
+            Assert.That(validationResult.IsValid, Is.True);
+        });
+    }
+
     private static List<Recipient> CreateRecipients(int count, bool isValid)
     {
         return Enumerable.Range(1, count).Select(i => new Recipient
