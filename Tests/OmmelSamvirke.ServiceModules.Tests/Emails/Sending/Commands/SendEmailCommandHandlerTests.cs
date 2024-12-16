@@ -1,3 +1,4 @@
+using FluentResults;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -9,39 +10,17 @@ using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
-using FluentResults;
 
-namespace OmmelSamvirke.ServiceModules.Tests.Emails;
+namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands;
 
-public class SendEmailToContactListCommandHandlerTests
+[TestFixture, Category("UnitTests")]
+public class SendEmailCommandHandlerTests
 {
     private ILogger<SendEmailCommandHandler> _logger;
     private IRepository<Email> _genericEmailRepository;
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
-    private SendEmailToContactListCommandHandler _handler;
-    
-    private readonly Email _baseValidEmail = new()
-    {
-        Subject = "Test Email",
-        Body = "This is a test email.",
-        SenderEmailAddress = ValidSenderEmailAddresses.Auto,
-        Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
-        Attachments = []
-    };
-    
-    private readonly ContactList _baseValidContactList = new()
-    {
-        Name = "Test Contact List",
-        Description = "This is a test contact list.",
-        Contacts = [
-            new Recipient { EmailAddress = "recipient@example1.com" },
-            new Recipient { EmailAddress = "recipient@example2.com" },
-            new Recipient { EmailAddress = "recipient@example3.com" },
-            new Recipient { EmailAddress = "recipient@example4.com" },
-            new Recipient { EmailAddress = "recipient@example5.com" },
-        ]
-    };
+    private SendEmailCommandHandler _handler;
     
     [SetUp]
     public void Setup()
@@ -51,7 +30,7 @@ public class SendEmailToContactListCommandHandlerTests
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
         _externalEmailServiceWrapper = Substitute.For<IExternalEmailServiceWrapper>();
 
-        _handler = new SendEmailToContactListCommandHandler(
+        _handler = new SendEmailCommandHandler(
             _logger,
             _genericEmailRepository,
             _emailSendingRepository,
@@ -59,14 +38,23 @@ public class SendEmailToContactListCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailToContactListCommand_ValidInput_ReturnsSuccess()
+    public async Task SendEmailCommand_ValidInput_ReturnsSuccess()
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
 
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        var command = new SendEmailCommand(email);
+
+        _genericEmailRepository.AddAsync(email).Returns(email);
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
-        _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
+        _externalEmailServiceWrapper.SendAsync(email).Returns(Result.Ok());
 
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
         
@@ -74,26 +62,43 @@ public class SendEmailToContactListCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_AddingEmailToDbFails_ReturnsFail()
+    public async Task SendEmailCommand_AddingEmailToDbFails_ReturnsFail()
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
 
         // Simulate database error when adding email
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).ThrowsAsync(_ => throw new Exception("Database error"));
+        _genericEmailRepository.AddAsync(email).ThrowsAsync(_ => throw new Exception("Database error"));
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
         
         Assert.That(result.IsFailed);
     }
-    
+
+    // Test for Hourly Interval
     [TestCase(0.0)]
     [TestCase(79.99)]
     [TestCase(80.0)]
     [TestCase(80.1)]
     [TestCase(100.0)]
-    public async Task SendEmailToContactListCommand_ServiceLimitIs80PercentUsed_PerHour_SendEmailToDev(double percentageUsed)
+    public async Task SendEmailCommand_ServiceLimitIs80PercentUsed_PerHour_SendEmailToDev(double percentageUsed)
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
 
         // Simulate service limit for PerHour interval
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(percentageUsed);
@@ -117,16 +122,25 @@ public class SendEmailToContactListCommandHandlerTests
                     e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
         }
     }
-    
+
+    // Test for Minute Interval
     [TestCase(0.0)]
     [TestCase(79.99)]
     [TestCase(80.0)]
     [TestCase(80.1)]
     [TestCase(100.0)]
-    public async Task SendEmailToContactListCommand_ServiceLimitIs80PercentUsed_PerMinute_SendEmailToDev(double percentageUsed)
+    public async Task SendEmailCommand_ServiceLimitIs80PercentUsed_PerMinute_SendEmailToDev(double percentageUsed)
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
 
         // Simulate service limit for PerMinute interval
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(percentageUsed);
@@ -151,11 +165,20 @@ public class SendEmailToContactListCommandHandlerTests
         }
     }
     
+    // Test for Exceeding PerHour Service Limits
     [Test]
-    public async Task SendEmailToContactListCommand_SendingEmailExceedsHourlyServiceLimit_ReturnsFail()
+    public async Task SendEmailCommand_SendingEmailExceedsHourlyServiceLimit_ReturnsFail()
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
 
         // Simulate service limit exceeded for PerHour
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(101);
@@ -166,12 +189,21 @@ public class SendEmailToContactListCommandHandlerTests
         
         Assert.That(result.IsFailed);
     }
-    
+
+    // Test for Exceeding PerMinut Service Limits
     [Test]
-    public async Task SendEmailToContactListCommand_SendingEmailExceedsMinuteServiceLimit_ReturnsFail()
+    public async Task SendEmailCommand_SendingEmailExceedsMinuteServiceLimit_ReturnsFail()
     {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+        _genericEmailRepository.AddAsync(email).Returns(email);
 
         // Simulate service limit exceeded for PerMinute
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(101);
@@ -181,43 +213,5 @@ public class SendEmailToContactListCommandHandlerTests
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
         
         Assert.That(result.IsFailed);
-    }
-
-    [TestCase(1, 5, 1)]
-    [TestCase(5, 5, 1)]
-    [TestCase(6, 5, 2)]
-    [TestCase(10, 5, 2)]
-    [TestCase(100, 5, 20)]
-    [TestCase(101, 5, 21)]
-    public async Task SendEmailToContactListCommand_HandlerCreatesTheCorrectNumberOfBatches(int contactsCount, int batchSize, int expectedNumberOfBatches)
-    {
-        var command = new SendEmailToContactListCommand(_baseValidEmail, CreateContactList(contactsCount), batchSize);
-        
-        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
-        _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
-
-        await _handler.Handle(command, CancellationToken.None);
-        
-        await _genericEmailRepository.Received(expectedNumberOfBatches).AddAsync(Arg.Any<Email>(), Arg.Any<CancellationToken>());
-        await _externalEmailServiceWrapper.Received(expectedNumberOfBatches).SendAsync(Arg.Any<Email>(), cancellationToken: Arg.Any<CancellationToken>());
-    }
-
-    private static ContactList CreateContactList(int contactsCount)
-    {
-        List<Recipient> recipients = [];
-        
-        for (var i = 0; i < contactsCount; i++)
-        {
-            recipients.Add(new Recipient { EmailAddress =  $"test{i}@example.com" });   
-        }
-
-        return new ContactList
-        {
-            Name = "Test Name",
-            Description = "Test Description",
-            Contacts = recipients
-        };
     }
 }

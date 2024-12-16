@@ -10,7 +10,7 @@ using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
-namespace OmmelSamvirke.ServiceModules.Tests.Emails.E2E;
+namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands.E2E;
 
 [TestFixture, Category("IntegrationTests")]
 public class EmailSendingTests : IntegrationTestingBase

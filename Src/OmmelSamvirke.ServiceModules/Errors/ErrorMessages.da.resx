@@ -27,4 +27,7 @@
     <data name="EmailSendingToContactList_ContactListMustNotBeEmpty" xml:space="preserve">
         <value>Der er ingen kontakter i kontaktlisten</value>
     </data>
+    <data name="GenericErrorWithErrorCode" xml:space="preserve">
+        <value>Der opstod en fejl. Fejlkode: </value>
+    </data>
 </root>

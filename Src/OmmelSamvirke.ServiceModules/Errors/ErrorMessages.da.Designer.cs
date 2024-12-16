@@ -85,5 +85,14 @@ namespace OmmelSamvirke.ServiceModules.Errors {
                 return ResourceManager.GetString("EmailSendingToContactList_ContactListMustNotBeEmpty", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl. Fejlkode: .
+        /// </summary>
+        public static string GenericErrorWithErrorCode {
+            get {
+                return ResourceManager.GetString("GenericErrorWithErrorCode", resourceCulture);
+            }
+        }
     }
 }

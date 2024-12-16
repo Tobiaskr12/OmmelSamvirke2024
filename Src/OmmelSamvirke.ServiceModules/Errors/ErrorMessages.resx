@@ -27,4 +27,7 @@
     <data name="EmailSendingToContactList_ContactListMustNotBeEmpty" xml:space="preserve">
         <value>There are no contacts in the contact list</value>
     </data>
+    <data name="GenericErrorWithErrorCode" xml:space="preserve">
+        <value>An error occurred. Error Code: </value>
+    </data>
 </root>

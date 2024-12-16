@@ -27,4 +27,8 @@
       <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Emails\ContactLists\Queries\" />
+    </ItemGroup>
+
 </Project>

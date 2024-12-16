@@ -35,12 +35,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Emails\E2E\TestDocuments\Test_PDF1.pdf">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Emails\E2E\TestDocuments\Test_PDF2.pdf">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+      <Folder Include="Emails\ContactLists\Queries\" />
+      <Folder Include="Emails\Sending\Queries\" />
     </ItemGroup>
 
 </Project>
