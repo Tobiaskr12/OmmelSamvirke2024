@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using FluentResults;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -22,6 +23,7 @@ public class SendEmailCommandHandlerTests
     private IRepository<Recipient> _genericRecipientRepository;
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
+    private IConfigurationRoot _configuration;
     private SendEmailCommandHandler _handler;
     
     [SetUp]
@@ -31,6 +33,7 @@ public class SendEmailCommandHandlerTests
         _genericEmailRepository = Substitute.For<IRepository<Email>>();
         _genericRecipientRepository = Substitute.For<IRepository<Recipient>>();
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
+        _configuration = Substitute.For<IConfigurationRoot>();
         _externalEmailServiceWrapper = Substitute.For<IExternalEmailServiceWrapper>();
 
         _handler = new SendEmailCommandHandler(
@@ -38,6 +41,7 @@ public class SendEmailCommandHandlerTests
             _genericEmailRepository,
             _genericRecipientRepository,
             _emailSendingRepository,
+            _configuration,
             _externalEmailServiceWrapper);
 
         _genericRecipientRepository
@@ -46,6 +50,10 @@ public class SendEmailCommandHandlerTests
                 Arg.Any<bool>(),
                 Arg.Any<CancellationToken>())
             .Returns(new List<Recipient>());
+        
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Prod");
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
     }
     
     [Test]
@@ -63,8 +71,6 @@ public class SendEmailCommandHandlerTests
         var command = new SendEmailCommand(email);
 
         _genericEmailRepository.AddAsync(email).Returns(email);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
         _externalEmailServiceWrapper.SendAsync(email).Returns(Result.Ok());
 
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
@@ -91,8 +97,7 @@ public class SendEmailCommandHandlerTests
         
         Assert.That(result.IsFailed);
     }
-
-    // Test for Hourly Interval
+    
     [TestCase(0.0)]
     [TestCase(79.99)]
     [TestCase(80.0)]
@@ -133,8 +138,7 @@ public class SendEmailCommandHandlerTests
                     e.Recipients.Any(r => r.EmailAddress == "tobiaskristensen12@gmail.com")));
         }
     }
-
-    // Test for Minute Interval
+    
     [TestCase(0.0)]
     [TestCase(79.99)]
     [TestCase(80.0)]
@@ -176,7 +180,6 @@ public class SendEmailCommandHandlerTests
         }
     }
     
-    // Test for Exceeding PerHour Service Limits
     [Test]
     public async Task SendEmailCommand_SendingEmailExceedsHourlyServiceLimit_ReturnsFail()
     {
@@ -200,8 +203,7 @@ public class SendEmailCommandHandlerTests
         
         Assert.That(result.IsFailed);
     }
-
-    // Test for Exceeding PerMinut Service Limits
+    
     [Test]
     public async Task SendEmailCommand_SendingEmailExceedsMinuteServiceLimit_ReturnsFail()
     {
@@ -224,5 +226,124 @@ public class SendEmailCommandHandlerTests
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
         
         Assert.That(result.IsFailed);
+    }
+    
+    [Test]
+    public async Task SendEmailCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsExceptionAndReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "notwhitelisted@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+
+        // Setup non-prod environment and missing whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns((string)null!);
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+
+    [Test]
+    public async Task SendEmailCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsExceptionAndReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "notwhitelisted@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+
+        // Setup non-prod environment and whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com;another@example.com");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+    
+    [Test]
+    public async Task SendEmailCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsExceptionAndReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Test Email",
+            Body = "This is a test email.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+
+        // Setup non-prod environment with empty whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+
+    [Test]
+    public async Task SendEmailCommand_NonProdEnvironmentWithPartialWhitelistedRecipients_ReturnsFail()
+    {
+        var email = new Email
+        {
+            Subject = "Partial Whitelist Test",
+            Body = "Email with partial whitelisted recipients.",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [
+                new Recipient { EmailAddress = "whitelisted@example.com" },
+                new Recipient { EmailAddress = "notwhitelisted@example.com" }
+            ],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+
+        // Setup non-prod environment with partial whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+
+    [Test]
+    public async Task SendEmailCommand_NonProdEnvironmentWithAllWhitelistedRecipients_ReturnsSuccess()
+    {
+        var email = new Email
+        {
+            Subject = "All Whitelisted Test",
+            Body = "This is a test email"
+,           SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            Recipients = [
+                new Recipient { EmailAddress = "whitelisted1@example.com" },
+                new Recipient { EmailAddress = "whitelisted2@example.com" }
+            ],
+            Attachments = []
+        };
+        var command = new SendEmailCommand(email);
+
+        // Setup non-prod environment with all recipients whitelisted
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted1@example.com;whitelisted2@example.com");
+
+        _genericEmailRepository.AddAsync(email).Returns(email);
+        _externalEmailServiceWrapper.SendAsync(email).Returns(Result.Ok());
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsSuccess);
     }
 }

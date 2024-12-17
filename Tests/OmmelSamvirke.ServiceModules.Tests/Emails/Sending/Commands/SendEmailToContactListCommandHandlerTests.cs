@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using FluentResults;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -21,6 +22,7 @@ public class SendEmailToContactListCommandHandlerTests
     private IRepository<Recipient> _genericRecipientRepository;
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
+    private IConfigurationRoot _configuration;
     private SendEmailToContactListCommandHandler _handler;
     
     private readonly Email _baseValidEmail = new()
@@ -52,6 +54,7 @@ public class SendEmailToContactListCommandHandlerTests
         _genericEmailRepository = Substitute.For<IRepository<Email>>();
         _genericRecipientRepository = Substitute.For<IRepository<Recipient>>();
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
+        _configuration = Substitute.For<IConfigurationRoot>();
         _externalEmailServiceWrapper = Substitute.For<IExternalEmailServiceWrapper>();
 
         _handler = new SendEmailToContactListCommandHandler(
@@ -59,7 +62,8 @@ public class SendEmailToContactListCommandHandlerTests
             _genericEmailRepository,
             _genericRecipientRepository,
             _emailSendingRepository,
-            _externalEmailServiceWrapper);
+            _externalEmailServiceWrapper,
+            _configuration);
         
         _genericRecipientRepository
             .FindAsync(
@@ -67,6 +71,10 @@ public class SendEmailToContactListCommandHandlerTests
                 Arg.Any<bool>(),
                 Arg.Any<CancellationToken>())
             .Returns(new List<Recipient>());
+        
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Prod");
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
+        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
     }
     
     [Test]
@@ -75,8 +83,6 @@ public class SendEmailToContactListCommandHandlerTests
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
         _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
         _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
 
         Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
@@ -205,14 +211,46 @@ public class SendEmailToContactListCommandHandlerTests
         var command = new SendEmailToContactListCommand(_baseValidEmail, CreateContactList(contactsCount), batchSize);
         
         _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
-        _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
         _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
 
         await _handler.Handle(command, CancellationToken.None);
         
         await _genericEmailRepository.Received(expectedNumberOfBatches).AddAsync(Arg.Any<Email>(), Arg.Any<CancellationToken>());
         await _externalEmailServiceWrapper.Received(expectedNumberOfBatches).SendAsync(Arg.Any<Email>(), cancellationToken: Arg.Any<CancellationToken>());
+    }
+    
+    [Test]
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsExceptionAndReturnsFail()
+    {
+        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
+
+        // Setup non-prod environment and missing whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns((string)null!);
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+
+    [Test]
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsExceptionAndReturnsFail()
+    {
+        var contactList = new ContactList
+        {
+            Name = "Test Contact List",
+            Description = "This is a test contact list.",
+            Contacts = [new Recipient { EmailAddress = "notwhitelisted@example.com" }]
+        };
+        var command = new SendEmailToContactListCommand(_baseValidEmail, contactList, 3);
+
+        // Setup non-prod environment and whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com;another@example.com");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
     }
 
     private static ContactList CreateContactList(int contactsCount)
@@ -230,5 +268,60 @@ public class SendEmailToContactListCommandHandlerTests
             Description = "Test Description",
             Contacts = recipients
         };
+    }
+    
+    [Test]
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsExceptionAndReturnsFail()
+    {
+        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
+
+        // Setup non-prod environment with empty whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
+    }
+
+    [Test]
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithAllRecipientsWhitelisted_ReturnsSuccess()
+    {
+        var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
+
+        // Setup non-prod environment with recipients whitelisted
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns(string.Join(";", _baseValidContactList.Contacts.Select(c => c.EmailAddress)));
+
+        _genericEmailRepository.AddAsync(Arg.Any<Email>()).Returns(_baseValidEmail);
+        _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
+        
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsSuccess);
+    }
+
+    [Test]
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipients_ReturnsFail()
+    {
+        var unwhitelistedContactList = new ContactList
+        {
+            Name = "Test Contact List",
+            Description = "List with unwhitelisted recipients.",
+            Contacts = [
+                new Recipient { EmailAddress = "unwhitelisted1@example.com" },
+                new Recipient { EmailAddress = "unwhitelisted2@example.com" }
+            ]
+        };
+
+        var command = new SendEmailToContactListCommand(_baseValidEmail, unwhitelistedContactList, 3);
+
+        // Setup non-prod environment with limited whitelist
+        _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
+        _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com");
+
+        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
+
+        Assert.That(result.IsFailed);
     }
 }

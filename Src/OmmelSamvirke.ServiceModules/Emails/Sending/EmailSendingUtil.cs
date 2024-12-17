@@ -1,4 +1,5 @@
 using FluentResults;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Enums;
@@ -104,5 +105,29 @@ public static class EmailSendingUtil
         }
         
         return Result.Ok();
+    }
+
+    /// <summary>
+    /// This method checks if the email recipients are whitelisted in non-prod environments.
+    /// This is to ensure that no emails are sent to non-allowed email addresses during development and testing.
+    /// If the application is not configured correctly or if a disallowed recipient is detected, an exception is thrown.
+    /// </summary>
+    public static void ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(IConfigurationRoot configuration, List<Recipient> recipients)
+    {
+        IConfigurationSection executionEnvironmentSection = configuration.GetSection("ExecutionEnvironment");
+        if (executionEnvironmentSection.Value is null) throw new Exception("Execution environment section is null. Refusing to send email");
+
+        if (executionEnvironmentSection.Value != "Prod")
+        {
+            IConfigurationSection emailWhitelistSection = configuration.GetSection("EmailWhitelist");
+            if (emailWhitelistSection.Value is null) 
+                throw new Exception("Email whitelist section is null in a non-production environment. Refusing to send email");
+                
+            string[] emailWhitelist = emailWhitelistSection.Value.Split(";");
+            if (recipients.Any(x => !emailWhitelist.Contains(x.EmailAddress)))
+            {
+                throw new Exception("Refusing to send the email because at least one email address is not whitelisted");
+            }
+        }
     }
 }

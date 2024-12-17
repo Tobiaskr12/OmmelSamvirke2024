@@ -9,6 +9,7 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands.E2E;
 
@@ -174,6 +175,26 @@ public class EmailSendingTests : IntegrationTestingBase
             Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
             Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
         });
+    }
+    
+    /// <summary>
+    /// This test attempts to send an email to a non-whitelisted email address,
+    /// which should not be allowed from the testing environment
+    /// </summary>
+    [Test]
+    public void GivenNonWhitelistedRecipient_WhenSendingEmail_TheEmailSendingFails()
+    {
+        var invalidRecipient = new Recipient { EmailAddress = "invalid@example.com" };
+        var email = new Email
+        {
+            SenderEmailAddress = ValidSenderEmailAddresses.Admins,
+            Subject = "Test Email to Invalid Recipient",
+            Body = "This email should not be sent.",
+            Recipients = [invalidRecipient],
+            Attachments = []
+        };
+
+        Assert.ThrowsAsync<ResultException>(async () => await Mediator.Send(new SendEmailCommand(email)));
     }
     
     private async Task<Email> CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, string recipientEmail, Guid messageGuid)

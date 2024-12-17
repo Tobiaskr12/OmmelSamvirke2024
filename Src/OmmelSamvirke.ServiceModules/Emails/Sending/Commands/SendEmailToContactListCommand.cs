@@ -2,6 +2,7 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
@@ -55,19 +56,22 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
     private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
     private readonly IExternalEmailServiceWrapper _externalEmailServiceWrapper;
+    private readonly IConfigurationRoot _configuration;
 
     public SendEmailToContactListCommandHandler(
         ILogger<SendEmailCommandHandler> logger,
         IRepository<Email> genericEmailRepository,
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
-        IExternalEmailServiceWrapper externalEmailServiceWrapper)
+        IExternalEmailServiceWrapper externalEmailServiceWrapper,
+        IConfigurationRoot configuration)
     {
         _logger = logger;
         _genericEmailRepository = genericEmailRepository;
         _genericRecipientRepository = genericRecipientRepository;
         _emailSendingRepository = emailSendingRepository;
         _externalEmailServiceWrapper = externalEmailServiceWrapper;
+        _configuration = configuration;
     }
     
     public async Task<Result> Handle(SendEmailToContactListCommand request, CancellationToken cancellationToken)
@@ -76,6 +80,9 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
         {
             // Remove fake email from constructor
             request.Email.Recipients.Clear();
+            
+            // If in test or dev environment, only allow sending emails to whitelisted addresses
+            EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.ContactList.Contacts);
             
             // Check if email can be sent or if service limits have been exhausted
             Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(

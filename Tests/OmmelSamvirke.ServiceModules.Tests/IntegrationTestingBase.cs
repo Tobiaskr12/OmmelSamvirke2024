@@ -24,6 +24,7 @@ public abstract class IntegrationTestingBase
             .Build();
         
         services.AddSingleton<IConfiguration>(Configuration);
+        services.AddSingleton(Configuration); // Adds as IConfigurationRoot
         
         ILogger appLogger = AppLoggerFactory.CreateLogger(Configuration);
         services.AddSingleton(appLogger);

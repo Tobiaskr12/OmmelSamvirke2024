@@ -2,6 +2,7 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
@@ -33,6 +34,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
     private readonly IRepository<Email> _genericEmailRepository;
     private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
+    private readonly IConfigurationRoot _configuration;
     private readonly IExternalEmailServiceWrapper _externalEmailServiceWrapper;
 
     public SendEmailCommandHandler(
@@ -40,12 +42,14 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         IRepository<Email> genericEmailRepository,
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
+        IConfigurationRoot configuration,
         IExternalEmailServiceWrapper externalEmailServiceWrapper)
     {
         _logger = logger;
         _genericEmailRepository = genericEmailRepository;
         _genericRecipientRepository = genericRecipientRepository;
         _emailSendingRepository = emailSendingRepository;
+        _configuration = configuration;
         _externalEmailServiceWrapper = externalEmailServiceWrapper;
     }
     
@@ -53,6 +57,9 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
     {
         try
         {
+            // If in test or dev environment, only allow sending emails to whitelisted addresses
+            EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.Email.Recipients);
+            
             // Check if email can be sent or if service limits have been exhausted
             Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
                 1,
