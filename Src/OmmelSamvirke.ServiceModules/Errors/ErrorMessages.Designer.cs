@@ -94,5 +94,14 @@ namespace OmmelSamvirke.ServiceModules.Errors {
                 return ResourceManager.GetString("GenericErrorWithErrorCode", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred. Please try again..
+        /// </summary>
+        public static string GenericErrorWithRetryPrompt {
+            get {
+                return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
+            }
+        }
     }
 }

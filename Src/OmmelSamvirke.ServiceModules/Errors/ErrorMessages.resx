@@ -30,4 +30,7 @@
     <data name="GenericErrorWithErrorCode" xml:space="preserve">
         <value>An error occurred. Error Code: </value>
     </data>
+    <data name="GenericErrorWithRetryPrompt" xml:space="preserve">
+        <value>An error occurred. Please try again.</value>
+    </data>
 </root>

@@ -94,5 +94,14 @@ namespace OmmelSamvirke.ServiceModules.Errors {
                 return ResourceManager.GetString("GenericErrorWithErrorCode", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl. Prøv venligst igen..
+        /// </summary>
+        public static string GenericErrorWithRetryPrompt {
+            get {
+                return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
+            }
+        }
     }
 }

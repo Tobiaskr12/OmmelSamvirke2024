@@ -39,28 +39,4 @@ public class CreateContactListCommandTests
         
         Assert.That(result.IsSuccess);
     }
-    
-    // TODO - Implement when it can be called via MediatR
-    // [Test]
-    // public async Task CreateContactListCommand_SomeValidContacts_ReturnsFail()
-    // {
-    //     _baseValidContactList.Contacts.Add(CreateRecipient("valid1@example.com"));
-    //     _baseValidContactList.Contacts.Add(CreateRecipient("valid2@example.com"));
-    //     _baseValidContactList.Contacts.Add(CreateRecipient("invalid3.com"));
-    //     
-    //     var command = new CreateContactListCommand(_baseValidContactList);
-    //     _repository.AddAsync(_baseValidContactList).Returns(_baseValidContactList);
-    //     
-    //     Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
-    //     
-    //     Assert.That(result.IsFailed);
-    // }
-
-    // private static Recipient CreateRecipient(string email)
-    // {
-    //     return new Recipient
-    //     {
-    //         EmailAddress = email,
-    //     };
-    // }
 }

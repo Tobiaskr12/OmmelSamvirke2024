@@ -30,4 +30,7 @@
     <data name="GenericErrorWithErrorCode" xml:space="preserve">
         <value>Der opstod en fejl. Fejlkode: </value>
     </data>
+    <data name="GenericErrorWithRetryPrompt" xml:space="preserve">
+        <value>Der opstod en fejl. Prøv venligst igen.</value>
+    </data>
 </root>
