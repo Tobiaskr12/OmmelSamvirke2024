@@ -60,6 +60,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kontakten findes ikke i kontaktlisten.
+        /// </summary>
+        public static string ContactDoesNotExistInContactList {
+            get {
+                return ResourceManager.GetString("ContactDoesNotExistInContactList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der opstod en fejl under afsendelse af emailen. Fejlkode: .
         /// </summary>
         public static string EmailSending_Exception {

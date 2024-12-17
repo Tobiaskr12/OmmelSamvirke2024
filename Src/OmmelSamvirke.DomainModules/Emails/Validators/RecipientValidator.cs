@@ -14,7 +14,7 @@ public class RecipientValidator : AbstractValidator<Recipient>
             .WithMessage(ErrorMessages.Recipient_EmailAddress_MustBeValid);
     }
     
-    private static bool IsEmailStructureValid(string emailAddress)
+    public static bool IsEmailStructureValid(string emailAddress)
     {
         if (string.IsNullOrWhiteSpace(emailAddress)) return false;
         try

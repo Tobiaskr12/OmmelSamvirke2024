@@ -33,4 +33,7 @@
     <data name="GenericErrorWithRetryPrompt" xml:space="preserve">
         <value>Der opstod en fejl. Prøv venligst igen.</value>
     </data>
+    <data name="ContactDoesNotExistInContactList" xml:space="preserve">
+        <value>Kontakten findes ikke i kontaktlisten</value>
+    </data>
 </root>
