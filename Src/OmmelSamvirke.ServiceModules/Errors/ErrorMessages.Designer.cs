@@ -78,7 +78,7 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The email could not be sent at this time. Please try again later..
+        ///   Looks up a localized string similar to The email could not be sent at this time, because the service limits set by the email supplier has been reached. Please try again in an hour..
         /// </summary>
         public static string EmailSending_ServiceLimitError {
             get {

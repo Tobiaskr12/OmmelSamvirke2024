@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="EmailSending_ServiceLimitError" xml:space="preserve">
-        <value>Emailen kunne afsendes på nuværende tidspunkt. Prøv venligst igen senere.</value>
+        <value>Emailen kunne afsendes på nuværende tidspunkt, da brugsgrænsen fastsat af sidens emailudbyder er nået. Prøv venligst igen om en time.</value>
     </data>
     <data name="EmailSending_Exception" xml:space="preserve">
         <value>Der opstod en fejl under afsendelse af emailen. Fejlkode: </value>

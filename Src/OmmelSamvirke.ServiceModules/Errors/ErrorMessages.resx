@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="EmailSending_ServiceLimitError" xml:space="preserve">
-        <value>The email could not be sent at this time. Please try again later.</value>
+        <value>The email could not be sent at this time, because the service limits set by the email supplier has been reached. Please try again in an hour.</value>
     </data>
     <data name="EmailSending_Exception" xml:space="preserve">
         <value>An error occurred while attempting to send the email. Error code: </value>

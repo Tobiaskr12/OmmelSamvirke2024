@@ -78,7 +78,7 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Emailen kunne afsendes på nuværende tidspunkt. Prøv venligst igen senere..
+        ///   Looks up a localized string similar to Emailen kunne afsendes på nuværende tidspunkt, da brugsgrænsen fastsat af sidens emailudbyder er nået. Prøv venligst igen om en time..
         /// </summary>
         public static string EmailSending_ServiceLimitError {
             get {
