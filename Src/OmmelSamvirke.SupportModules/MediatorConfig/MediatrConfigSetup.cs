@@ -13,7 +13,6 @@ public static class MediatrConfigSetup
             config.RegisterServicesFromAssembly(callingAssembly);
             config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            config.AddOpenBehavior(typeof(ResultExceptionThrowingBehavior<,>));
         });
     }
 }

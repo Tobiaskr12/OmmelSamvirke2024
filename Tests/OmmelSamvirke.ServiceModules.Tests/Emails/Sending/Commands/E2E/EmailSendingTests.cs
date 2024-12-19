@@ -1,5 +1,4 @@
 using FluentResults;
-using FluentValidation;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Search;
@@ -9,16 +8,16 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
-using OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands.E2E;
 
 [TestFixture, Category("IntegrationTests")]
-public class EmailSendingTests : IntegrationTestingBase
+public class EmailSendingTests
 {
     private TestEmailClient _testClientOne = null!;
     private TestEmailClient _testClientTwo = null!;
     private const string BaseTestDocumentsPath = "./Emails/Sending/Commands/E2E/TestDocuments/";
+    private IntegrationTestingHelper _integrationTestingHelper;
     
     private static IEnumerable<string> SenderEmailAddressesSource =>
     [
@@ -28,10 +27,10 @@ public class EmailSendingTests : IntegrationTestingBase
         ValidSenderEmailAddresses.Newsletter
     ];
 
-    [SetUp]
-    public override void Setup()
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
-        base.Setup();
+        _integrationTestingHelper = new IntegrationTestingHelper();
         
         SetupEmailTestAccount(
             testClient: out _testClientOne,
@@ -97,22 +96,27 @@ public class EmailSendingTests : IntegrationTestingBase
     }
 
     [Test]
-    public void GivenContactListIsEmpty_WhenSendingToContactList_ValidationFails()
+    public async Task GivenContactListIsEmpty_WhenSendingToContactList_ValidationFails()
     {
         var messageGuid = Guid.NewGuid();
-        Assert.ThrowsAsync<ValidationException>(async () =>
+        var email = new Email
         {
-            await CreateAndSendEmailToContactList(
-                ValidSenderEmailAddresses.Admins,
-                "Test Email with Attachments",
-                messageGuid, new ContactList
-                {
-                    Name = "Test Name",
-                    Description = "Test Description",
-                    Contacts = []
-                }
-            );
-        });
+            SenderEmailAddress = ValidSenderEmailAddresses.Admins,
+            Subject = $"{messageGuid} - Test Email with Attachments",
+            Body = "This is a test email",
+            Recipients = [],
+            Attachments = []
+        };
+        var contactList = new ContactList
+        {
+            Name = "Test Name",
+            Description = "Test Description",
+            Contacts = []
+        };
+
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailToContactListCommand(email, contactList));
+        
+        Assert.That(result.IsFailed);
     }
 
     [Test]
@@ -182,7 +186,7 @@ public class EmailSendingTests : IntegrationTestingBase
     /// which should not be allowed from the testing environment
     /// </summary>
     [Test]
-    public void GivenNonWhitelistedRecipient_WhenSendingEmail_TheEmailSendingFails()
+    public async Task GivenNonWhitelistedRecipient_WhenSendingEmail_TheEmailSendingFails()
     {
         var invalidRecipient = new Recipient { EmailAddress = "invalid@example.com" };
         var email = new Email
@@ -194,7 +198,9 @@ public class EmailSendingTests : IntegrationTestingBase
             Attachments = []
         };
 
-        Assert.ThrowsAsync<ResultException>(async () => await Mediator.Send(new SendEmailCommand(email)));
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
+        
+        Assert.That(result.IsFailed);
     }
     
     private async Task<Email> CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, string recipientEmail, Guid messageGuid)
@@ -209,7 +215,7 @@ public class EmailSendingTests : IntegrationTestingBase
             Attachments = []
         };
         
-        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
@@ -225,26 +231,10 @@ public class EmailSendingTests : IntegrationTestingBase
             Attachments = []
         };
 
-        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         
         return email;
-    }
-    
-    private async Task CreateAndSendEmailToContactList(string senderEmailAddress, string emailSubjectSuffix,
-        Guid messageGuid, ContactList contactList)
-    {
-        var email = new Email
-        {
-            SenderEmailAddress = senderEmailAddress,
-            Subject = $"{messageGuid} - {emailSubjectSuffix}",
-            Body = "This is a test email",
-            Recipients = [],
-            Attachments = []
-        };
-
-        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailToContactListCommand(email, contactList));
-        if (result.IsFailed) throw new Exception("Sending failed");
     }
 
     private async Task<Email> CreateAndSendEmailWithAttachments(
@@ -265,7 +255,7 @@ public class EmailSendingTests : IntegrationTestingBase
             Attachments = attachments
         };
         
-        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
@@ -289,7 +279,7 @@ public class EmailSendingTests : IntegrationTestingBase
             Attachments = attachments
         };
         
-        Result<EmailSendingStatus> result = await Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
+        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
         if (result.IsFailed) throw new Exception("Sending failed");
 
         return email;
@@ -373,7 +363,7 @@ public class EmailSendingTests : IntegrationTestingBase
 
     private void SetupEmailTestAccount(out TestEmailClient testClient, string emailAddress, string passwordConfigSection)
     {
-        string? accountPassword = Configuration[passwordConfigSection];
+        string? accountPassword = _integrationTestingHelper.Configuration[passwordConfigSection];
         if (accountPassword is null)
             throw new Exception($"Cannot read the password for the email test account at the config section {passwordConfigSection}");
 

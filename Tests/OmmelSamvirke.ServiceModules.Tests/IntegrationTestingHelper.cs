@@ -10,13 +10,55 @@ using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
 
-public abstract class IntegrationTestingBase
+public class IntegrationTestingHelper
 {
-    protected IMediator Mediator;
-    protected IConfigurationRoot Configuration;
+    private IMediator? _mediator;
+    private IConfigurationRoot? _configuration;
+    private ServiceProvider? _serviceProvider;
     
-    [SetUp]
-    public virtual void Setup()
+    public IMediator Mediator
+    {
+        get
+        {
+            if (_mediator is null)
+            {
+                Setup();
+            }
+            
+            return _mediator!;
+        }
+        private set => _mediator = value;
+    }
+
+    public IConfigurationRoot Configuration
+    {
+        get
+        {
+            if (_configuration is null)
+            {
+                Setup();
+            }
+            
+            return _configuration!;
+        }
+        private set => _configuration = value;
+    }
+
+    public ServiceProvider ServiceProvider
+    {
+        get
+        {
+            if (_serviceProvider is null)
+            {
+                Setup();
+            }
+            
+            return _serviceProvider!;
+        }
+        private set => _serviceProvider = value;
+    }
+
+    private void Setup()
     {
         var services = new ServiceCollection();
         Configuration = new ConfigurationBuilder()
@@ -36,8 +78,8 @@ public abstract class IntegrationTestingBase
             .InitializeDomainModule()
             .InitializeServicesModule();
         
-        ServiceProvider serviceProvider = services.BuildServiceProvider();
+        ServiceProvider = services.BuildServiceProvider();
         
-        Mediator = serviceProvider.GetService<IMediator>() ?? throw new Exception("Mediator service not found");
+        Mediator = ServiceProvider.GetService<IMediator>() ?? throw new Exception("Mediator service not found");
     }
 }

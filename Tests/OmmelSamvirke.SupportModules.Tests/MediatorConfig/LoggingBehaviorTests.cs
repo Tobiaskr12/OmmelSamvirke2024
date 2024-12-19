@@ -1,3 +1,4 @@
+using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -9,22 +10,22 @@ namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 public class LoggingBehaviorTests
 {
     private ILogger _loggerMock;
-    private LoggingBehavior<TestRequest, TestResponse> _behavior;
+    private LoggingBehavior<TestRequest, ResultBase> _behavior;
 
     [SetUp]
     public void Setup()
     {
         _loggerMock = Substitute.For<ILogger>();
-        _behavior = new LoggingBehavior<TestRequest, TestResponse>(_loggerMock);
+        _behavior = new LoggingBehavior<TestRequest, ResultBase>(_loggerMock);
     }
 
     [Test]
     public async Task Handle_Should_LogInformation_Twice_On_Success()
     {
         var request = new TestRequest();
-        var response = new TestResponse();
+        Result? response = Result.Ok();
         
-        TestResponse result = await _behavior.Handle(request, Next, CancellationToken.None);
+        ResultBase result = await _behavior.Handle(request, Next, CancellationToken.None);
         
         Assert.Multiple(() =>
         {
@@ -46,34 +47,26 @@ public class LoggingBehaviorTests
         });
         return;
 
-        Task<TestResponse> Next() => Task.FromResult(response);
+        Task<ResultBase> Next() => Task.FromResult<ResultBase>(response);
     }
 
     [Test]
-    public void Handle_Should_LogError_When_Exception_Is_Thrown()
+    public async Task Handle_Should_LogError_When_Exception_Is_Thrown()
     {
         var request = new TestRequest();
         var exception = new Exception("Test exception");
 
-        RequestHandlerDelegate<TestResponse> next = () => Task.FromException<TestResponse>(exception);
+        RequestHandlerDelegate<ResultBase> next = () => Task.FromException<ResultBase>(exception);
         
-        // Simulate exception during logging
-        var ex = Assert.ThrowsAsync<Exception>(async () =>
-            await _behavior.Handle(request, next, CancellationToken.None));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(ex, Is.EqualTo(exception), "The thrown exception should be the one from the handler.");
-
-            _loggerMock.Received(1).Log(
-                LogLevel.Error,
-                Arg.Any<EventId>(),
-                Arg.Is<object>(o => o.ToString()!.Contains("Error handling")),
-                exception,
-                Arg.Any<Func<object, Exception, string>>()!);
-        });
+        await _behavior.Handle(request, next, CancellationToken.None);
+        
+        _loggerMock.Received(1).Log(
+            LogLevel.Error,
+            Arg.Any<EventId>(),
+            Arg.Is<object>(o => o.ToString()!.Contains("Error handling")),
+            exception,
+            Arg.Any<Func<object, Exception, string>>()!);
     }
 
-    private class TestRequest : IRequest<TestResponse>;
-    private class TestResponse;
+    private class TestRequest : IRequest<ResultBase>;
 }

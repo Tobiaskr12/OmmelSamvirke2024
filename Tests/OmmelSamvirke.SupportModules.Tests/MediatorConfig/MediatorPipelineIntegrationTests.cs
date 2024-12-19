@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using OmmelSamvirke.SupportModules.MediatorConfig.Exceptions;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 
@@ -58,18 +57,20 @@ public class MediatorPipelineIntegrationTests
     #endregion
     
     [Test]
-    public void FullFlow_Should_ThrowValidationException_When_ValidationFails()
+    public async Task FullFlow_ValidationFails_LogErrorAndReturnFail()
     {
         var command = new TestCommand(string.Empty, ShouldFail: false);
 
-        var exception = Assert.ThrowsAsync<ValidationException>(async () =>
-            await _mediator.Send(command, CancellationToken.None));
+        Result<string> result = await _mediator.Send(command, CancellationToken.None);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(exception, Is.Not.Null, "A ValidationException should be thrown.");
-            Assert.That(exception.Errors.Any(e => e.PropertyName == "Name"), "Validation failure should be for the Name property.");
-        });
+        _logger.Received(1).Log(
+            LogLevel.Error,
+            Arg.Any<EventId>(),
+            Arg.Is<object>(o => o.ToString()!.Contains("Validation failed")),
+            Arg.Any<Exception>(),
+            Arg.Any<Func<object, Exception?, string>>());
+        
+        Assert.That(result.IsFailed);
     }
 
     [Test]
@@ -84,21 +85,6 @@ public class MediatorPipelineIntegrationTests
             Assert.That(result, Is.Not.Null, "The result should not be null.");
             Assert.That(result.IsSuccess, Is.True, "The result should be successful.");
             Assert.That(result.Value, Is.EqualTo("Processed: ValidName"), "The result value should match the expected output.");
-        });
-    }
-
-    [Test]
-    public void FullFlow_Should_ThrowResultException_When_CommandFails()
-    {
-        var command = new TestCommand("ValidName", ShouldFail: true);
-
-        var exception = Assert.ThrowsAsync<ResultException>(async () =>
-            await _mediator.Send(command, CancellationToken.None));
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(exception, Is.Not.Null, "A ResultException should be thrown.");
-            Assert.That(exception.Result.IsFailed, Is.True, "The exception should contain the failed result.");
         });
     }
 
@@ -130,9 +116,8 @@ public class MediatorPipelineIntegrationTests
     {
         _logger.ClearReceivedCalls();
         var command = new TestCommand("ValidName", ShouldFail: true);
-
-        Assert.ThrowsAsync<ResultException>(async () =>
-            await _mediator.Send(command, CancellationToken.None));
+        
+        _mediator.Send(command, CancellationToken.None);
 
         _logger.Received(1).Log(
             LogLevel.Information,
