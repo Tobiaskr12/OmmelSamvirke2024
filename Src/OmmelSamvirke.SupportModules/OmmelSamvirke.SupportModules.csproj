@@ -26,9 +26,6 @@
 
     <ItemGroup>
       <None Remove="SecretsManager\KeyVaultUrls.secrets.json" />
-      <EmbeddedResource Include="SecretsManager\KeyVaultUrls.secrets.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </EmbeddedResource>
     </ItemGroup>
 
 </Project>
