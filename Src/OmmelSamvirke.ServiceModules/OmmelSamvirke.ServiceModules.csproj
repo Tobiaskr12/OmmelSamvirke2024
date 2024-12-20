@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <PackageReference Include="FluentResults" Version="3.16.0" />
+      <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
       <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
     </ItemGroup>
@@ -28,4 +29,10 @@
       <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
     </ItemGroup>
 
+    <!-- Always copy all email templates to the output directory -->
+    <ItemGroup>
+        <Content Include="Emails\TemplateEngine\Templates\**\*.html">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 </Project>
