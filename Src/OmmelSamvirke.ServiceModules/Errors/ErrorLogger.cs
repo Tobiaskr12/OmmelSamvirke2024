@@ -53,7 +53,8 @@ public class ErrorLogger : IErrorLogger
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Subject = $"[Exception] in method: {callingMethodName}",
-            Body = "", // TODO - populate from some kind of template
+            HtmlBody = "Empty.html", // TODO - populate from some kind of template
+            PlainTextBody = "Empty.html", // TODO - populate from some kind of template
             Recipients = _developerEmails,
             Attachments = []
         };
@@ -81,7 +82,8 @@ public class ErrorLogger : IErrorLogger
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Subject = $"[Validation Error] in method: {callingMethodName}",
-            Body = "", // TODO - populate from some kind of template
+            HtmlBody = "Empty.html", // TODO - populate from some kind of template
+            PlainTextBody = "Empty.html", // TODO - populate from some kind of template
             Recipients = _developerEmails,
             Attachments = []
         };

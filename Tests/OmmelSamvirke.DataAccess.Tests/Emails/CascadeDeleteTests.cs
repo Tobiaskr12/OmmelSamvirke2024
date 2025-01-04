@@ -116,7 +116,8 @@ public class CascadeDeleteTests : TestDatabaseFixture
             Id = 1,
             SenderEmailAddress = "sender@example.com",
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             Recipients = recipients,
             Attachments = attachments
         };

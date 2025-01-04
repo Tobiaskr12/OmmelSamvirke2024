@@ -32,7 +32,8 @@ public class UpdateTests : GenericRepositoryTestsBase
             Id = 99, // Nonexistent ID
             SenderEmailAddress = "nonexistent@example.com",
             Subject = "Nonexistent Email",
-            Body = "This email does not exist.",
+            HtmlBody = "This email does not exist.",
+            PlainTextBody = "This email does not exist.",
             Recipients = [],
             Attachments = []
         };
@@ -54,7 +55,8 @@ public class UpdateTests : GenericRepositoryTestsBase
         {
             SenderEmailAddress = "Test data",
             Subject = "Test data",
-            Body = "Test data",
+            HtmlBody = "Test data",
+            PlainTextBody = "Test data",
             Recipients = [],
             Attachments = []
         });
@@ -100,7 +102,7 @@ public class UpdateTests : GenericRepositoryTestsBase
         Email email1 = email1Result.Value;
         email1.SenderEmailAddress = "updated1@example.com";
         email1.Subject = "Valid Update 1";
-        email1.Body = "Updated body 1";
+        email1.HtmlBody = "Updated body 1";
         
         List<Email> emailsToUpdate =
         [
@@ -110,7 +112,8 @@ public class UpdateTests : GenericRepositoryTestsBase
                 Id = 99, // Nonexistent ID
                 SenderEmailAddress = "invalid@example.com",
                 Subject = "Invalid Update",
-                Body = "This update should fail.",
+                HtmlBody = "This update should fail.",
+                PlainTextBody = "This update should fail.",
                 Recipients = null!,
                 Attachments = null!
             }
@@ -127,7 +130,7 @@ public class UpdateTests : GenericRepositoryTestsBase
             Assert.That(updatedEmail.IsSuccess, Is.True);
             Assert.That(updatedEmail.Value.SenderEmailAddress, Is.EqualTo(email1.SenderEmailAddress));
             Assert.That(updatedEmail.Value.Subject, Is.EqualTo(email1.Subject));
-            Assert.That(updatedEmail.Value.Body, Is.EqualTo(email1.Body));
+            Assert.That(updatedEmail.Value.HtmlBody, Is.EqualTo(email1.HtmlBody));
         });
     }
 
@@ -142,7 +145,8 @@ public class UpdateTests : GenericRepositoryTestsBase
                 Id = SeedData.Email1.Id,
                 SenderEmailAddress = "bulk_error1@example.com",
                 Subject = "Bulk Error Update 1",
-                Body = "This update will fail.",
+                HtmlBody = "This update will fail.",
+                PlainTextBody = "This update will fail.",
                 Recipients = SeedData.Email1Recipients,
                 Attachments = SeedData.Email1Attachments
             },
@@ -152,7 +156,8 @@ public class UpdateTests : GenericRepositoryTestsBase
                 Id = SeedData.Email2.Id,
                 SenderEmailAddress = "bulk_error2@example.com",
                 Subject = "Bulk Error Update 2",
-                Body = "This update will also fail.",
+                HtmlBody = "This update will also fail.",
+                PlainTextBody = "This update will also fail.",
                 Recipients = SeedData.Email2Recipients,
                 Attachments = SeedData.Email2Attachments
             }

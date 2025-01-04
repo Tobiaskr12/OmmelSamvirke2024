@@ -14,7 +14,8 @@ public class SendEmailCommandExample : IExamplesProvider<SendEmailCommand>
             new Email
             {
                 Subject = "Test email subject",
-                Body = "This is a test email",
+                HtmlBody = "This is a test email",
+                PlainTextBody = "This is a test email",
                 Attachments = [],
                 Recipients =
                 [

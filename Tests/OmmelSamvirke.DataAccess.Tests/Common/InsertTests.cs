@@ -17,7 +17,8 @@ public class InsertTests : GenericRepositoryTestsBase
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = subject,
-            Body = body,
+            HtmlBody = body,
+            PlainTextBody = body,
             Recipients = [],
             Attachments = []
         };
@@ -29,7 +30,7 @@ public class InsertTests : GenericRepositoryTestsBase
             Assert.That(addResult.IsSuccess, Is.True);
             Assert.That(addResult.Value.SenderEmailAddress, Is.EqualTo(senderEmailAddress));
             Assert.That(addResult.Value.Subject, Is.EqualTo(subject));
-            Assert.That(addResult.Value.Body, Is.EqualTo(body));
+            Assert.That(addResult.Value.HtmlBody, Is.EqualTo(body));
             Assert.That(addResult.Value.Id, Is.Not.Default);
             Assert.That(addResult.Value.DateCreated, Is.Not.Null);
             Assert.That(addResult.Value.DateCreated, Is.Not.Default);
@@ -44,7 +45,8 @@ public class InsertTests : GenericRepositoryTestsBase
         var newEmail = new Email
         {
             Subject = null!,
-            Body = null!,
+            HtmlBody = null!,
+            PlainTextBody = null!,
             SenderEmailAddress = null!,
             Recipients = null!,
             Attachments = null!
@@ -67,7 +69,8 @@ public class InsertTests : GenericRepositoryTestsBase
         {
             SenderEmailAddress = "new_sender@example.com",
             Subject = "New Email",
-            Body = "This is a new email.",
+            HtmlBody = "This is a new email.",
+            PlainTextBody = "This is a new email.",
             Recipients = [],
             Attachments = []
         };
@@ -90,7 +93,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = "bulk1@example.com",
                 Subject = "Bulk Email 1",
-                Body = "This is the first bulk email.",
+                HtmlBody = "This is the first bulk email.",
+                PlainTextBody = "This is the first bulk email.",
                 Recipients = [],
                 Attachments = []
             },
@@ -99,7 +103,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = "bulk2@example.com",
                 Subject = "Bulk Email 2",
-                Body = "This is the second bulk email.",
+                HtmlBody = "This is the second bulk email.",
+                PlainTextBody = "This is the second bulk email.",
                 Recipients = [],
                 Attachments = []
             }
@@ -133,7 +138,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = "valid1@example.com",
                 Subject = "Valid Bulk Email 1",
-                Body = "This is a valid bulk email.",
+                HtmlBody = "This is a valid bulk email.",
+                PlainTextBody = "This is a valid bulk email.",
                 Recipients = [],
                 Attachments = []
             },
@@ -142,7 +148,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = null!, // Invalid entity
                 Subject = "Invalid Bulk Email",
-                Body = "This email has invalid data.",
+                HtmlBody = "This email has invalid data.",
+                PlainTextBody = "This email has invalid data.",
                 Recipients = null!,
                 Attachments = null!
             }
@@ -167,7 +174,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = "bulk_error1@example.com",
                 Subject = "Bulk Error Email 1",
-                Body = "This is a bulk email that will fail.",
+                HtmlBody = "This is a bulk email that will fail.",
+                PlainTextBody = "This is a bulk email that will fail.",
                 Recipients = [],
                 Attachments = []
             },
@@ -176,7 +184,8 @@ public class InsertTests : GenericRepositoryTestsBase
             {
                 SenderEmailAddress = "bulk_error2@example.com",
                 Subject = "Bulk Error Email 2",
-                Body = "This is another bulk email that will fail.",
+                HtmlBody = "This is another bulk email that will fail.",
+                PlainTextBody = "This is another bulk email that will fail.",
                 Recipients = [],
                 Attachments = []
             }

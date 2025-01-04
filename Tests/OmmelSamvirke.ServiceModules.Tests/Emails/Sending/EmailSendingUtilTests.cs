@@ -27,7 +27,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients =
             [
@@ -66,7 +67,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients =
             [
@@ -100,7 +102,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients =
             [
@@ -141,7 +144,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients = [CreateRecipient("any@example.com")]
         };
@@ -173,13 +177,14 @@ public class EmailSendingUtilTests
         var email = new Email
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
-            Attachments = new List<Attachment>(),
-            Body = "This is a test email",
+            Attachments = [],
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
-            Recipients = new List<Recipient>() // No recipients
+            Recipients = [] 
         };
 
-        var existingRecipients = new List<Recipient>(); // No existing recipients
+        List<Recipient> existingRecipients = [];
 
         _recipientRepository.FindAsync(
                 Arg.Any<Expression<Func<Recipient, bool>>>(),
@@ -203,7 +208,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients =
             [
@@ -247,7 +253,8 @@ public class EmailSendingUtilTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Attachments = [],
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Subject = "This is a test subject",
             Recipients =
             [

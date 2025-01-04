@@ -85,7 +85,8 @@ public static class SeedData
             Id = 1,
             SenderEmailAddress = "sender1@example.com",
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             Recipients = Email1Recipients,
             Attachments = Email1Attachments
         };
@@ -96,7 +97,8 @@ public static class SeedData
             Id = 2,
             SenderEmailAddress = "sender2@example.com",
             Subject = "Second Test Email",
-            Body = "This is also a test email.",
+            HtmlBody = "This is also a test email.",
+            PlainTextBody = "This is also a test email.",
             Recipients = Email2Recipients,
             Attachments = Email2Attachments
         };

@@ -96,7 +96,8 @@ public class AzureEmailServiceWrapperTests
             SenderEmailAddress = "sender@example.com",
             Recipients = [new Recipient() { EmailAddress = "recipient@example.com" }],
             Subject = "Test Email",
-            Body = "<h1>This is a test email</h1>",
+            HtmlBody = "<h1>This is a test email</h1>",
+            PlainTextBody = "<h1>This is a test email</h1>",
             Attachments = []
         };
     }

@@ -104,7 +104,8 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
                 var email = new Email
                 {
                     Attachments = request.Email.Attachments,
-                    Body = request.Email.Body,
+                    HtmlBody = request.Email.HtmlBody,
+                    PlainTextBody = request.Email.PlainTextBody,
                     Subject = request.Email.Subject,
                     SenderEmailAddress = request.Email.SenderEmailAddress,
                     Recipients = request.ContactList.Contacts.Skip(i * batchSize).Take(batchSize).ToList()

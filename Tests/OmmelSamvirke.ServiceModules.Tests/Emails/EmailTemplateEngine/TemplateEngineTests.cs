@@ -10,20 +10,30 @@ public class TemplateEngineTests
     public TemplateEngineTests()
     {
         // Set up the Templates directory relative to the current directory
-        _templatesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
+        _templatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
         if (!Directory.Exists(_templatesDirectory))
         {
             Directory.CreateDirectory(_templatesDirectory);
         }
     }
 
+    // Clean up the Templates directory after each test.
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        // Clean up the Templates directory after each test
+        // Assumption: Each test file start with a lower-case character.
+        // All production files start with an upper-case character.
         if (Directory.Exists(_templatesDirectory))
         {
-            Directory.Delete(_templatesDirectory, true);
+            string[] files = Directory.GetFiles(_templatesDirectory);
+            foreach (string file in files)
+            {
+                string fileName = Path.GetFileName(file);
+                if (char.IsLower(fileName[0]))
+                {
+                    File.Delete(file);
+                }
+            }
         }
     }
 

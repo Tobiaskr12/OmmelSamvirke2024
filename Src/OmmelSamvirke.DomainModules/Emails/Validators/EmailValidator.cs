@@ -23,7 +23,13 @@ public class EmailValidator : AbstractValidator<Email>
             .Length(3, 80)
             .WithMessage(ErrorMessages.Email_Subject_InvalidLength);
 
-        RuleFor(x => x.Body)
+        RuleFor(x => x.HtmlBody)
+            .NotEmpty()
+            .WithMessage(ErrorMessages.Email_Body_InvalidLength)
+            .Length(20, 7 * OneMb / 2)
+            .WithMessage(ErrorMessages.Email_Body_InvalidLength);
+        
+        RuleFor(x => x.PlainTextBody)
             .NotEmpty()
             .WithMessage(ErrorMessages.Email_Body_InvalidLength)
             .Length(20, 7 * OneMb / 2)
@@ -71,7 +77,7 @@ public class EmailValidator : AbstractValidator<Email>
     private static bool HaveValidContentSize(Email email)
     {
         int subjectSize = email.Subject.Length * sizeof(char);
-        int bodySize = email.Body.Length * sizeof(char);
+        int bodySize = email.HtmlBody.Length * sizeof(char) + email.PlainTextBody.Length * sizeof(char);
         long attachmentsSize = email.Attachments.Sum(attachment => attachment.ContentSize);
         
         long totalSize = subjectSize + bodySize + attachmentsSize;

@@ -5,9 +5,11 @@ namespace OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 public static partial class TemplateEngine
 {
+    private static readonly string TemplatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
+    
     public static string GenerateHtmlBody(string templateFileName, params (string key, string value)[] parameters)
     {
-        string htmlTemplate = File.ReadAllText($"./Templates/{templateFileName}");
+        string htmlTemplate = File.ReadAllText(Path.Combine(TemplatesDirectory, templateFileName));
 
         foreach ((string key, string value) param in parameters)
         {
@@ -46,7 +48,7 @@ public static partial class TemplateEngine
 
     public static string GeneratePlainTextBodyFromTemplate(string templateFileName, params (string key, string value)[] parameters)
     {
-        string htmlTemplate = File.ReadAllText($"./Templates/{templateFileName}");
+        string htmlTemplate = File.ReadAllText(Path.Combine(TemplatesDirectory, templateFileName));
         return GeneratePlainTextBody(htmlTemplate, parameters);
     }
     

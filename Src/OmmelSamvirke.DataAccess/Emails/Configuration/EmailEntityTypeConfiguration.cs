@@ -21,7 +21,10 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
                .IsRequired()
                .HasMaxLength(80);
 
-        builder.Property(e => e.Body)
+        builder.Property(e => e.HtmlBody)
+               .IsRequired();
+
+        builder.Property(e => e.PlainTextBody)
                .IsRequired();
 
         // Many-to-Many with Recipients

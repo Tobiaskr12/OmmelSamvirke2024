@@ -67,7 +67,8 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
                 ),
                 content: new EmailContent(subject: email.Subject)
                 {
-                    Html = email.Body
+                    Html = email.HtmlBody,
+                    PlainText = email.PlainTextBody,
                 }
             );
         } 
@@ -80,7 +81,8 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
                 ),
                 content: new EmailContent(subject: email.Subject)
                 {
-                    Html = email.Body
+                    Html = email.HtmlBody,
+                    PlainText = email.PlainTextBody
                 }
             );
         }

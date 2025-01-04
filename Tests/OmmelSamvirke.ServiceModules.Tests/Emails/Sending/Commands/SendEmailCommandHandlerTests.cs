@@ -62,7 +62,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -84,7 +85,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -108,7 +110,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -149,7 +152,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -186,7 +190,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -210,7 +215,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -234,7 +240,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "notwhitelisted@example.com" }],
             Attachments = []
@@ -256,7 +263,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "notwhitelisted@example.com" }],
             Attachments = []
@@ -278,7 +286,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Test Email",
-            Body = "This is a test email.",
+            HtmlBody = "This is a test email.",
+            PlainTextBody = "This is a test email.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
             Attachments = []
@@ -300,7 +309,8 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "Partial Whitelist Test",
-            Body = "Email with partial whitelisted recipients.",
+            HtmlBody = "Email with partial whitelisted recipients.",
+            PlainTextBody = "Email with partial whitelisted recipients.",
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [
                 new Recipient { EmailAddress = "whitelisted@example.com" },
@@ -325,8 +335,9 @@ public class SendEmailCommandHandlerTests
         var email = new Email
         {
             Subject = "All Whitelisted Test",
-            Body = "This is a test email"
-,           SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
+            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Recipients = [
                 new Recipient { EmailAddress = "whitelisted1@example.com" },
                 new Recipient { EmailAddress = "whitelisted2@example.com" }

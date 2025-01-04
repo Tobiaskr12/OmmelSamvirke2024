@@ -103,7 +103,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Admins,
             Subject = $"{messageGuid} - Test Email with Attachments",
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Recipients = [],
             Attachments = []
         };
@@ -193,7 +194,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Admins,
             Subject = "Test Email to Invalid Recipient",
-            Body = "This email should not be sent.",
+            HtmlBody = "This email should not be sent.",
+            PlainTextBody = "This email should not be sent.",
             Recipients = [invalidRecipient],
             Attachments = []
         };
@@ -210,7 +212,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = $"{messageGuid} - {emailSubjectSuffix}",
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Recipients = [recipient],
             Attachments = []
         };
@@ -226,7 +229,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = $"{messageGuid} - {emailSubjectSuffix}",
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Recipients = recipients,
             Attachments = []
         };
@@ -250,7 +254,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = $"{messageGuid} - {emailSubjectSuffix}",
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Recipients = [recipient],
             Attachments = attachments
         };
@@ -274,7 +279,8 @@ public class EmailSendingTests
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = $"{messageGuid} - {emailSubjectSuffix}",
-            Body = "This is a test email",
+            HtmlBody = "This is a test email",
+            PlainTextBody = "This is a test email",
             Recipients = [],
             Attachments = attachments
         };
@@ -347,7 +353,7 @@ public class EmailSendingTests
         {
             Assert.That(receivedMessage, Is.Not.Null);
             Assert.That(receivedMessage!.Subject, Is.EqualTo(expectedEmail.Subject));
-            Assert.That(receivedMessage.HtmlBody.Trim(), Is.EqualTo(expectedEmail.Body));
+            Assert.That(receivedMessage.HtmlBody.Trim(), Is.EqualTo(expectedEmail.HtmlBody));
         });
     }
 

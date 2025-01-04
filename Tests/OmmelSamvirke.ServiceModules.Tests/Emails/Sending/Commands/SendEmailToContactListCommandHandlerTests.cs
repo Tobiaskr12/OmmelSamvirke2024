@@ -28,7 +28,8 @@ public class SendEmailToContactListCommandHandlerTests
     private readonly Email _baseValidEmail = new()
     {
         Subject = "Test Email",
-        Body = "This is a test email.",
+        HtmlBody = "This is a test email.",
+        PlainTextBody = "This is a test email.",
         SenderEmailAddress = ValidSenderEmailAddresses.Auto,
         Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
         Attachments = []

@@ -7,6 +7,7 @@ using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DomainModules.Emails.Validators;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 
@@ -69,14 +70,16 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
                 {
                     EmailAddress = request.EmailAddress,
                 };
-                
+
+                string htmlBody = TemplateEngine.GenerateHtmlBody("Empty.html"); // TODO - Populate from some kind of template
                 await _mediator.Send(new SendEmailCommand(new Email
                 {
                     SenderEmailAddress = ValidSenderEmailAddresses.Auto,
                     Recipients = [recipient],
                     Attachments = [],
                     Subject = "", // TODO - Populate from some kind of template
-                    Body = "" // TODO - Populate from some kind of template
+                    HtmlBody = htmlBody, 
+                    PlainTextBody = TemplateEngine.GeneratePlainTextBody(htmlBody)
                 }), cancellationToken);
             }
 

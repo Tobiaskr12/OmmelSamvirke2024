@@ -27,7 +27,8 @@ public class EmailTests
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Subject = "This is a test email",
-            Body = "This is the body content of a test email",
+            HtmlBody = "This is the body content of a test email",
+            PlainTextBody = "This is the body content of a test email",
             Attachments = [],
             Recipients = [new Recipient
             {
@@ -109,7 +110,7 @@ public class EmailTests
     public void Body_ValidLength_PassesValidation(int bodyLength)
     {
         Email email = _baseValidEmail;
-        email.Body = new string('a', bodyLength);
+        email.HtmlBody = new string('a', bodyLength);
         
         ValidationResult validationResult = _validator.Validate(email);
 
@@ -123,7 +124,7 @@ public class EmailTests
     public void Body_InvalidLength_FailsValidationWithExpectedErrorMessage(int subjectLength)
     {
         Email email = _baseValidEmail;
-        email.Body = new string('a', subjectLength);
+        email.HtmlBody = new string('a', subjectLength);
     
         ValidationResult validationResult = _validator.Validate(email);
         
@@ -207,7 +208,7 @@ public class EmailTests
     {
         Email email = _baseValidEmail;
         var attachmentContentSize =
-            (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.Body));
+            (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
         email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
         
         ValidationResult validationResult = _validator.Validate(email);
@@ -220,7 +221,7 @@ public class EmailTests
     {
         Email email = _baseValidEmail;
         var attachmentContentSize =
-            (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.Body));
+            (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
         email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
         
         ValidationResult validationResult = _validator.Validate(email);

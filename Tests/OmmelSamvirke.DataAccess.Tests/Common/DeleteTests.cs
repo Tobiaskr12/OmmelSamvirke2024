@@ -32,7 +32,8 @@ public class DeleteTests : GenericRepositoryTestsBase
             Id = 99, // Nonexistent ID
             SenderEmailAddress = "nonexistent@example.com",
             Subject = "Nonexistent Email",
-            Body = "This email does not exist.",
+            HtmlBody = "This email does not exist.",
+            PlainTextBody = "This email does not exist.",
             Recipients = [],
             Attachments = []
         };
@@ -54,7 +55,8 @@ public class DeleteTests : GenericRepositoryTestsBase
         {
             SenderEmailAddress = "Test data",
             Subject = "Test data",
-            Body = "Test data",
+            HtmlBody = "Test data",
+            PlainTextBody = "Test data",
             Recipients = [],
             Attachments = []
         });
@@ -103,7 +105,8 @@ public class DeleteTests : GenericRepositoryTestsBase
                 Id = 99, // Nonexistent ID
                 SenderEmailAddress = "nonexistent@example.com",
                 Subject = "Nonexistent Email",
-                Body = "This email does not exist.",
+                HtmlBody = "This email does not exist.",
+                PlainTextBody = "This email does not exist.",
                 Recipients = [],
                 Attachments = []
             }

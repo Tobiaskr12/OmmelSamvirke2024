@@ -36,6 +36,8 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Emails\EmailTemplateEngine\Templates\" />
+      <None Update="Emails\EmailTemplateEngine\Templates\Empty.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

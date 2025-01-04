@@ -151,7 +151,8 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
             {
                 Id = i,
                 Subject = "Test Email",
-                Body = "This is a test email",
+                HtmlBody = "This is a test email",
+                PlainTextBody = "This is a test email",
                 SenderEmailAddress = "test@example.com",
                 Attachments = new List<Attachment>(),
                 Recipients = new List<Recipient>(),
