@@ -17,22 +17,21 @@ public static partial class TemplateEngine
         return htmlTemplate;
     }
 
-    public static string GeneratePlainTextBody(string templateFileName, params (string key, string value)[] parameters)
+    public static string GeneratePlainTextBody(string htmlContent, params (string key, string value)[] parameters)
     {
-        string htmlTemplate = File.ReadAllText($"./Templates/{templateFileName}");
-        htmlTemplate = WhiteSpaceRegex().Replace(htmlTemplate, " ");
-        htmlTemplate = HtmlTagsWithSpaceRegex().Replace(htmlTemplate, "><");
-        htmlTemplate = htmlTemplate.Replace("\r\n", "");
-
+        htmlContent = WhiteSpaceRegex().Replace(htmlContent, " ");
+        htmlContent = HtmlTagsWithSpaceRegex().Replace(htmlContent, "><");
+        htmlContent = htmlContent.Replace("\r\n", "");
+    
         foreach ((string key, string value) param in parameters)
         {
-            htmlTemplate = htmlTemplate.Replace("{{" + param.key + "}}", param.value);
+            htmlContent = htmlContent.Replace("{{" + param.key + "}}", param.value);
         }
         
         var htmlDoc = new HtmlDocument();
         var plainTextBuilder = new StringBuilder();
         
-        htmlDoc.LoadHtml(htmlTemplate);
+        htmlDoc.LoadHtml(htmlContent);
         ProcessHtmlNode(htmlDoc.DocumentNode, plainTextBuilder);
         
         // Remove newline character at the end if there is one
@@ -43,6 +42,12 @@ public static partial class TemplateEngine
         }
         
         return plainTextBody.Trim();
+    }
+
+    public static string GeneratePlainTextBodyFromTemplate(string templateFileName, params (string key, string value)[] parameters)
+    {
+        string htmlTemplate = File.ReadAllText($"./Templates/{templateFileName}");
+        return GeneratePlainTextBody(htmlTemplate, parameters);
     }
     
     private static void ProcessHtmlNode(HtmlNode node, StringBuilder builder)
@@ -76,7 +81,7 @@ public static partial class TemplateEngine
 
                         if (!string.IsNullOrEmpty(linkText) && !string.IsNullOrEmpty(href))
                         {
-                            builder.Append($"\"{linkText}\": \"{href}\"");
+                            builder.Append($"{linkText} ({href})");
                         }
                         else if (!string.IsNullOrEmpty(linkText))
                         {
