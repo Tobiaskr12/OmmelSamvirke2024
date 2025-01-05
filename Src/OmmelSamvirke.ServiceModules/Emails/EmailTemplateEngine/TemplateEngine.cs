@@ -12,6 +12,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
     private readonly string _partialsBaseDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Partials");
     private string _htmlBody = string.Empty;
     private string _plainTextBody = string.Empty;
+    private string _subject = string.Empty;
 
     public TemplateEngine(ILogger logger)
     {
@@ -47,6 +48,13 @@ public partial class TemplateEngine : IEmailTemplateEngine
                 _htmlBody = _htmlBody.Replace("{{" + param.key + "}}", param.value);
             }
             
+            // Extract email subject from headlines
+            var doc = new HtmlDocument();
+            doc.LoadHtml(_htmlBody);
+            
+            HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//head/title");
+            _subject = titleNode?.InnerText ?? string.Empty;
+            
             _plainTextBody = GeneratePlainTextBody();
             return Result.Ok();
         }
@@ -56,7 +64,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
             return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
         }
     }
-
+    
     public Result GenerateBodiesFromHtml(string htmlContent, params (string key, string value)[] parameters)
     {
         try
@@ -86,6 +94,11 @@ public partial class TemplateEngine : IEmailTemplateEngine
     public string GetPlainTextBody()
     {
         return _plainTextBody;
+    }
+
+    public string GetSubject()
+    {
+        return _subject;
     }
 
     private string GeneratePlainTextBody()

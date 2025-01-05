@@ -511,4 +511,31 @@ public class TemplateEngineTests
 
         PerformAssertions(result, actualHtml, expectedHtml, actualPlain, expectedPlain);
     }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_ExtractEmailSubjectFromTemplate()
+    {
+        const string templateName = "multiple_partials.html";
+        const string templateContent = """
+                                       <!DOCTYPE html>
+                                       <html>
+                                           <head>   
+                                                <title>Test subject</title>
+                                           </head>
+                                           <body>
+                                               <p>Email content</p>
+                                           </body>
+                                       </html>
+                                       """;
+        
+        CreateTemplate(templateName, templateContent);
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
+        string subject = _emailTemplateEngine.GetSubject();
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess);
+            Assert.That(subject, Is.EqualTo("Test subject"));
+        });
+    }
 }
