@@ -23,7 +23,12 @@ public partial class TemplateEngine : IEmailTemplateEngine
     {
         try
         {
-            _htmlBody = File.ReadAllText(Path.Combine(_templatesDirectory, templateName));
+            string safeTemplateName = templateName
+                                          .Replace("/", Path.DirectorySeparatorChar.ToString())
+                                          .Replace("\\", Path.DirectorySeparatorChar.ToString());
+            string templateFilePath = Path.Combine(_templatesDirectory, safeTemplateName);
+            
+            _htmlBody = File.ReadAllText(templateFilePath);
             
             // Insert partials
             _htmlBody = PartialRegex().Replace(_htmlBody, match =>

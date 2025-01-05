@@ -4,7 +4,7 @@ using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.EmailTemplateEngine;
 
-[TestFixture]
+[TestFixture, Category("UnitTests")]
 public class TemplateEngineTests
 {
     private string _templatesDirectory;
@@ -37,35 +37,44 @@ public class TemplateEngineTests
     [OneTimeTearDown]
     public void OneTimeTearDown()
     {
-        // Assumption: Each test file start with a lower-case character.
-        // All production files start with an upper-case character.
+        // Clean up Templates
         if (Directory.Exists(_templatesDirectory))
         {
-            string[] files = Directory.GetFiles(_templatesDirectory);
+            string[] files = Directory.GetFiles(_templatesDirectory, "*", SearchOption.AllDirectories);
             foreach (string file in files)
             {
                 string fileName = Path.GetFileName(file);
+                // Assumption: test files start with a lower-case character
                 if (char.IsLower(fileName[0]))
                 {
                     File.Delete(file);
                 }
             }
+
+            // Remove now-empty subdirectories
+            foreach (string dir in Directory.GetDirectories(_templatesDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!Directory.EnumerateFileSystemEntries(dir).Any())
+                {
+                    Directory.Delete(dir, false);
+                }
+            }
         }
-        
-        // Clean up test partials
+    
+        // Clean up Partials
         if (Directory.Exists(_partialsDirectory))
         {
             foreach (string filePath in Directory.GetFiles(_partialsDirectory, "*", SearchOption.AllDirectories))
             {
                 string fileName = Path.GetFileName(filePath);
-                // Again, test partial files start with a lower-case letter
+                // Assumption: test partial files start with a lower-case letter
                 if (char.IsLower(fileName[0]))
                 {
                     File.Delete(filePath);
                 }
             }
 
-            // Remove subdirectories if empty
+            // Remove now-empty subdirectories
             foreach (string dir in Directory.GetDirectories(_partialsDirectory, "*", SearchOption.AllDirectories))
             {
                 if (!Directory.EnumerateFileSystemEntries(dir).Any())
@@ -84,6 +93,7 @@ public class TemplateEngineTests
     private void CreateTemplate(string fileName, string content)
     {
         string filePath = Path.Combine(_templatesDirectory, fileName);
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         File.WriteAllText(filePath, content);
     }
     
@@ -536,6 +546,60 @@ public class TemplateEngineTests
         {
             Assert.That(result.IsSuccess);
             Assert.That(subject, Is.EqualTo("Test subject"));
+        });
+    }
+    
+    [Test]
+    public void GenerateBodiesFromTemplate_SingleSubdirectory()
+    {
+        const string subDir = "subdir";
+        const string fileName = "testTemplate.html";
+        string relativePath = Path.Combine(subDir, fileName);  // "subdir/testTemplate.html"
+        
+        const string templateContent = """
+                                           <html>
+                                           <head><title>Subdir Title</title></head>
+                                           <body>
+                                               <p>Hello from single-level subdirectory!</p>
+                                           </body>
+                                           </html>
+                                       """;
+        CreateTemplate(relativePath, templateContent);
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(Path.Combine(subDir, fileName));
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess);
+            Assert.That(_emailTemplateEngine.GetHtmlBody(), Does.Contain("Hello from single-level subdirectory!"));
+            Assert.That(_emailTemplateEngine.GetSubject(), Is.EqualTo("Subdir Title"));
+        });
+    }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_TwoLevelSubdirectory()
+    {
+        const string subDirLevel1 = "subdir1";
+        const string subDirLevel2 = "subdir2";
+        const string fileName = "testTemplate.html";
+        string path = Path.Combine(subDirLevel1, subDirLevel2, fileName); 
+        const string templateContent = """
+                                           <html>
+                                           <head><title>Two-Level Subdir Title</title></head>
+                                           <body>
+                                               <p>Hello from two-level subdirectory!</p>
+                                           </body>
+                                           </html>
+                                       """;
+        
+        CreateTemplate(path, templateContent);
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(path);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess);
+            Assert.That(_emailTemplateEngine.GetHtmlBody(), Does.Contain("Hello from two-level subdirectory!"));
+            Assert.That(_emailTemplateEngine.GetSubject(), Is.EqualTo("Two-Level Subdir Title"));
         });
     }
 }
