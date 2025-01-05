@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using FluentResults;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Constants;
@@ -16,6 +17,7 @@ public static class ServiceLimitAlerter
         double threshold,
         double currentUsage,
         ILogger logger,
+        IEmailTemplateEngine emailTemplateEngine,
         CancellationToken cancellationToken = default)
     {
         if (!Enum.IsDefined(typeof(ServiceLimitInterval), interval)) 
@@ -29,16 +31,16 @@ public static class ServiceLimitAlerter
         {
             // var warningMessage =
             //     $"The service limit for email sending is close to being reached for the '{Enum.GetName(typeof(ServiceLimitInterval), interval)}'-interval. Current usage is {currentUsage:0.00}%";
-            string warningMessageHtml = TemplateEngine.GenerateHtmlBody("Empty.html"); // TODO - Fix warning message to use HTML template
-            string warningMessagePlainText = TemplateEngine.GeneratePlainTextBody(warningMessageHtml);
+            Result result = emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html"); // TODO - Fix warning message to use HTML template
+            if (result.IsFailed) throw new Exception("Email body generation failed");
             
-            logger.LogWarning("{}", warningMessagePlainText);
+            logger.LogWarning("{}", emailTemplateEngine.GetPlainTextBody());
             await externalEmailServiceWrapper.SendAsync(new Email
             {
                 SenderEmailAddress = ValidSenderEmailAddresses.Auto,
                 Subject = "Email Service Limit Warning - OmmelSamvirke",
-                HtmlBody = warningMessageHtml,
-                PlainTextBody = warningMessagePlainText,
+                HtmlBody = emailTemplateEngine.GetHtmlBody(),
+                PlainTextBody = emailTemplateEngine.GetPlainTextBody(),
                 Attachments = [],
                 Recipients = [new Recipient { EmailAddress = "tobiaskristensen12@gmail.com" }]
             }, cancellationToken: cancellationToken);

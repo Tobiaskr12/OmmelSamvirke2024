@@ -11,6 +11,7 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands;
@@ -23,6 +24,7 @@ public class SendEmailToContactListCommandHandlerTests
     private IEmailSendingRepository _emailSendingRepository;
     private IExternalEmailServiceWrapper _externalEmailServiceWrapper;
     private IConfigurationRoot _configuration;
+    private IEmailTemplateEngine _emailTemplateEngine;
     private SendEmailToContactListCommandHandler _handler;
     
     private readonly Email _baseValidEmail = new()
@@ -57,6 +59,11 @@ public class SendEmailToContactListCommandHandlerTests
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
         _configuration = Substitute.For<IConfigurationRoot>();
         _externalEmailServiceWrapper = Substitute.For<IExternalEmailServiceWrapper>();
+        _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
+        
+        _emailTemplateEngine.GenerateBodiesFromTemplate(Arg.Any<string>(), Arg.Any<(string Key, string value)[]>()).Returns(Result.Ok());
+        _emailTemplateEngine.GetHtmlBody().Returns("<h1>This is a test body for an email</h1>");
+        _emailTemplateEngine.GetPlainTextBody().Returns("This is a test body for an email");
 
         _handler = new SendEmailToContactListCommandHandler(
             _logger,
@@ -64,6 +71,7 @@ public class SendEmailToContactListCommandHandlerTests
             _genericRecipientRepository,
             _emailSendingRepository,
             _externalEmailServiceWrapper,
+            _emailTemplateEngine,
             _configuration);
         
         _genericRecipientRepository

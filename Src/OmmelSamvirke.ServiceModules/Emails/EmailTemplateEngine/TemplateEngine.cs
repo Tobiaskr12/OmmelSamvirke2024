@@ -1,39 +1,84 @@
 using System.Text;
+using FluentResults;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 
 namespace OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
-public static partial class TemplateEngine
+public partial class TemplateEngine : IEmailTemplateEngine
 {
-    private static readonly string TemplatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
-    
-    public static string GenerateHtmlBody(string templateFileName, params (string key, string value)[] parameters)
-    {
-        string htmlTemplate = File.ReadAllText(Path.Combine(TemplatesDirectory, templateFileName));
+    private readonly ILogger _logger;
+    private readonly string _templatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
+    private string _htmlBody = string.Empty;
+    private string _plainTextBody = string.Empty;
 
-        foreach ((string key, string value) param in parameters)
+    public TemplateEngine(ILogger logger)
+    {
+        _logger = logger;
+    }
+    
+    public Result GenerateBodiesFromTemplate(string templateName, params (string key, string value)[] parameters)
+    {
+        try
         {
-            htmlTemplate = htmlTemplate.Replace("{{" + param.key + "}}", param.value);
+            _htmlBody = File.ReadAllText(Path.Combine(_templatesDirectory, templateName));
+
+            foreach ((string key, string value) param in parameters)
+            {
+                _htmlBody = _htmlBody.Replace("{{" + param.key + "}}", param.value);
+            }
+            
+            _plainTextBody = GeneratePlainTextBody();
+            return Result.Ok();
         }
-        
-        return htmlTemplate;
+        catch (Exception ex)
+        {
+            _logger.LogError("{errorMessage}", ex.Message);
+            return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
+        }
     }
 
-    public static string GeneratePlainTextBody(string htmlContent, params (string key, string value)[] parameters)
+    public Result GenerateBodiesFromHtml(string htmlContent, params (string key, string value)[] parameters)
     {
-        htmlContent = WhiteSpaceRegex().Replace(htmlContent, " ");
-        htmlContent = HtmlTagsWithSpaceRegex().Replace(htmlContent, "><");
-        htmlContent = htmlContent.Replace("\r\n", "");
-    
-        foreach ((string key, string value) param in parameters)
+        try
         {
-            htmlContent = htmlContent.Replace("{{" + param.key + "}}", param.value);
+            _htmlBody = htmlContent;
+            
+            foreach ((string key, string value) param in parameters)
+            {
+                _htmlBody = _htmlBody.Replace("{{" + param.key + "}}", param.value);
+            }
+            
+            _plainTextBody = GeneratePlainTextBody();
+            return Result.Ok();
         }
+        catch (Exception ex)
+        {
+            _logger.LogError("{errorMessage}", ex.Message);
+            return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
+        }
+    }
+
+    public string GetHtmlBody()
+    {
+        return _htmlBody;
+    }
+
+    public string GetPlainTextBody()
+    {
+        return _plainTextBody;
+    }
+
+    private string GeneratePlainTextBody()
+    {
+        _htmlBody = WhiteSpaceRegex().Replace(_htmlBody, " ");
+        _htmlBody = HtmlTagsWithSpaceRegex().Replace(_htmlBody, "><");
+        _htmlBody = _htmlBody.Replace("\r\n", "");
         
         var htmlDoc = new HtmlDocument();
         var plainTextBuilder = new StringBuilder();
         
-        htmlDoc.LoadHtml(htmlContent);
+        htmlDoc.LoadHtml(_htmlBody);
         ProcessHtmlNode(htmlDoc.DocumentNode, plainTextBuilder);
         
         // Remove newline character at the end if there is one
@@ -44,12 +89,6 @@ public static partial class TemplateEngine
         }
         
         return plainTextBody.Trim();
-    }
-
-    public static string GeneratePlainTextBodyFromTemplate(string templateFileName, params (string key, string value)[] parameters)
-    {
-        string htmlTemplate = File.ReadAllText(Path.Combine(TemplatesDirectory, templateFileName));
-        return GeneratePlainTextBody(htmlTemplate, parameters);
     }
     
     private static void ProcessHtmlNode(HtmlNode node, StringBuilder builder)

@@ -9,6 +9,7 @@ using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
@@ -36,6 +37,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
     private readonly IEmailSendingRepository _emailSendingRepository;
     private readonly IConfigurationRoot _configuration;
     private readonly IExternalEmailServiceWrapper _externalEmailServiceWrapper;
+    private readonly IEmailTemplateEngine _emailTemplateEngine;
 
     public SendEmailCommandHandler(
         ILogger<SendEmailCommandHandler> logger,
@@ -43,7 +45,8 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
         IConfigurationRoot configuration,
-        IExternalEmailServiceWrapper externalEmailServiceWrapper)
+        IExternalEmailServiceWrapper externalEmailServiceWrapper,
+        IEmailTemplateEngine emailTemplateEngine)
     {
         _logger = logger;
         _genericEmailRepository = genericEmailRepository;
@@ -51,6 +54,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         _emailSendingRepository = emailSendingRepository;
         _configuration = configuration;
         _externalEmailServiceWrapper = externalEmailServiceWrapper;
+        _emailTemplateEngine = emailTemplateEngine;
     }
     
     public async Task<Result<EmailSendingStatus>> Handle(SendEmailCommand request, CancellationToken cancellationToken)
@@ -66,6 +70,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
                 _emailSendingRepository,
                 _logger,
                 _externalEmailServiceWrapper,
+                _emailTemplateEngine,
                 cancellationToken);
             
             if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;

@@ -6,6 +6,7 @@ using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
 
@@ -18,6 +19,7 @@ public static class EmailSendingUtil
         IEmailSendingRepository emailSendingRepository,
         ILogger logger,
         IExternalEmailServiceWrapper externalEmailServiceWrapper,
+        IEmailTemplateEngine emailTemplateEngine,
         CancellationToken cancellationToken)
     {
         // Calculate the effect of sending the email against the service limits
@@ -50,6 +52,7 @@ public static class EmailSendingUtil
             warningThreshold,
             hourlyLimitResult.Value,
             logger,
+            emailTemplateEngine,
             cancellationToken);
         await ServiceLimitAlerter.AlertIfServiceUsageIsAboveThreshold(
             ServiceLimitInterval.PerMinute,
@@ -57,6 +60,7 @@ public static class EmailSendingUtil
             warningThreshold,
             minuteLimitResult.Value,
             logger,
+            emailTemplateEngine,
             cancellationToken);
 
         // Return if both values are below 100%

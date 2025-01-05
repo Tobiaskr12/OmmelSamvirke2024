@@ -9,6 +9,8 @@ using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 
@@ -17,7 +19,7 @@ public class RemoveContactFromContactListCommandTests
 {
     private ILogger _logger;
     private IRepository<ContactList> _contactListRepository;
-    private IRepository<Recipient> _contactRepository;
+    private IEmailTemplateEngine _emailTemplateEngine;
     private IMediator _mediator;
     private RemoveContactFromContactListCommandHandler _handler;
 
@@ -26,12 +28,16 @@ public class RemoveContactFromContactListCommandTests
     {
         _logger = Substitute.For<ILogger>();
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
-        _contactRepository = Substitute.For<IRepository<Recipient>>();
+        _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
         _mediator = Substitute.For<IMediator>();
+        
+        _emailTemplateEngine.GenerateBodiesFromTemplate(Arg.Any<string>(), Arg.Any<(string Key, string value)[]>()).Returns(Result.Ok());
+        _emailTemplateEngine.GetHtmlBody().Returns("<h1>This is a test body for an email</h1>");
+        _emailTemplateEngine.GetPlainTextBody().Returns("This is a test body for an email");
 
         _handler = new RemoveContactFromContactListCommandHandler(
-            _contactListRepository, 
-            _contactRepository, 
+            _contactListRepository,
+            _emailTemplateEngine,
             _mediator, 
             _logger);
     }
@@ -94,10 +100,6 @@ public class RemoveContactFromContactListCommandTests
         _contactListRepository
             .UpdateAsync(Arg.Any<ContactList>(), Arg.Any<CancellationToken>())
             .Returns(Result.Ok(contactList));
-
-        _contactRepository
-            .FindAsync(Arg.Any<Expression<Func<Recipient, bool>>>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(new List<Recipient>()));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 

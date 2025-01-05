@@ -33,18 +33,18 @@ public class RemoveContactFromContactListCommandValidator : AbstractValidator<Re
 public class RemoveContactFromContactListCommandHandler : IRequestHandler<RemoveContactFromContactListCommand, Result<ContactList>>
 {
     private readonly IRepository<ContactList> _contactListRepository;
-    private readonly IRepository<Recipient> _contactRepository;
+    private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IMediator _mediator;
     private readonly ILogger _logger;
 
     public RemoveContactFromContactListCommandHandler(
         IRepository<ContactList> contactListRepository,
-        IRepository<Recipient> contactRepository,
+        IEmailTemplateEngine emailTemplateEngine,
         IMediator mediator,
         ILogger logger)
     {
         _contactListRepository = contactListRepository;
-        _contactRepository = contactRepository;
+        _emailTemplateEngine = emailTemplateEngine;
         _mediator = mediator;
         _logger = logger;
     }
@@ -71,15 +71,17 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
                     EmailAddress = request.EmailAddress,
                 };
 
-                string htmlBody = TemplateEngine.GenerateHtmlBody("Empty.html"); // TODO - Populate from some kind of template
+                Result result = _emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html"); // TODO - Populate from some kind of template
+                if (result.IsFailed) throw new Exception("Email body generation failed.");
+                
                 await _mediator.Send(new SendEmailCommand(new Email
                 {
                     SenderEmailAddress = ValidSenderEmailAddresses.Auto,
                     Recipients = [recipient],
                     Attachments = [],
                     Subject = "", // TODO - Populate from some kind of template
-                    HtmlBody = htmlBody, 
-                    PlainTextBody = TemplateEngine.GeneratePlainTextBody(htmlBody)
+                    HtmlBody = _emailTemplateEngine.GetHtmlBody(), 
+                    PlainTextBody = _emailTemplateEngine.GetPlainTextBody()
                 }), cancellationToken);
             }
 

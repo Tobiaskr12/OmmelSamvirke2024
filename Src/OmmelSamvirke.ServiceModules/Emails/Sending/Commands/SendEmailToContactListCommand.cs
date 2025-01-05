@@ -10,6 +10,7 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
@@ -56,6 +57,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
     private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
     private readonly IExternalEmailServiceWrapper _externalEmailServiceWrapper;
+    private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IConfigurationRoot _configuration;
 
     public SendEmailToContactListCommandHandler(
@@ -64,6 +66,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
         IExternalEmailServiceWrapper externalEmailServiceWrapper,
+        IEmailTemplateEngine emailTemplateEngine,
         IConfigurationRoot configuration)
     {
         _logger = logger;
@@ -71,6 +74,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
         _genericRecipientRepository = genericRecipientRepository;
         _emailSendingRepository = emailSendingRepository;
         _externalEmailServiceWrapper = externalEmailServiceWrapper;
+        _emailTemplateEngine = emailTemplateEngine;
         _configuration = configuration;
     }
     
@@ -90,6 +94,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
                 _emailSendingRepository,
                 _logger,
                 _externalEmailServiceWrapper,
+                _emailTemplateEngine,
                 cancellationToken);
                 
             if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;
