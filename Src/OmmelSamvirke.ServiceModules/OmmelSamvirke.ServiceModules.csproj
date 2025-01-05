@@ -29,15 +29,13 @@
       <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
     </ItemGroup>
 
-    <!-- Always copy all email templates to the output directory -->
+    <!-- Always copy all email templates and partials to the output directory -->
     <ItemGroup>
-        <Content Include="Emails\TemplateEngine\Templates\**\*.html">
+        <Content Include="Emails\EmailTemplateEngine\Templates\**\*.html">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <None Update="Emails\EmailTemplateEngine\Templates\Empty.html">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <Content Include="Emails\EmailTemplateEngine\Partials\**\*.html">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 </Project>

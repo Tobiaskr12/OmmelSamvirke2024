@@ -8,6 +8,7 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.EmailTemplateEngine;
 public class TemplateEngineTests
 {
     private string _templatesDirectory;
+    private string _partialsDirectory;
     private IEmailTemplateEngine _emailTemplateEngine;
     private ILogger _logger;
 
@@ -19,6 +20,13 @@ public class TemplateEngineTests
         if (!Directory.Exists(_templatesDirectory))
         {
             Directory.CreateDirectory(_templatesDirectory);
+        }
+        
+        // Set up the Partials directory relative to the current directory
+        _partialsDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Partials");
+        if (!Directory.Exists(_partialsDirectory))
+        {
+            Directory.CreateDirectory(_partialsDirectory);
         }
         
         _logger = NSubstitute.Substitute.For<ILogger>();
@@ -43,6 +51,29 @@ public class TemplateEngineTests
                 }
             }
         }
+        
+        // Clean up test partials
+        if (Directory.Exists(_partialsDirectory))
+        {
+            foreach (string filePath in Directory.GetFiles(_partialsDirectory, "*", SearchOption.AllDirectories))
+            {
+                string fileName = Path.GetFileName(filePath);
+                // Again, test partial files start with a lower-case letter
+                if (char.IsLower(fileName[0]))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
+            // Remove subdirectories if empty
+            foreach (string dir in Directory.GetDirectories(_partialsDirectory, "*", SearchOption.AllDirectories))
+            {
+                if (!Directory.EnumerateFileSystemEntries(dir).Any())
+                {
+                    Directory.Delete(dir, false);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -53,6 +84,18 @@ public class TemplateEngineTests
     private void CreateTemplate(string fileName, string content)
     {
         string filePath = Path.Combine(_templatesDirectory, fileName);
+        File.WriteAllText(filePath, content);
+    }
+    
+    /// <summary>
+    /// Helper method to create a partial file with specified content.
+    /// </summary>
+    /// <param name="fileName">Name of the partial file.</param>
+    /// <param name="content">HTML content of the partial.</param>
+    private void CreatePartial(string fileName, string content)
+    {
+        string filePath = Path.Combine(_partialsDirectory, fileName);
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
         File.WriteAllText(filePath, content);
     }
 
@@ -338,6 +381,131 @@ public class TemplateEngineTests
             """;
 
         Result result = _emailTemplateEngine.GenerateBodiesFromHtml(htmlContent, ("UserName", "Jane"));
+        string actualHtml = _emailTemplateEngine.GetHtmlBody();
+        string actualPlain = _emailTemplateEngine.GetPlainTextBody();
+
+        PerformAssertions(result, actualHtml, expectedHtml, actualPlain, expectedPlain);
+    }
+    
+    [Test]
+    public void GenerateBodiesFromTemplate_PartialWhitespaceVariations()
+    {
+        CreatePartial("test.html", "Hello from partial!");
+        
+        const string templateName = "partial_whitespace.html";
+        const string templateContent = """
+                                       <p>{{>test}}</p>
+                                       <p>{{> test}}</p>
+                                       <p>{{>   test}}</p>
+                                       <p>{{>test   }}</p>
+                                       <p>{{>   test   }}</p>
+                                       """;
+        CreateTemplate(templateName, templateContent);
+        
+        string expectedHtml = "<p>Hello from partial!</p><p>Hello from partial!</p><p>Hello from partial!</p><p>Hello from partial!</p><p>Hello from partial!</p>".Trim();
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
+
+        string actualHtml = _emailTemplateEngine.GetHtmlBody().Trim();
+        string actualPlain = _emailTemplateEngine.GetPlainTextBody().Trim(); 
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess);
+            Assert.That(actualHtml, Is.EqualTo(expectedHtml));
+            
+            int occurrences = actualPlain.Split("Hello from partial!").Length - 1;
+            Assert.That(occurrences, Is.EqualTo(5), "Expected partial text to appear 5 times in plain text.");
+        });
+    }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_OnePartialInTemplate()
+    {
+        CreatePartial("single.html", "<strong>Single partial content</strong>");
+        
+        const string templateName = "one_partial.html";
+        const string templateContent = "<div>{{>single}}</div>";
+        CreateTemplate(templateName, templateContent);
+        
+        const string expectedHtml = "<div><strong>Single partial content</strong></div>";
+        const string expectedPlain = "Single partial content";
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
+        string actualHtml = _emailTemplateEngine.GetHtmlBody();
+        string actualPlain = _emailTemplateEngine.GetPlainTextBody();
+
+        PerformAssertions(result, actualHtml, expectedHtml, actualPlain, expectedPlain);
+    }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_MultiplePartialsInTemplate()
+    {
+        CreatePartial("header.html", "<h1>Header partial</h1>");
+        CreatePartial("footer.html", "<footer>Footer partial</footer>");
+        
+        const string templateName = "multiple_partials.html";
+        const string templateContent = """
+            <body>
+                {{>header}}
+                <p>Main content</p>
+                {{>footer}}
+            </body>
+            """;
+        CreateTemplate(templateName, templateContent);
+        
+        string expectedHtml = """
+            <body><h1>Header partial</h1><p>Main content</p><footer>Footer partial</footer></body>
+            """.Trim();
+        
+        string expectedPlain = """
+            Header partial
+
+            Main content
+
+            Footer partial
+            """.Trim();
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
+        string actualHtml = _emailTemplateEngine.GetHtmlBody().Trim();
+        string actualPlain = _emailTemplateEngine.GetPlainTextBody().Trim();
+
+        PerformAssertions(result, actualHtml, expectedHtml, actualPlain, expectedPlain);
+    }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_PartialInRootDirectory()
+    {
+        CreatePartial("rootPartial.html", "Root partial content");
+        
+        const string templateName = "root_partial_test.html";
+        const string templateContent = "<p>{{>rootPartial}}</p>";
+        CreateTemplate(templateName, templateContent);
+
+        const string expectedHtml = "<p>Root partial content</p>";
+        const string expectedPlain = "Root partial content";
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
+        string actualHtml = _emailTemplateEngine.GetHtmlBody();
+        string actualPlain = _emailTemplateEngine.GetPlainTextBody();
+
+        PerformAssertions(result, actualHtml, expectedHtml, actualPlain, expectedPlain);
+    }
+
+    [Test]
+    public void GenerateBodiesFromTemplate_PartialInSubdirectory()
+    {
+        // Create a partial in subdirectory: "Partials/subdir/test.html"
+        CreatePartial(Path.Combine("subdir", "test.html"), "Subdirectory partial content");
+        
+        const string templateName = "subdir_partial_test.html";
+        const string templateContent = "<p>{{> subdir/test}}</p>";
+        CreateTemplate(templateName, templateContent);
+
+        const string expectedHtml = "<p>Subdirectory partial content</p>";
+        const string expectedPlain = "Subdirectory partial content";
+        
+        Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(templateName);
         string actualHtml = _emailTemplateEngine.GetHtmlBody();
         string actualPlain = _emailTemplateEngine.GetPlainTextBody();
 

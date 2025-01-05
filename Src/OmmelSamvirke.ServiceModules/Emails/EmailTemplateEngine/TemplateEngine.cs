@@ -9,6 +9,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
 {
     private readonly ILogger _logger;
     private readonly string _templatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
+    private readonly string _partialsBaseDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Partials");
     private string _htmlBody = string.Empty;
     private string _plainTextBody = string.Empty;
 
@@ -22,7 +23,25 @@ public partial class TemplateEngine : IEmailTemplateEngine
         try
         {
             _htmlBody = File.ReadAllText(Path.Combine(_templatesDirectory, templateName));
+            
+            // Insert partials
+            _htmlBody = PartialRegex().Replace(_htmlBody, match =>
+            {
+                string partialName = match.Groups[1].Value;
 
+                string safePartialName = partialName.Replace("/", Path.DirectorySeparatorChar.ToString());
+                string partialFilePath = Path.Combine(_partialsBaseDirectory, safePartialName + ".html");
+            
+                if (!File.Exists(partialFilePath))
+                {
+                    _logger.LogWarning("Could not find partials file {partialFilePath}", partialFilePath);
+                    return string.Empty;
+                }
+                
+                return File.ReadAllText(partialFilePath);
+            });
+
+            // Replace parameters
             foreach ((string key, string value) param in parameters)
             {
                 _htmlBody = _htmlBody.Replace("{{" + param.key + "}}", param.value);
@@ -143,6 +162,12 @@ public partial class TemplateEngine : IEmailTemplateEngine
                         ProcessHtmlNode(child, builder);
                         builder.Append("\r\n");
                     }
+                    else if (child.Name.Equals("footer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        AppendNewLineIfNotFirstLine(builder);
+                        ProcessHtmlNode(child, builder);
+                        builder.Append("\r\n");
+                    }
                     else if (child.Name.Equals("ul", StringComparison.OrdinalIgnoreCase) ||
                              child.Name.Equals("ol", StringComparison.OrdinalIgnoreCase))
                     {
@@ -212,4 +237,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
     
     [System.Text.RegularExpressions.GeneratedRegex(@"> <")]
     private static partial System.Text.RegularExpressions.Regex HtmlTagsWithSpaceRegex();
+    
+    [System.Text.RegularExpressions.GeneratedRegex(@"\{\{>\s*(.*?)\s*\}\}")]
+    private static partial System.Text.RegularExpressions.Regex PartialRegex();
 }
