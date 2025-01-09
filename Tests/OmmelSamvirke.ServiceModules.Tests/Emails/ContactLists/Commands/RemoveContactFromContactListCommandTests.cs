@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -9,7 +8,6 @@ using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;

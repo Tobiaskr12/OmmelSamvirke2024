@@ -1,0 +1,141 @@
+﻿@page "/"
+@using Microsoft.Extensions.Logging
+@using OmmelSamvirke.EmailTemplatePreviewGUI.Services
+@using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine
+@inject FileWatcherService FileWatcherService
+@inject ILogger<Index> Logger
+
+<PageTitle>Email Template Preview</PageTitle>
+
+<h1>Preview Email Templates</h1>
+
+<iframe style="width:100%; height:500px; border:1px solid #ccc;" srcdoc="@iframeContent"></iframe>
+
+<button class="btn btn-primary" @onclick="OpenFileDialog">Select File</button>
+
+<div class="mb-3">
+    <label for="filePath" class="form-label">Enter the full path of the file to watch:</label>
+    <input type="text" class="form-control" id="filePath" @bind="filePath" placeholder="C:\Path\To\Your\File.txt" />
+</div>
+<button class="btn btn-primary mb-3" @onclick="StartWatching">Start Watching</button>
+
+@if (!string.IsNullOrEmpty(currentFile))
+{
+    <div class="alert alert-info">
+        <strong>Currently Watching:</strong> @currentFile
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(lastChangeMessage))
+{
+    <div class="alert alert-success">
+        <strong>Change Detected:</strong> @lastChangeMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @errorMessage
+    </div>
+}
+
+@code {
+    private string filePath = string.Empty;
+    private string currentFile = string.Empty;
+    private string lastChangeMessage = string.Empty;
+    private string errorMessage = string.Empty;
+    private string selectedFilePath = string.Empty;
+    private TemplateEngine _templateEngine;
+
+    // Add this property
+    private string iframeContent = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        // Initialize the TemplateEngine
+        _templateEngine = new TemplateEngine(Logger, Path.Combine(GetSolutionDirectory(), "Src", "OmmelSamvirke.ServiceModules"));
+
+        // Subscribe to the FileChanged event
+        FileWatcherService.FileChanged += OnFileChanged;
+    }
+
+    private void StartWatching()
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            errorMessage = "Please enter a valid file path.";
+            return;
+        }
+
+        FileWatcherService.SetFileToWatch(filePath);
+    }
+
+    private void OnFileChanged(string message)
+    {
+        // Update UI on the main thread
+        InvokeAsync(() =>
+        {
+            lastChangeMessage = message;
+            errorMessage = string.Empty;
+
+            // Generate the updated HTML content
+            _templateEngine.GenerateBodiesFromTemplate("Empty.html");
+            string htmlBody = _templateEngine.GetHtmlBody();
+
+            iframeContent = htmlBody;
+
+            // Update the currently watched file if needed
+            if (message.StartsWith("Started watching"))
+            {
+                currentFile = filePath;
+            }
+
+            StateHasChanged();
+        });
+    }
+
+    private async Task OpenFileDialog()
+    {
+        try
+        {
+            var result = await FilePicker.PickAsync(new PickOptions
+            {
+                PickerTitle = "Select a Source File"
+            });
+
+            if (result != null)
+            {
+                selectedFilePath = result.FullPath;
+                Logger.LogInformation($"Selected file: {selectedFilePath}");
+
+                // Update the filePath input and start watching
+                filePath = selectedFilePath;
+                StartWatching();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error selecting file.");
+            errorMessage = "Error selecting file. Please try again.";
+        }
+    }
+
+    private static string GetSolutionDirectory()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+        while (directory is not null && !directory.GetFiles("*.sln").Any())
+        {
+            directory = directory.Parent;
+        }
+
+        return directory?.FullName ?? throw new Exception("Solution directory not found. Cannot initialize Template Engine");
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from the event to prevent memory leaks
+        FileWatcherService.FileChanged -= OnFileChanged;
+    }
+}

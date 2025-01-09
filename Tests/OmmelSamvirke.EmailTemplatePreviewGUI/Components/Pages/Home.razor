@@ -1,0 +1,196 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Logging
+@using OmmelSamvirke.EmailTemplatePreviewGUI.Models
+@using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine
+@inject NavigationManager Navigation
+@inject FileWatcherService FileWatcherService
+@inject ILogger Logger
+
+<PageTitle>Email Template Preview</PageTitle>
+
+<h1>Preview Email Templates</h1>
+
+<iframe style="width:1200px; height:500px; border: 1px solid black;" srcdoc="@_iframeContent" class="test"></iframe>
+
+<MudDataGrid 
+    @ref="_dataGrid" 
+    MultiSelection="true" 
+    Items="@_emailTemplates" 
+    Hideable="true" 
+    Groupable="true" 
+    GroupExpanded="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Email Templates</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Group" Grouping GroupBy="@_groupBy" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" OnClick="() => StartWatching(context.Item)">Watch</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="EmailTemplate" />
+    </PagerContent>
+</MudDataGrid>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudButton OnClick="@ExpandAllGroups" Color="@Color.Primary">Expand All</MudButton>
+    <MudButton OnClick="@CollapseAllGroups" Color="@Color.Primary">Collapse All</MudButton>
+</div>
+
+@if (!string.IsNullOrEmpty(_currentFile))
+{
+    <div class="alert alert-info">
+        <strong>Currently Watching:</strong> @_currentFile
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(_lastChangeMessage))
+{
+    <div class="alert alert-success">
+        <strong>Change Detected:</strong> @_lastChangeMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @_errorMessage
+    </div>
+}
+
+@code {
+    private string _showingFile = string.Empty;
+    private string _currentFile = string.Empty;
+    private string _lastChangeMessage = string.Empty;
+    private string _errorMessage = string.Empty;
+    private TemplateEngine? _templateEngine;
+    private HubConnection? _hubConnection;
+    readonly List<EmailTemplate> _emailTemplates = [];
+    readonly Func<EmailTemplate, object> _groupBy = x => x.Group;
+    MudDataGrid<EmailTemplate>? _dataGrid;
+    
+    private string _iframeContent = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        PopulateTemplatesSelection();
+
+        // Initialize SignalR connection
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/fileChangeHub"))
+            .Build();
+
+        // Setup Hub events
+        _hubConnection.On<string>("FileChanged", (message) =>
+        {
+            _lastChangeMessage = message;
+            _templateEngine?.GenerateBodiesFromTemplate(_showingFile);
+            string htmlBody = _templateEngine?.GetHtmlBody() ?? string.Empty;
+            
+            // Assign the HTML content to the MarkupString property
+            _iframeContent = htmlBody;
+            
+            InvokeAsync(StateHasChanged);
+        });
+        _hubConnection.On<string>("FileSelected", (filePath) =>
+        {
+            _currentFile = filePath;
+            _errorMessage = string.Empty;
+            
+            _templateEngine?.GenerateBodiesFromTemplate(_showingFile);
+            string htmlBody = _templateEngine?.GetHtmlBody() ?? string.Empty;
+            _iframeContent = htmlBody;
+            
+            InvokeAsync(StateHasChanged);
+        });
+        _hubConnection.On<string>("FileSelectionFailed", (error) =>
+        {
+            _errorMessage = error;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    private void PopulateTemplatesSelection()
+    {
+        _templateEngine = new TemplateEngine(Logger, Path.Combine(GetSolutionDirectory(), "Src", "OmmelSamvirke.ServiceModules"));
+        string templatesBaseDirectory = Path.Combine(Path.Combine(GetSolutionDirectory(), "Src", "OmmelSamvirke.ServiceModules"), "Emails", "EmailTemplateEngine", "Templates");
+        string[] templatesSubDirectories = Directory.GetDirectories(templatesBaseDirectory);
+        string[] templateTopLevelFiles = Directory.GetFiles(templatesBaseDirectory);
+        IEnumerable<(string, string[])> templateFilesInSubDirectories = templatesSubDirectories.Select(x => (Path.GetFileName(x), Directory.GetFiles(x)));
+
+        foreach (string topLevelTemplateFile in templateTopLevelFiles)
+        {
+            _emailTemplates.Add(new EmailTemplate()
+            {
+                Group = "General",
+                Name = Path.GetFileName(topLevelTemplateFile),
+                Path = topLevelTemplateFile
+            });
+        }
+        
+        foreach ((string, string[]) templateSubDirectory in templateFilesInSubDirectories)
+        {
+            foreach (string templateFile in templateSubDirectory.Item2)
+            {
+                _emailTemplates.Add(new EmailTemplate
+                {
+                    Group = templateSubDirectory.Item1,
+                    Name = templateSubDirectory.Item1 + "/" + Path.GetFileName(templateFile),
+                    Path = templateFile
+                });
+            }
+        }
+    }
+
+    private void StartWatching(EmailTemplate emailTemplate)
+    {
+        if (string.IsNullOrWhiteSpace(emailTemplate.Path))
+        {
+            _errorMessage = "Please enter a valid file path.";
+            return;
+        }
+        
+        _showingFile = emailTemplate.Name;
+        FileWatcherService.SetFileToWatch(emailTemplate.Path);
+    }
+    
+    private static string GetSolutionDirectory()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        
+        while (directory is not null && !directory.GetFiles("*.sln").Any())
+        {
+            directory = directory.Parent;
+        }
+        
+        return directory?.FullName ?? throw new Exception("Solution directory not found. Cannot initialize Template Engine");
+    }
+    
+    void ExpandAllGroups()
+    {
+        _dataGrid?.ExpandAllGroups();
+    }
+
+    void CollapseAllGroups()
+    {
+        _dataGrid?.CollapseAllGroups();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection != null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+}

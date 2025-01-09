@@ -8,8 +8,8 @@ namespace OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 public partial class TemplateEngine : IEmailTemplateEngine
 {
     private readonly ILogger _logger;
-    private readonly string _templatesDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Templates");
-    private readonly string _partialsBaseDirectory = Path.Combine(".", "Emails", "EmailTemplateEngine", "Partials");
+    private readonly string _templatesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails", "EmailTemplateEngine", "Templates");
+    private readonly string _partialsBaseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails", "EmailTemplateEngine", "Partials");
     private string _htmlBody = string.Empty;
     private string _plainTextBody = string.Empty;
     private string _subject = string.Empty;
@@ -17,6 +17,17 @@ public partial class TemplateEngine : IEmailTemplateEngine
     public TemplateEngine(ILogger logger)
     {
         _logger = logger;
+    }
+
+    /// <summary>
+    /// This constructor should only be used by the EmailTemplatePreviewGuide program so it can reference
+    /// the source files directly and listen for changes.
+    /// </summary>
+    public TemplateEngine(ILogger logger, string baseDirectory)
+    {
+        _logger = logger;
+        _templatesDirectory = Path.Combine(baseDirectory, "Emails", "EmailTemplateEngine", "Templates");
+        _partialsBaseDirectory = Path.Combine(baseDirectory, "Emails", "EmailTemplateEngine", "Partials");
     }
     
     public Result GenerateBodiesFromTemplate(string templateName, params (string key, string value)[] parameters)

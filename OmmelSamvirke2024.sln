@@ -13,31 +13,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.AppHost",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDatabaseFixtures", "Tests\TestDatabaseFixtures\TestDatabaseFixtures.csproj", "{A496A248-9047-4127-ACA7-6FEE9B7B7DC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.DataAccess", "Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj", "{C3E55442-4B5F-4BE3-8C37-15358482BD5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.DataAccess", "Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj", "{C3E55442-4B5F-4BE3-8C37-15358482BD5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.DomainModules", "Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj", "{4DBBB9AE-112D-43FC-B354-94D73E0F3482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.DomainModules", "Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj", "{4DBBB9AE-112D-43FC-B354-94D73E0F3482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.DTOs", "Src\OmmelSamvirke.DTOs\OmmelSamvirke.DTOs.csproj", "{BE3BFD22-8474-4E6F-A99A-5DF797FBF2C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.DTOs", "Src\OmmelSamvirke.DTOs\OmmelSamvirke.DTOs.csproj", "{BE3BFD22-8474-4E6F-A99A-5DF797FBF2C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.Infrastructure", "Src\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj", "{2C9033C6-D111-451B-AAF2-EE205D35989F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.Infrastructure", "Src\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj", "{2C9033C6-D111-451B-AAF2-EE205D35989F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.ServiceModules", "Src\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj", "{47EE65F4-F212-4CE3-BBF0-89334F4A5464}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.ServiceModules", "Src\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj", "{47EE65F4-F212-4CE3-BBF0-89334F4A5464}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.SupportModules", "Src\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj", "{CE97A069-ED57-480E-AC22-07F48953FB07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.SupportModules", "Src\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj", "{CE97A069-ED57-480E-AC22-07F48953FB07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.DataAccess.Tests", "Tests\OmmelSamvirke.DataAccess.Tests\OmmelSamvirke.DataAccess.Tests.csproj", "{33178371-BC31-4215-9FF9-ADC5D2476548}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.DataAccess.Tests", "Tests\OmmelSamvirke.DataAccess.Tests\OmmelSamvirke.DataAccess.Tests.csproj", "{33178371-BC31-4215-9FF9-ADC5D2476548}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.DomainModules.Tests", "Tests\OmmelSamvirke.DomainModules.Tests\OmmelSamvirke.DomainModules.Tests.csproj", "{12A60512-CFA7-46CA-BFBB-06F1711559A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.DomainModules.Tests", "Tests\OmmelSamvirke.DomainModules.Tests\OmmelSamvirke.DomainModules.Tests.csproj", "{12A60512-CFA7-46CA-BFBB-06F1711559A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.Infrastructure.Tests", "Tests\OmmelSamvirke.Infrastructure.Tests\OmmelSamvirke.Infrastructure.Tests.csproj", "{499677BC-4A40-4B6E-9AA4-36476465D095}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.Infrastructure.Tests", "Tests\OmmelSamvirke.Infrastructure.Tests\OmmelSamvirke.Infrastructure.Tests.csproj", "{499677BC-4A40-4B6E-9AA4-36476465D095}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.ServiceModules.Tests", "Tests\OmmelSamvirke.ServiceModules.Tests\OmmelSamvirke.ServiceModules.Tests.csproj", "{F413A91A-6A96-42BA-A165-6F4D98ACB9F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.ServiceModules.Tests", "Tests\OmmelSamvirke.ServiceModules.Tests\OmmelSamvirke.ServiceModules.Tests.csproj", "{F413A91A-6A96-42BA-A165-6F4D98ACB9F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.SupportModules.Tests", "Tests\OmmelSamvirke.SupportModules.Tests\OmmelSamvirke.SupportModules.Tests.csproj", "{8A1EEEDC-93DE-4E7E-9F97-389BC072DE09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.SupportModules.Tests", "Tests\OmmelSamvirke.SupportModules.Tests\OmmelSamvirke.SupportModules.Tests.csproj", "{8A1EEEDC-93DE-4E7E-9F97-389BC072DE09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke2024.Api", "Src\OmmelSamvirke2024.Api\OmmelSamvirke2024.Api.csproj", "{1FD9E7D0-9B7B-4148-8CC8-E62447FCA532}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.Api", "Src\OmmelSamvirke2024.Api\OmmelSamvirke2024.Api.csproj", "{1FD9E7D0-9B7B-4148-8CC8-E62447FCA532}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke2024.Web", "Src\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj", "{4889372D-6624-4A6B-A0FB-20B536E4AA09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.Web", "Src\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj", "{4889372D-6624-4A6B-A0FB-20B536E4AA09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.EmailTemplatePreviewGUI", "Tests\OmmelSamvirke.EmailTemplatePreviewGUI\OmmelSamvirke.EmailTemplatePreviewGUI.csproj", "{05868F12-0D62-4B4C-A355-75C841F6B463}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +111,10 @@ Global
 		{4889372D-6624-4A6B-A0FB-20B536E4AA09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4889372D-6624-4A6B-A0FB-20B536E4AA09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4889372D-6624-4A6B-A0FB-20B536E4AA09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05868F12-0D62-4B4C-A355-75C841F6B463}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05868F12-0D62-4B4C-A355-75C841F6B463}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05868F12-0D62-4B4C-A355-75C841F6B463}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05868F12-0D62-4B4C-A355-75C841F6B463}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{8A1EEEDC-93DE-4E7E-9F97-389BC072DE09} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
 		{1FD9E7D0-9B7B-4148-8CC8-E62447FCA532} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
 		{4889372D-6624-4A6B-A0FB-20B536E4AA09} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
+		{05868F12-0D62-4B4C-A355-75C841F6B463} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43FB53F9-CA0A-48E8-AAC8-360182CF1E7E}
