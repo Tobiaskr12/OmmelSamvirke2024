@@ -1,4 +1,26 @@
-﻿@inherits LayoutComponentBase
+﻿@using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
+@using System.ComponentModel
+@inherits LayoutComponentBase
+@inject TargetDeviceViewModel TargetDeviceViewModel
+@inject ThemeViewModel ThemeViewModel
+
+<MudPopoverProvider />
+<MudThemeProvider IsDarkMode="@_isDarkMode" Theme="_theme" />
+
+<MudAppBar Color="Color.Primary" Fixed="false">
+    <MudText Align="Align.Center" Typo="Typo.h5">Preview Email Templates</MudText>
+    <MudSpacer />
+
+    <MudButtonGroup Color="Color.Surface" Variant="Variant.Outlined" Style="margin-right: 32px">
+        <MudIconButton Icon="@Icons.Material.Filled.PhoneAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Mobile)" />
+        <MudIconButton Icon="@Icons.Material.Filled.TabletAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Tablet)" />
+        <MudIconButton Icon="@Icons.Material.Filled.LaptopChromebook" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Desktop)" />
+    </MudButtonGroup>
+
+    <MudIconButton Icon="@ToggleIcon"
+                   Style="@ToggleStyle"
+                   OnClick="ToggleDarkMode" />
+</MudAppBar>
 
 @Body
 
@@ -8,5 +30,55 @@
     <a class="dismiss">🗙</a>
 </div>
 
-<MudThemeProvider />
-<MudPopoverProvider />
+@code {
+    private MudTheme _theme = new()
+        {
+            Typography = new Typography()
+            {
+                Default = new Default()
+                {
+                    FontFamily = new[] { "Helvetica", "Arial", "sans-serif" }
+                }
+            },
+            PaletteLight = new PaletteLight()
+            {
+                Background = "#f4f4f4"
+            }
+        };
+
+    private bool _isDarkMode = false;
+
+    private string ToggleIcon => _isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.NightsStay;
+    private string ToggleStyle => $"color: {(_isDarkMode ? Colors.Yellow.Darken1 : Colors.Gray.Lighten3)};";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ThemeViewModel.PropertyChanged += OnThemeChanged;
+        _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
+    }
+
+    private void ToggleDarkMode()
+    {
+        _isDarkMode = !_isDarkMode;
+        ThemeViewModel.Theme = _isDarkMode ? AppTheme.Dark : AppTheme.Light;
+
+
+        StateHasChanged();
+    }
+
+    private void OnThemeChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ThemeViewModel.Theme))
+        {
+            _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        ThemeViewModel.PropertyChanged -= OnThemeChanged;
+    }
+}

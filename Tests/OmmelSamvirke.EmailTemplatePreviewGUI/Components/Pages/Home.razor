@@ -2,85 +2,79 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.Extensions.Logging
 @using OmmelSamvirke.EmailTemplatePreviewGUI.Models
+@using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine
+@using System.ComponentModel
 @inject NavigationManager Navigation
 @inject FileWatcherService FileWatcherService
+@inject TargetDeviceViewModel TargetDeviceViewModel
+@inject ThemeViewModel ThemeViewModel
 @inject ILogger Logger
 
 <PageTitle>Email Template Preview</PageTitle>
 
-<h1>Preview Email Templates</h1>
-
-<iframe style="width:1200px; height:500px; border: 1px solid black;" srcdoc="@_iframeContent" class="test"></iframe>
-
-<MudDataGrid 
-    @ref="_dataGrid" 
-    MultiSelection="true" 
-    Items="@_emailTemplates" 
-    Hideable="true" 
-    Groupable="true" 
-    GroupExpanded="false">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Email Templates</MudText>
-        <MudSpacer />
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Name" />
-        <PropertyColumn Property="x => x.Group" Grouping GroupBy="@_groupBy" />
-        <TemplateColumn CellClass="d-flex justify-end">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" OnClick="() => StartWatching(context.Item)">Watch</MudButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager T="EmailTemplate" />
-    </PagerContent>
-</MudDataGrid>
-
-<div class="d-flex flex-wrap mt-4">
-    <MudButton OnClick="@ExpandAllGroups" Color="@Color.Primary">Expand All</MudButton>
-    <MudButton OnClick="@CollapseAllGroups" Color="@Color.Primary">Collapse All</MudButton>
+<div id="container" style="100%">
+    <iframe srcdoc="@_iframeContent" class="test mud-elevation-1" style="@($"width: {containerSize}px; {( _isDarkMode ? "" : "background: white")}")"></iframe>
+    
+    <MudDataGrid 
+        @ref="_dataGrid"
+        Style="@($"width: {ScreenSizes.Tablet}px")"
+        MultiSelection="true" 
+        Items="@_emailTemplates" 
+        Hideable="true" 
+        Groupable="true" 
+        GroupExpanded="false">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Email Templates</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Name" />
+            <PropertyColumn Property="x => x.Group" Grouping GroupBy="@_groupBy" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" OnClick="() => StartWatching(context.Item)">Watch</MudButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="EmailTemplate" />
+        </PagerContent>
+    </MudDataGrid>
+    <div class="d-flex flex-wrap mt-4">
+        <MudButton OnClick="@ExpandAllGroups" Color="@Color.Primary" Variant="Variant.Filled">Expand All</MudButton>
+        <span style="width: 16px"></span>
+        <MudButton OnClick="@CollapseAllGroups" Color="@Color.Primary" Variant="Variant.Filled">Collapse All</MudButton>
+    </div>
 </div>
 
-@if (!string.IsNullOrEmpty(_currentFile))
-{
-    <div class="alert alert-info">
-        <strong>Currently Watching:</strong> @_currentFile
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(_lastChangeMessage))
-{
-    <div class="alert alert-success">
-        <strong>Change Detected:</strong> @_lastChangeMessage
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <div class="alert alert-danger">
-        <strong>Error:</strong> @_errorMessage
-    </div>
-}
-
 @code {
+    private static class ScreenSizes
+    {
+        public static int Desktop = 1400;
+        public static int Tablet = 768;
+        public static int Mobile = 360;
+    }
+
     private string _showingFile = string.Empty;
     private string _currentFile = string.Empty;
-    private string _lastChangeMessage = string.Empty;
-    private string _errorMessage = string.Empty;
+    private int containerSize = ScreenSizes.Tablet;
+    private bool _isDarkMode = false;
+    private string _iframeContent = string.Empty;
+
     private TemplateEngine? _templateEngine;
     private HubConnection? _hubConnection;
+    MudDataGrid<EmailTemplate>? _dataGrid;
+
     readonly List<EmailTemplate> _emailTemplates = [];
     readonly Func<EmailTemplate, object> _groupBy = x => x.Group;
-    MudDataGrid<EmailTemplate>? _dataGrid;
-    
-    private string _iframeContent = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        TargetDeviceViewModel.PropertyChanged += OnTargetDeviceChanged;
+        ThemeViewModel.PropertyChanged += OnThemeChanged;
         PopulateTemplatesSelection();
 
         // Initialize SignalR connection
@@ -91,33 +85,61 @@
         // Setup Hub events
         _hubConnection.On<string>("FileChanged", (message) =>
         {
-            _lastChangeMessage = message;
             _templateEngine?.GenerateBodiesFromTemplate(_showingFile);
             string htmlBody = _templateEngine?.GetHtmlBody() ?? string.Empty;
-            
+
             // Assign the HTML content to the MarkupString property
             _iframeContent = htmlBody;
-            
+
             InvokeAsync(StateHasChanged);
         });
         _hubConnection.On<string>("FileSelected", (filePath) =>
         {
             _currentFile = filePath;
-            _errorMessage = string.Empty;
-            
+
             _templateEngine?.GenerateBodiesFromTemplate(_showingFile);
             string htmlBody = _templateEngine?.GetHtmlBody() ?? string.Empty;
             _iframeContent = htmlBody;
-            
-            InvokeAsync(StateHasChanged);
-        });
-        _hubConnection.On<string>("FileSelectionFailed", (error) =>
-        {
-            _errorMessage = error;
+
             InvokeAsync(StateHasChanged);
         });
 
         await _hubConnection.StartAsync();
+    }
+
+    private void OnTargetDeviceChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        TargetDevice updateTargetDevice = TargetDeviceViewModel.TargetDevice;
+        switch (updateTargetDevice)
+        {
+            case TargetDevice.Desktop:
+                containerSize = ScreenSizes.Desktop;
+                break;
+            case TargetDevice.Tablet:
+                containerSize = ScreenSizes.Tablet;
+                break;
+            case TargetDevice.Mobile:
+                containerSize = ScreenSizes.Mobile;
+                break;
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void OnThemeChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        AppTheme newAppTheme = ThemeViewModel.Theme;
+        switch (newAppTheme)
+        {
+            case AppTheme.Light:
+                _isDarkMode = false;
+                break;
+            case AppTheme.Dark:
+                _isDarkMode = true;
+                break;
+        }
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void PopulateTemplatesSelection()
@@ -137,7 +159,7 @@
                 Path = topLevelTemplateFile
             });
         }
-        
+
         foreach ((string, string[]) templateSubDirectory in templateFilesInSubDirectories)
         {
             foreach (string templateFile in templateSubDirectory.Item2)
@@ -156,7 +178,6 @@
     {
         if (string.IsNullOrWhiteSpace(emailTemplate.Path))
         {
-            _errorMessage = "Please enter a valid file path.";
             return;
         }
         

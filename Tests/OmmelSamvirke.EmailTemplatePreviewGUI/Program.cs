@@ -2,6 +2,7 @@ using MudBlazor.Services;
 using OmmelSamvirke.DataAccess;
 using OmmelSamvirke.DomainModules;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Components;
+using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 using OmmelSamvirke.Infrastructure;
 using OmmelSamvirke.ServiceModules;
 using OmmelSamvirke.SupportModules.Logging;
@@ -34,12 +35,17 @@ public class Program
         builder.Services.AddSingleton<FileWatcherService>();
         
         // Register services
-        builder.Services.AddSingleton(appLogger)
-               .InitializeDataAccessModule(builder.Configuration).Result
-               .InitializeInfrastructureModule()
-               .InitializeDomainModule()
-               .InitializeServicesModule();
-        
+        builder.Services
+            .AddSingleton(appLogger)
+            .InitializeDataAccessModule(builder.Configuration).Result
+            .InitializeInfrastructureModule()
+            .InitializeDomainModule()
+            .InitializeServicesModule();
+
+        // Register ViewModels
+        builder.Services.AddScoped<TargetDeviceViewModel>();
+        builder.Services.AddScoped<ThemeViewModel>();
+
         // Add MudBlazor
         builder.Services.AddMudServices();
 
