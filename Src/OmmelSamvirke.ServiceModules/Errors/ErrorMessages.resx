@@ -36,4 +36,7 @@
     <data name="ContactDoesNotExistInContactList" xml:space="preserve">
         <value>The contact does not exist in the contact list</value>
     </data>
+    <data name="ServiceLimits_InvalidEmailInterval" xml:space="preserve">
+        <value>The selected service limit interval for sending emails is invalid</value>
+    </data>
 </root>

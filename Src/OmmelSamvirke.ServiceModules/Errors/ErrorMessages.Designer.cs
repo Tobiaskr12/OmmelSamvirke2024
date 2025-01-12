@@ -112,5 +112,14 @@ namespace OmmelSamvirke.ServiceModules.Errors {
                 return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The selected service limit interval for sending emails is invalid.
+        /// </summary>
+        public static string ServiceLimits_InvalidEmailInterval {
+            get {
+                return ResourceManager.GetString("ServiceLimits_InvalidEmailInterval", resourceCulture);
+            }
+        }
     }
 }
