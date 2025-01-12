@@ -35,7 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Emails\Analytics\Queries\" />
       <Folder Include="Emails\Sending\Queries\" />
     </ItemGroup>
 
