@@ -45,6 +45,7 @@ public class Program
         // Register ViewModels
         builder.Services.AddScoped<TargetDeviceViewModel>();
         builder.Services.AddScoped<ThemeViewModel>();
+        builder.Services.AddScoped<EmailTemplatesViewModel>();
 
         // Add MudBlazor
         builder.Services.AddMudServices();

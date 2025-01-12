@@ -1,28 +1,51 @@
 ﻿@using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @using System.ComponentModel
+
 @inherits LayoutComponentBase
+
 @inject TargetDeviceViewModel TargetDeviceViewModel
 @inject ThemeViewModel ThemeViewModel
+
+@implements IDisposable
 
 <MudPopoverProvider />
 <MudThemeProvider IsDarkMode="@_isDarkMode" Theme="_theme" />
 
-<MudAppBar Color="Color.Primary" Fixed="false">
-    <MudText Align="Align.Center" Typo="Typo.h5">Preview Email Templates</MudText>
-    <MudSpacer />
+<MudLayout>
+    <MudDrawer @bind-Open="_navBarOpen"
+               ClipMode="DrawerClipMode.Always"
+               Variant="DrawerVariant.Temporary"
+               Elevation="1"
+               Anchor="Anchor.Left"
+               Breakpoint="Breakpoint.Md"
+               Class="mud-height-full">
+        <NavBar />
+    </MudDrawer>
 
-    <MudButtonGroup Color="Color.Surface" Variant="Variant.Outlined" Style="margin-right: 32px">
-        <MudIconButton Icon="@Icons.Material.Filled.PhoneAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Mobile)" />
-        <MudIconButton Icon="@Icons.Material.Filled.TabletAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Tablet)" />
-        <MudIconButton Icon="@Icons.Material.Filled.LaptopChromebook" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Desktop)" />
-    </MudButtonGroup>
+    <MudAppBar Color="Color.Primary" Fixed="false">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       OnClick="ToggleNavBar" />
 
-    <MudIconButton Icon="@ToggleIcon"
-                   Style="@ToggleStyle"
-                   OnClick="ToggleDarkMode" />
-</MudAppBar>
+        <MudText Align="Align.Center" Typo="Typo.h5">Preview Email Templates</MudText>
+        <MudSpacer/>
 
-@Body
+        <MudButtonGroup Color="Color.Surface" Variant="Variant.Outlined" Style="margin-right: 32px">
+            <MudIconButton Icon="@Icons.Material.Filled.PhoneAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Mobile)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.TabletAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Tablet)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.LaptopChromebook" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Desktop)"/>
+        </MudButtonGroup>
+
+        <MudIconButton Icon="@ToggleIcon"
+                       Style="@ToggleStyle"
+                       OnClick="ToggleDarkMode"/>
+    </MudAppBar>
+    
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -31,22 +54,23 @@
 </div>
 
 @code {
-    private MudTheme _theme = new()
+    private readonly MudTheme _theme = new()
+    {
+        Typography = new Typography
         {
-            Typography = new Typography()
+            Default = new Default
             {
-                Default = new Default()
-                {
-                    FontFamily = new[] { "Helvetica", "Arial", "sans-serif" }
-                }
-            },
-            PaletteLight = new PaletteLight()
-            {
-                Background = "#f4f4f4"
+                FontFamily = ["Helvetica", "Arial", "sans-serif"]
             }
-        };
+        },
+        PaletteLight = new PaletteLight
+        {
+            Background = "#f4f4f4"
+        }
+    };
 
-    private bool _isDarkMode = false;
+    private bool _isDarkMode;
+    private bool _navBarOpen;
 
     private string ToggleIcon => _isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.NightsStay;
     private string ToggleStyle => $"color: {(_isDarkMode ? Colors.Yellow.Darken1 : Colors.Gray.Lighten3)};";
@@ -75,6 +99,11 @@
             _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
             InvokeAsync(StateHasChanged);
         }
+    }
+    
+    private void ToggleNavBar()
+    {
+        _navBarOpen = !_navBarOpen;
     }
 
     public void Dispose()

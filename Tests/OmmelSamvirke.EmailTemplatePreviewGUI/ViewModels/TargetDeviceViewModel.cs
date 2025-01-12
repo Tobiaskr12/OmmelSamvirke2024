@@ -11,11 +11,11 @@ public enum TargetDevice
 
 public class TargetDeviceViewModel : ViewModelBase
 {
-    private TargetDevice _targetDevice = TargetDevice.Desktop;
+    private TargetDevice _targetDevice = TargetDevice.Tablet;
     public TargetDevice TargetDevice
     {
         get => _targetDevice;
-        set
+        private set
         {
             if (_targetDevice != value)
             {

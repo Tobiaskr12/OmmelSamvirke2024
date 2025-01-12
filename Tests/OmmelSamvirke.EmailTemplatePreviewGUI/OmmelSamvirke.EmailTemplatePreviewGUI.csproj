@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Remove="Components\Layout\_NavBar.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
       <ProjectReference Include="..\..\Src\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj" />
       <ProjectReference Include="..\..\Src\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj" />
