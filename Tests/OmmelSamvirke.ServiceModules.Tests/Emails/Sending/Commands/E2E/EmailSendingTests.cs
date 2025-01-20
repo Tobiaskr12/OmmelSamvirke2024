@@ -326,7 +326,7 @@ public class EmailSendingTests
 
         await inbox.OpenAsync(FolderAccess.ReadOnly);
 
-        DateTime testTimeout = DateTime.UtcNow.AddMinutes(2);
+        DateTime testTimeout = DateTime.UtcNow.AddMinutes(5);
         while (DateTime.UtcNow < testTimeout)
         {
             IList<UniqueId>? results = await inbox.SearchAsync(SearchQuery.All);

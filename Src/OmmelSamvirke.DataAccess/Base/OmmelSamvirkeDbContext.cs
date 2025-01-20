@@ -11,6 +11,7 @@ public class OmmelSamvirkeDbContext : DbContext
     public DbSet<Recipient> Recipients { get; init; }
     public DbSet<Attachment> Attachments { get; init; }
     public DbSet<ContactList> ContactLists { get; init; }
+    public DbSet<DailyEmailAnalytics> DailyEmailAnalytics { get; init; }
     
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     

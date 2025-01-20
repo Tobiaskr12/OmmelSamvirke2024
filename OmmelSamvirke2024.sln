@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.Web", "Sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.EmailTemplatePreviewGUI", "Tests\OmmelSamvirke.EmailTemplatePreviewGUI\OmmelSamvirke.EmailTemplatePreviewGUI.csproj", "{05868F12-0D62-4B4C-A355-75C841F6B463}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.TimerTriggers", "Src\OmmelSamvirke.TimerTriggers\OmmelSamvirke.TimerTriggers.csproj", "{FB0AB408-2207-410B-97B0-17C028A2B230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.TimerTriggers.Tests", "Tests\OmmelSamvirke.TimerTriggers.Tests\OmmelSamvirke.TimerTriggers.Tests.csproj", "{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +119,14 @@ Global
 		{05868F12-0D62-4B4C-A355-75C841F6B463}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05868F12-0D62-4B4C-A355-75C841F6B463}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05868F12-0D62-4B4C-A355-75C841F6B463}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB0AB408-2207-410B-97B0-17C028A2B230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB0AB408-2207-410B-97B0-17C028A2B230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB0AB408-2207-410B-97B0-17C028A2B230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB0AB408-2207-410B-97B0-17C028A2B230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +147,8 @@ Global
 		{1FD9E7D0-9B7B-4148-8CC8-E62447FCA532} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
 		{4889372D-6624-4A6B-A0FB-20B536E4AA09} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
 		{05868F12-0D62-4B4C-A355-75C841F6B463} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
+		{FB0AB408-2207-410B-97B0-17C028A2B230} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
+		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43FB53F9-CA0A-48E8-AAC8-360182CF1E7E}
