@@ -39,4 +39,7 @@
     <data name="ServiceLimits_InvalidEmailInterval" xml:space="preserve">
         <value>Det valgte interval for afsendelse af emails er ikke gyldigt</value>
     </data>
+    <data name="DailyEmailAnalytics_DateMustBeInPast" xml:space="preserve">
+        <value>Den valgte dato er i fremtiden. Vælg dags dato eller en tidligere dato for at se email-analyser for den valgte dato.</value>
+    </data>
 </root>

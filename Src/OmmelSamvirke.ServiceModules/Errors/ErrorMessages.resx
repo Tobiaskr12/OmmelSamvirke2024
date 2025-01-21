@@ -39,4 +39,7 @@
     <data name="ServiceLimits_InvalidEmailInterval" xml:space="preserve">
         <value>The selected service limit interval for sending emails is invalid</value>
     </data>
+    <data name="DailyEmailAnalytics_DateMustBeInPast" xml:space="preserve">
+        <value>The selected date is in the future. Select today or a date in the past to see an email-analysis for that date.</value>
+    </data>
 </root>

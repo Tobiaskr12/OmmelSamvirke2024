@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Den valgte dato er i fremtiden. Vælg dags dato eller en tidligere dato for at se email-analyser for den valgte dato..
+        /// </summary>
+        public static string DailyEmailAnalytics_DateMustBeInPast {
+            get {
+                return ResourceManager.GetString("DailyEmailAnalytics_DateMustBeInPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der opstod en fejl under afsendelse af emailen. Fejlkode: .
         /// </summary>
         public static string EmailSending_Exception {

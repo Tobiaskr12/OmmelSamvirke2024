@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected date is in the future. Select today or a date in the past to see an email-analysis for that date..
+        /// </summary>
+        public static string DailyEmailAnalytics_DateMustBeInPast {
+            get {
+                return ResourceManager.GetString("DailyEmailAnalytics_DateMustBeInPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while attempting to send the email. Error code: .
         /// </summary>
         public static string EmailSending_Exception {
