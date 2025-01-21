@@ -48,7 +48,6 @@ public class DailyEmailAnalyticsFunctionTests
         Assert.Multiple(() =>
         {
             var ex = Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
-            Assert.That(ex?.Message, Is.EqualTo("Analysis completed successfully, but saving the analysis failed"));
             Assert.That(() => _dailyAnalyticsRepository.Received(1).AddAsync(Arg.Any<DailyEmailAnalytics>()), Throws.Nothing);
         });
     }

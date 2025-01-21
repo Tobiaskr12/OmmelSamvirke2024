@@ -8,12 +8,12 @@ namespace OmmelSamvirke.TimerTriggers;
 
 public class DailyEmailAnalyticsFunction
 {
-    private readonly ILogger<DailyEmailAnalyticsFunction> _logger;
+    private readonly ILogger _logger;
     private readonly IRepository<Email> _emailRepository;
     private readonly IRepository<DailyEmailAnalytics> _dailyEmailAnalyticsRepository;
 
     public DailyEmailAnalyticsFunction(
-        ILogger<DailyEmailAnalyticsFunction> logger,
+        ILogger logger,
         IRepository<Email> emailRepository,
         IRepository<DailyEmailAnalytics> dailyEmailAnalyticsRepository)
     {
@@ -41,7 +41,6 @@ public class DailyEmailAnalyticsFunction
             }
             else
             {
-                _logger.LogError("Error retrieving number of emails sent yesterday: {Errors}", emailsSentResult.Errors);
                 throw new Exception($"Error retrieving number of emails sent yesterday: {emailsSentResult.Errors}");
             }
 
@@ -57,7 +56,6 @@ public class DailyEmailAnalyticsFunction
             }
             else
             {
-                _logger.LogError("Error retrieving number of email recipients yesterday: {Errors}", emailRecipientsResult.Errors);
                 throw new Exception($"Error retrieving number of email recipients yesterday: {emailRecipientsResult.Errors}");
             }
             
@@ -78,7 +76,6 @@ public class DailyEmailAnalyticsFunction
             }
             else
             {
-                _logger.LogError("Execution of {functionName} failed. See other logs for more info", nameof(DailyEmailAnalyticsFunction));
                 throw new Exception("Analysis completed successfully, but saving the analysis failed");
             }
         }
@@ -87,12 +84,6 @@ public class DailyEmailAnalyticsFunction
             _logger.LogError("Error during execution of {functionName}. Error Message: {errorMessage}", nameof(DailyEmailAnalyticsFunction), ex.Message);
             throw;
         }
-    }
-
-    private Result<Dictionary<string, int>> GetNewsletterSubscribersYesterday()
-    {
-        var newsletterSubscribers = new Dictionary<string, int>();
-        throw new NotImplementedException();
     }
 
     private async Task<Result<int>> GetNumberOfEmailsSentYesterday()
@@ -115,7 +106,7 @@ public class DailyEmailAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in GetNumberOfEmailsSentYesterday");
+            _logger.LogError(ex, "Error in {errorMessage}", nameof(GetNumberOfEmailsSentYesterday));
             return Result.Fail<int>(ex.Message);
         }
     }
@@ -140,7 +131,7 @@ public class DailyEmailAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in GetNumberOfEmailRecipientsYesterday");
+            _logger.LogError(ex, "Error in {methodName}", nameof(GetNumberOfEmailRecipientsYesterday));
             return Result.Fail<int>(ex.Message);
         }
     }
