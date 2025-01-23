@@ -12,9 +12,9 @@ namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
 public record CountContactsInContactListQuery(int ContactListId) : IRequest<Result<int>>;
 
 [UsedImplicitly]
-public class GetContactListContactCountQueryValidator : AbstractValidator<CountContactsInContactListQuery>
+public class CountContactsInContactListQueryValidator : AbstractValidator<CountContactsInContactListQuery>
 {
-    public GetContactListContactCountQueryValidator()
+    public CountContactsInContactListQueryValidator()
     {
         RuleFor(x => x.ContactListId)
             .GreaterThan(0)
