@@ -35,10 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Emails\Sending\Queries\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Update="Emails\Sending\Commands\E2E\TestDocuments\Test_PDF1.pdf">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

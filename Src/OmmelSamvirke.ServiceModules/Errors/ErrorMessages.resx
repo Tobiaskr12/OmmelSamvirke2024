@@ -42,4 +42,7 @@
     <data name="DailyEmailAnalytics_DateMustBeInPast" xml:space="preserve">
         <value>The selected date is in the future. Select today or a date in the past to see an email-analysis for that date.</value>
     </data>
+    <data name="SearchContactListsByEmail_InvalidEmail" xml:space="preserve">
+        <value>The email address is invalid</value>
+    </data>
 </root>

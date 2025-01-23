@@ -1,8 +1,10 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess;
+using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules;
 using OmmelSamvirke.Infrastructure;
 using OmmelSamvirke.SupportModules.Logging;
@@ -81,5 +83,17 @@ public class IntegrationTestingHelper
         ServiceProvider = services.BuildServiceProvider();
         
         Mediator = ServiceProvider.GetService<IMediator>() ?? throw new Exception("Mediator service not found");
+    }
+
+    public async Task ResetDatabase()
+    {
+        var dbContext = ServiceProvider.GetService<OmmelSamvirkeDbContext>();
+        if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
+        
+        if (_configuration?.GetSection("ExecutionEnvironment").Value == "Test")
+        {
+            await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.MigrateAsync();
+        }
     }
 }

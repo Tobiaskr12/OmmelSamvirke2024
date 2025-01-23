@@ -26,7 +26,10 @@ public static class DbContextSetup
         var dbContext = scope.ServiceProvider.GetRequiredService<OmmelSamvirkeDbContext>();
         if ((await dbContext.Database.GetPendingMigrationsAsync()).Any())
         {
-            await dbContext.Database.MigrateAsync();
+            if (await dbContext.Database.EnsureCreatedAsync())
+            {
+                await dbContext.Database.MigrateAsync();
+            }
         }
     }
 }

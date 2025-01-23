@@ -1,0 +1,243 @@
+using System.Linq.Expressions;
+using FluentResults;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using OmmelSamvirke.DataAccess.Base;
+using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
+using OmmelSamvirke.ServiceModules.Errors;
+
+namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
+
+[TestFixture, Category("UnitTests")]
+public class SearchContactListsByEmailQueryTests
+{
+    private IRepository<ContactList> _repository;
+    private ILogger<SearchContactListsByEmailQueryHandler> _logger;
+    private SearchContactListsByEmailQueryHandler _handler;
+    private readonly CancellationToken _cancellationToken = CancellationToken.None;
+
+    [SetUp]
+    public void Setup()
+    {
+        _repository = Substitute.For<IRepository<ContactList>>();
+        _logger = Substitute.For<ILogger<SearchContactListsByEmailQueryHandler>>();
+        _handler = new SearchContactListsByEmailQueryHandler(_repository, _logger);
+    }
+
+    [Test]
+    public async Task Handle_WhenContactListsExist_ReturnsContactLists()
+    {
+        const string emailAddress = "test@example.com";
+        ContactList contactList1 = CreateTestContactList(1, "List One", "Description One", 
+        [
+            CreateTestRecipient(emailAddress),
+            CreateTestRecipient("other1@example.com")
+        ]);
+        ContactList contactList2 = CreateTestContactList(2, "List Two", "Description Two", 
+        [
+            CreateTestRecipient(emailAddress),
+            CreateTestRecipient("other2@example.com")
+        ]);
+        var query = new SearchContactListsByEmailQuery(emailAddress);
+
+        SetupRepositoryFind([contactList1, contactList2]);
+
+        Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+            Assert.That(result.Value, Is.EquivalentTo(new List<ContactList> { contactList1, contactList2 }));
+        });
+    }
+
+    [Test]
+    public async Task Handle_WhenNoContactListsExist_ReturnsEmptyList()
+    {
+        const string emailAddress = "nonexistent@example.com";
+        var query = new SearchContactListsByEmailQuery(emailAddress);
+
+        SetupRepositoryFind([]);
+
+        Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Empty);
+        });
+    }
+
+    [Test]
+    public async Task Handle_WhenRepositoryFails_ReturnsGenericError()
+    {
+        const string emailAddress = "error@example.com";
+        var query = new SearchContactListsByEmailQuery(emailAddress);
+        const string failureMessage = "Database error";
+
+        _repository
+            .FindAsync(
+                Arg.Any<Expression<Func<ContactList, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()
+            ).Returns(Task.FromResult(Result.Fail<List<ContactList>>(new List<string> { failureMessage })));
+
+        Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsFailed, Is.True);
+            Assert.That(result.Errors.First().Message, Is.EqualTo(ErrorMessages.GenericErrorWithRetryPrompt));
+        });
+    }
+
+    [Test]
+    public async Task Handle_WhenExceptionThrown_ReturnsFailureWithErrorCode()
+    {
+        const string emailAddress = "exception@example.com";
+        var query = new SearchContactListsByEmailQuery(emailAddress);
+
+        _repository
+            .FindAsync(
+                Arg.Any<Expression<Func<ContactList, bool>>>(), 
+                Arg.Any<bool>(), 
+                Arg.Any<CancellationToken>()
+            ).Returns<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
+
+        Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsFailed, Is.True);
+            Assert.That(result.Errors.First().Message, Does.StartWith(ErrorMessages.GenericErrorWithErrorCode));
+            _logger.Received(1).Log(
+                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
+                Arg.Any<EventId>(),
+                Arg.Is<object>(state => state.ToString()!.Length > 0),
+                Arg.Any<Exception>(),
+                Arg.Any<Func<object, Exception, string>>()!
+            );
+        });
+    }
+
+    private static ContactList CreateTestContactList(int id, string name, string description, List<Recipient> contacts) =>
+        new()
+        {
+            Id = id,
+            Name = name,
+            Description = description,
+            Contacts = contacts
+        };
+
+    private static Recipient CreateTestRecipient(string emailAddress) =>
+        new()
+        {
+            EmailAddress = emailAddress
+        };
+
+    private void SetupRepositoryFind(List<ContactList> returnList) =>
+        _repository
+            .FindAsync(
+                Arg.Any<Expression<Func<ContactList, bool>>>(),
+                Arg.Any<bool>(),
+                Arg.Any<CancellationToken>()
+            ).Returns(Task.FromResult(Result.Ok(returnList)));
+}
+
+[TestFixture, Category("IntegrationTests")]
+public class SearchContactListsByEmailIntegrationTests
+{
+    private IntegrationTestingHelper _integrationTestingHelper;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        _integrationTestingHelper = new IntegrationTestingHelper();
+    }
+
+    [SetUp]
+    public async Task Setup()
+    {
+        await _integrationTestingHelper.ResetDatabase();
+    }
+
+    private async Task SeedTestData(string emailAddress)
+    {
+        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
+        if (contactListRepository == null) throw new ArgumentNullException(nameof(contactListRepository));
+
+        var contactList1 = new ContactList
+        {
+            Name = "Integration List One",
+            Description = "First integration test contact list",
+            Contacts =
+            [
+                new Recipient { EmailAddress = emailAddress },
+                new Recipient { EmailAddress = "other1@example.com" }
+            ]
+        };
+
+        var contactList2 = new ContactList
+        {
+            Name = "Integration List Two",
+            Description = "Second integration test contact list",
+            Contacts =
+            [
+                new Recipient { EmailAddress = emailAddress },
+                new Recipient { EmailAddress = "other2@example.com" }
+            ]
+        };
+
+        var contactList3 = new ContactList
+        {
+            Name = "Integration List Three",
+            Description = "Third integration test contact list",
+            Contacts = [new Recipient { EmailAddress = "unique@example.com" }]
+        };
+        
+        await contactListRepository.AddAsync(contactList1);
+        await contactListRepository.AddAsync(contactList2);
+        await contactListRepository.AddAsync(contactList3);
+    }
+
+    [Test]
+    public async Task SearchContactListsByEmail_ExistingEmail_ReturnsContactLists()
+    {
+        const string searchEmail = "search@example.com";
+        await SeedTestData(searchEmail);
+
+        var query = new SearchContactListsByEmailQuery(searchEmail);
+
+        Result<List<ContactList>> result = await _integrationTestingHelper.Mediator.Send(query);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+            Assert.That(result.Value, Has.Count.EqualTo(2));
+            Assert.That(result.Value.Exists(cl => cl.Name == "Integration List One"), Is.True);
+            Assert.That(result.Value.Exists(cl => cl.Name == "Integration List Two"), Is.True);
+        });
+    }
+
+    [Test]
+    public async Task SearchContactListsByEmail_NonExistingEmail_ReturnsEmptyList()
+    {
+        const string searchEmail = "nonexistent@example.com";
+        await SeedTestData("search@example.com");
+
+        var query = new SearchContactListsByEmailQuery(searchEmail);
+
+        Result<List<ContactList>> result = await _integrationTestingHelper.Mediator.Send(query);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Empty);
+        });
+    }
+}

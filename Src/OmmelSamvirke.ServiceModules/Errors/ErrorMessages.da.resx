@@ -42,4 +42,7 @@
     <data name="DailyEmailAnalytics_DateMustBeInPast" xml:space="preserve">
         <value>Den valgte dato er i fremtiden. Vælg dags dato eller en tidligere dato for at se email-analyser for den valgte dato.</value>
     </data>
+    <data name="SearchContactListsByEmail_InvalidEmail" xml:space="preserve">
+        <value>E-mailadressen er ikke gyldig</value>
+    </data>
 </root>

@@ -4,7 +4,7 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
 
-namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
+namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Queries;
 
 [TestFixture, Category("UnitTests")]
 public class ServiceLimitsQueryTests

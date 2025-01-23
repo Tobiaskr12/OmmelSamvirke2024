@@ -123,6 +123,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email address is invalid.
+        /// </summary>
+        public static string SearchContactListsByEmail_InvalidEmail {
+            get {
+                return ResourceManager.GetString("SearchContactListsByEmail_InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected service limit interval for sending emails is invalid.
         /// </summary>
         public static string ServiceLimits_InvalidEmailInterval {
