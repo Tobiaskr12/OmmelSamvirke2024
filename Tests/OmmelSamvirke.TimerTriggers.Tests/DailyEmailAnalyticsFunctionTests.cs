@@ -47,7 +47,7 @@ public class DailyEmailAnalyticsFunctionTests
     
         Assert.Multiple(() =>
         {
-            var ex = Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
+            Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
             Assert.That(() => _dailyAnalyticsRepository.Received(1).AddAsync(Arg.Any<DailyEmailAnalytics>()), Throws.Nothing);
         });
     }

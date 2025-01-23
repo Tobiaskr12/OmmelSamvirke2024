@@ -1,7 +1,5 @@
 using System.Linq.Expressions;
 using FluentResults;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;

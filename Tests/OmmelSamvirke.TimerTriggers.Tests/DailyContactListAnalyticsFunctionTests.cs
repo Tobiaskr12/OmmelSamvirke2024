@@ -34,10 +34,10 @@ public class DailyContactListAnalyticsFunctionTests
             .AddAsync(Arg.Any<DailyContactListAnalytics>())
             .Returns(Task.FromResult(Result.Ok(CreateTestDailyAnalytics("Dummy", DateTime.UtcNow, 0))));
 
-        var ex = Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
 
         Assert.Multiple(() =>
         {
+            Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
             _contactListRepository.Received(1).FindAsync(Arg.Any<Expression<Func<ContactList, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>());
             _dailyAnalyticsRepository.DidNotReceive().AddAsync(Arg.Any<DailyContactListAnalytics>());
         });
