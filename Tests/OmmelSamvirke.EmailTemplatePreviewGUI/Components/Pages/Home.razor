@@ -2,6 +2,7 @@
 
 @using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @using System.ComponentModel
+@using OmmelSamvirke.EmailTemplatePreviewGUI.Models
 
 @inject TargetDeviceViewModel TargetDeviceViewModel
 @inject ThemeViewModel ThemeViewModel
@@ -12,6 +13,33 @@
 <PageTitle>Email Template Preview</PageTitle>
 
 <div id="container">
+    @if (EmailTemplatesViewModel.Parameters.Any())
+    {
+        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 768px">
+            <MudSelect T="string" 
+                       Label="Select Parameter"
+                       @bind-Value="EmailTemplatesViewModel.SelectedParameterName"
+                       AnchorOrigin="Origin.BottomCenter"
+                       Variant="Variant.Outlined"
+                       Style="@($"margin-right: 20px; {(_isDarkMode ? "" : "background: white;")} width: 100px;")">
+                @foreach (Parameter param in EmailTemplatesViewModel.Parameters)
+                {
+                    <MudSelectItem Value="@param.Name">@param.Name</MudSelectItem>
+                }
+            </MudSelect>
+
+            @if (EmailTemplatesViewModel.SelectedParameter != null)
+            {
+                <MudTextField Label="Value"
+                              Immediate="true"
+                              @bind-Value="EmailTemplatesViewModel.SelectedParameter.Value"
+                              Variant="Variant.Outlined"
+                              Style="@($"{(_isDarkMode ? "" : "background: white;")}")"
+                              AdornmentColor="Color.Primary" />
+            }
+        </div>
+    }
+
     <iframe
         srcdoc="@EmailTemplatesViewModel.Content"
         class="test mud-elevation-1"
@@ -26,10 +54,10 @@
         public const int Tablet = 768;
         public const int Mobile = 360;
     }
-    
+
     private int _containerSize = ScreenSizes.Tablet;
     private bool _isDarkMode;
-    
+
     protected override void OnInitialized()
     {
         EmailTemplatesViewModel.PropertyChanged += OnEmailTemplateChanged;
@@ -39,7 +67,13 @@
 
     private void OnEmailTemplateChanged(object? sender, PropertyChangedEventArgs e)
     {
-        InvokeAsync(StateHasChanged);
+        if (e.PropertyName == nameof(EmailTemplatesViewModel.Content) ||
+            e.PropertyName == nameof(EmailTemplatesViewModel.Parameters) ||
+            e.PropertyName == nameof(EmailTemplatesViewModel.SelectedParameter) ||
+            e.PropertyName == nameof(EmailTemplatesViewModel.SelectedParameterName))
+        {
+            InvokeAsync(StateHasChanged);
+        }
     }
 
     private void OnTargetDeviceChanged(object? sender, PropertyChangedEventArgs e)
@@ -68,7 +102,7 @@
 
         InvokeAsync(StateHasChanged);
     }
-    
+
     public void Dispose()
     {
         EmailTemplatesViewModel.PropertyChanged -= OnEmailTemplateChanged;

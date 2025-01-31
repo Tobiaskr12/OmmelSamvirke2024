@@ -1,4 +1,6 @@
 @using System.ComponentModel
+@using CommunityToolkit.Mvvm.Messaging
+@using OmmelSamvirke.EmailTemplatePreviewGUI.Messages
 @using OmmelSamvirke.EmailTemplatePreviewGUI.Models
 @using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @inject EmailTemplatesViewModel EmailTemplatesViewModel
@@ -32,6 +34,7 @@
 
     private async Task OnTemplateClicked(EmailTemplate emailTemplate)
     {
+        WeakReferenceMessenger.Default.Send(new CloseNavBarMessage());
         await EmailTemplatesViewModel.WatchTemplate(emailTemplate);
     }
 }

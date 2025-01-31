@@ -1,5 +1,7 @@
 ﻿@using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @using System.ComponentModel
+@using CommunityToolkit.Mvvm.Messaging
+@using OmmelSamvirke.EmailTemplatePreviewGUI.Messages
 
 @inherits LayoutComponentBase
 
@@ -24,6 +26,7 @@
 
     <MudAppBar Color="Color.Primary" Fixed="false">
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Style="margin-right: 20px;"
                        Color="Color.Inherit"
                        OnClick="ToggleNavBar" />
 
@@ -81,6 +84,12 @@
 
         ThemeViewModel.PropertyChanged += OnThemeChanged;
         _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
+        
+        WeakReferenceMessenger.Default.Register<CloseNavBarMessage>(this, (_, _) =>
+        {
+            _navBarOpen = false;
+            InvokeAsync(StateHasChanged);
+        });
     }
 
     private void ToggleDarkMode()
