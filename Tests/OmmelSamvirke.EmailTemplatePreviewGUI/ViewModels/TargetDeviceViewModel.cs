@@ -1,4 +1,4 @@
-﻿using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels.BaseClasses;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 
@@ -9,24 +9,7 @@ public enum TargetDevice
     Mobile
 }
 
-public class TargetDeviceViewModel : ViewModelBase
+public partial class TargetDeviceViewModel : ObservableObject
 {
-    private TargetDevice _targetDevice = TargetDevice.Tablet;
-    public TargetDevice TargetDevice
-    {
-        get => _targetDevice;
-        private set
-        {
-            if (_targetDevice != value)
-            {
-                _targetDevice = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public void UpdateTargetDevice(TargetDevice device)
-    {
-        TargetDevice = device;
-    }
+    [ObservableProperty] private TargetDevice _targetDevice = TargetDevice.Tablet;
 }

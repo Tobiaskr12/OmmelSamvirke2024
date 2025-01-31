@@ -1,12 +1,12 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Models;
-using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels.BaseClasses;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 
-public class EmailTemplatesViewModel : ViewModelBase, IAsyncDisposable
+public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposable
 {
     private readonly NavigationManager _navigationManager;
     private readonly FileWatcherService _fileWatcherService;
@@ -25,33 +25,9 @@ public class EmailTemplatesViewModel : ViewModelBase, IAsyncDisposable
         PopulateTemplatesSelection();
     }
 
-    private Dictionary<string, List<EmailTemplate>> _emailTemplates = [];
-    public Dictionary<string, List<EmailTemplate>> EmailTemplates
-    {
-        get => _emailTemplates;
-        private set
-        {
-            if (value != _emailTemplates)
-            {
-                _emailTemplates = value;
-                OnPropertyChanged();
-            } 
-        }
-    }
+    [ObservableProperty] private Dictionary<string, List<EmailTemplate>> _emailTemplates = [];
+    [ObservableProperty] private string _content = string.Empty;
 
-    private string _content = string.Empty;
-    public string Content
-    {
-        get => _content;
-        private set
-        {
-            if (value != _content)
-            {
-                _content = value;
-                OnPropertyChanged();
-            }
-        }
-    }
     
     public async Task WatchTemplate(EmailTemplate emailTemplate)
     {

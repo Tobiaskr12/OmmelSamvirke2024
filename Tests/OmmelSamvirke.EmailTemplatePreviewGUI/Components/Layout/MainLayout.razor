@@ -31,9 +31,9 @@
         <MudSpacer/>
 
         <MudButtonGroup Color="Color.Surface" Variant="Variant.Outlined" Style="margin-right: 32px">
-            <MudIconButton Icon="@Icons.Material.Filled.PhoneAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Mobile)"/>
-            <MudIconButton Icon="@Icons.Material.Filled.TabletAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Tablet)"/>
-            <MudIconButton Icon="@Icons.Material.Filled.LaptopChromebook" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.UpdateTargetDevice(TargetDevice.Desktop)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.PhoneAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.TargetDevice = TargetDevice.Mobile"/>
+            <MudIconButton Icon="@Icons.Material.Filled.TabletAndroid" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.TargetDevice = TargetDevice.Tablet"/>
+            <MudIconButton Icon="@Icons.Material.Filled.LaptopChromebook" Style="@($"color: {Colors.Gray.Lighten5}")" OnClick="() => TargetDeviceViewModel.TargetDevice = TargetDevice.Desktop"/>
         </MudButtonGroup>
 
         <MudIconButton Icon="@ToggleIcon"
