@@ -1,4 +1,4 @@
-# Ommel Samvirke - Coorporating local associations
+# Ommel Samvirke - Cooperating local associations
 OmmelSamvirke is a group of local associations in the town Ommel on the Danish island of Ærø. This repository contains the code for the website used by Ommel Samvirke ([ommelsamvirke.com](https://ommelsamvirke.com)).
 
 ## Contents
@@ -13,10 +13,10 @@ OmmelSamvirke is a group of local associations in the town Ommel on the Danish i
 
 ## Introduction
 The website is used for a wide array of tasks. The frontend for the system is a Blazor Server application that interacts with the system's service modules. The following service modules are currently implemented:
-- Emails: The system is able to send emails to indivual recipients and contact lists through Azure Communication Services.
+- Emails: The system is able to send emails to individual recipients and contact lists through Azure Communication Services.
 
 ## Service Modules
-The following sections contain detailed descriptions of the features offered by each service module. The following emojis are used to indicated if a feature has already been implemented or if it's an upcoming feautre. 
+The following sections contain detailed descriptions of the features offered by each service module. The following emojis are used to indicated if a feature has already been implemented or if it's an upcoming feature. 
 
 ✅ Implemented feature <br>
 ⌛ Upcoming feature 
