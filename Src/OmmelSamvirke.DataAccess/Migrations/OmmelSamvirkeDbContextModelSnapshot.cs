@@ -273,6 +273,9 @@ namespace OmmelSamvirke.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
+
                     b.ToTable("Recipients", (string)null);
                 });
 

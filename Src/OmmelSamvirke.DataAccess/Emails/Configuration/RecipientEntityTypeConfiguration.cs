@@ -10,6 +10,9 @@ public class RecipientEntityTypeConfiguration : IEntityTypeConfiguration<Recipie
     {
         builder.ToTable("Recipients");
         builder.HasKey(r => r.Id);
+
+        builder.HasIndex(r => r.EmailAddress)
+               .IsUnique();
         
         builder.Property(r => r.EmailAddress)
                .IsRequired()

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
 
@@ -157,16 +158,10 @@ public class SearchContactListsByEmailIntegrationTests
         _integrationTestingHelper = new IntegrationTestingHelper();
     }
 
-    [SetUp]
-    public async Task Setup()
-    {
-        await _integrationTestingHelper.ResetDatabase();
-    }
-
     private async Task SeedTestData(string emailAddress)
     {
-        var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
-
+        await _integrationTestingHelper.ResetDatabase();
+        
         var contactList1 = new ContactList
         {
             Name = "Integration List One",
@@ -196,9 +191,9 @@ public class SearchContactListsByEmailIntegrationTests
             Contacts = [new Recipient { EmailAddress = "unique@example.com" }]
         };
         
-        await contactListRepository.AddAsync(contactList1);
-        await contactListRepository.AddAsync(contactList2);
-        await contactListRepository.AddAsync(contactList3);
+        await _integrationTestingHelper.Mediator.Send(new CreateContactListCommand(contactList1));
+        await _integrationTestingHelper.Mediator.Send(new CreateContactListCommand(contactList2));
+        await _integrationTestingHelper.Mediator.Send(new CreateContactListCommand(contactList3));
     }
 
     [Test]

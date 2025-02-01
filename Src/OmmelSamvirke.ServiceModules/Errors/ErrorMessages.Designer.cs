@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This contact has already been added to the contact list..
+        /// </summary>
+        public static string ContactList_AddContact_ContactAlreadyExitsts {
+            get {
+                return ResourceManager.GetString("ContactList_AddContact_ContactAlreadyExitsts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The contact list you&apos;re trying to subscribe to could not be found. It might have been deleted since you unsubscribed..
         /// </summary>
         public static string ContactList_NotFound_UndoUnsubscribe {

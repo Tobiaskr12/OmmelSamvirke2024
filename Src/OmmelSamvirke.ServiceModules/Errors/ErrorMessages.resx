@@ -57,4 +57,7 @@
     <data name="ContactList_NotFound_UndoUnsubscribe" xml:space="preserve">
         <value>The contact list you're trying to subscribe to could not be found. It might have been deleted since you unsubscribed.</value>
     </data>
+    <data name="ContactList_AddContact_ContactAlreadyExitsts" xml:space="preserve">
+        <value>This contact has already been added to the contact list.</value>
+    </data>
 </root>

@@ -92,6 +92,7 @@ public class GetContactListIntegrationTests
     private async Task<int> SeedTestData()
     {
         var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
+        await _integrationTestingHelper.ResetDatabase();
         
         var contactList = new ContactList
         {

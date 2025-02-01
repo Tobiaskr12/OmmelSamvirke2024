@@ -41,19 +41,19 @@ public class AddContactToContactListCommandHandler : IRequestHandler<AddContactT
     {
         try
         {
-            Result<List<Recipient>> recipientQueryResult = await _recipientRepository.FindAsync(x => 
-                x.EmailAddress == request.Contact.EmailAddress, 
-                cancellationToken: cancellationToken);
+            // Attempt to find an existing recipient with the same email address.
+            Result<List<Recipient>> recipientQueryResult = await _recipientRepository.FindAsync(
+                x => x.EmailAddress == request.Contact.EmailAddress,
+                cancellationToken: cancellationToken
+            );
 
-            if (!recipientQueryResult.IsSuccess) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
-
-            Recipient recipient = request.Contact;
-            if (recipientQueryResult.Value is not null && recipientQueryResult.Value.Count > 0)
+            if (recipientQueryResult.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+            if (recipientQueryResult.Value?.Count > 0)
             {
-                recipient = recipientQueryResult.Value.First();
+                return Result.Fail(ErrorMessages.ContactList_AddContact_ContactAlreadyExitsts);
             }
             
-            request.ContactList.Contacts.Add(recipient);
+            request.ContactList.Contacts.Add(request.Contact);
             Result<ContactList> updateResult = await _contactListRepository.UpdateAsync(request.ContactList, cancellationToken);
 
             return updateResult.IsSuccess ? 

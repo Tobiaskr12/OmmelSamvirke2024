@@ -57,4 +57,7 @@
     <data name="ContactList_NotFound_UndoUnsubscribe" xml:space="preserve">
         <value>Kontaktlisten du prøver at tilmelde dig kunne ikke findes. Den er måske blevet slettet siden du afmeldte dig.</value>
     </data>
+    <data name="ContactList_AddContact_ContactAlreadyExitsts" xml:space="preserve">
+        <value>Denne kontakt er allerede blevet tilføjet til kontaktlisten.</value>
+    </data>
 </root>

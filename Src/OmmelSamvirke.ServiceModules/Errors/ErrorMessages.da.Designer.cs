@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Denne kontakt er allerede blevet tilføjet til kontaktlisten..
+        /// </summary>
+        public static string ContactList_AddContact_ContactAlreadyExitsts {
+            get {
+                return ResourceManager.GetString("ContactList_AddContact_ContactAlreadyExitsts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kontaktlisten du prøver at tilmelde dig kunne ikke findes. Den er måske blevet slettet siden du afmeldte dig..
         /// </summary>
         public static string ContactList_NotFound_UndoUnsubscribe {

@@ -46,12 +46,16 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(Arg.Any<Expression<Func<Recipient, bool>>>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(new List<Recipient>()));
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                cancellationToken: Arg.Any<CancellationToken>()
+            ).Returns(Result.Ok(new List<Recipient>()));
 
         _contactListRepository
-            .UpdateAsync(Arg.Any<ContactList>(), Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(_baseValidContactList));
+            .UpdateAsync(
+                Arg.Any<ContactList>(),
+                Arg.Any<CancellationToken>()
+            ).Returns(Result.Ok(_baseValidContactList));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
@@ -68,8 +72,10 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(Arg.Any<Expression<Func<Recipient, bool>>>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt));
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                cancellationToken: Arg.Any<CancellationToken>()
+            ).Returns(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
@@ -82,12 +88,14 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(Arg.Any<Expression<Func<Recipient, bool>>>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(new List<Recipient>()));
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                cancellationToken: Arg.Any<CancellationToken>()
+            ).Returns(Result.Ok(new List<Recipient>()));
 
         _contactListRepository
             .UpdateAsync(Arg.Any<ContactList>(), Arg.Any<CancellationToken>())
-            .Returns(Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt));
+            .Returns(Result.Fail<ContactList>(ErrorMessages.GenericErrorWithRetryPrompt));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
@@ -100,11 +108,42 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(Arg.Any<Expression<Func<Recipient, bool>>>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Throws(new Exception("Simulated exception"));
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                cancellationToken: Arg.Any<CancellationToken>()
+            ).Throws(new Exception("Simulated exception"));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
         Assert.That(result.IsFailed);
+    }
+    
+    [Test]
+    public async Task AddContactToContactListCommand_DuplicateRecipient_ReplacesContact()
+    {
+        _baseValidContactList.Contacts.Add(_validRecipient);
+        var duplicateRecipient = new Recipient { EmailAddress = _validRecipient.EmailAddress };
+        var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
+
+        _recipientRepository
+            .FindAsync(
+                Arg.Any<Expression<Func<Recipient, bool>>>(),
+                cancellationToken: Arg.Any<CancellationToken>()
+            ).Returns(Result.Ok(new List<Recipient> { duplicateRecipient }));
+
+        _contactListRepository
+            .UpdateAsync(
+                Arg.Any<ContactList>(),
+                Arg.Any<CancellationToken>()
+            ).Returns(Result.Ok(_baseValidContactList));
+        
+        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsFailed);
+            Assert.That(_baseValidContactList.Contacts.First(), Is.EqualTo(_validRecipient));
+            Assert.That(result.Errors.First().Message, Is.EqualTo(ErrorMessages.ContactList_AddContact_ContactAlreadyExitsts));
+        });
     }
 }

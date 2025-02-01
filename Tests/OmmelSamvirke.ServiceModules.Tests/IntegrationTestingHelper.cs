@@ -57,6 +57,7 @@ public class IntegrationTestingHelper
         {
             await dbContext.Database.EnsureDeletedAsync();
             await dbContext.Database.MigrateAsync();
+            dbContext.ChangeTracker.Clear();
         }
     }
 
