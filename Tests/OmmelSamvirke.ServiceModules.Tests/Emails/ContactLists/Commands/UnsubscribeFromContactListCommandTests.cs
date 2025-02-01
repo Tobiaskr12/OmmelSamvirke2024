@@ -17,7 +17,8 @@ public class UnsubscribeFromContactListCommandTests
 {
     private ILogger _logger;
     private IMediator _mediator;
-    private IRepository<ContactList> _repository;
+    private IRepository<ContactList> _contactListRepository;
+    private IRepository<ContactListUnsubscription> _contactListUnsubscriptionRepository;
     private IEmailTemplateEngine _emailTemplateEngine;
     private UnsubscribeFromContactListCommandHandler _handler;
 
@@ -26,20 +27,37 @@ public class UnsubscribeFromContactListCommandTests
     {
         _logger = Substitute.For<ILogger>();
         _mediator = Substitute.For<IMediator>();
-        _repository = Substitute.For<IRepository<ContactList>>();
+        _contactListRepository = Substitute.For<IRepository<ContactList>>();
+        _contactListUnsubscriptionRepository = Substitute.For<IRepository<ContactListUnsubscription>>();
         _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
-        _handler = new UnsubscribeFromContactListCommandHandler(_logger, _mediator, _emailTemplateEngine, _repository);
+        _handler = new UnsubscribeFromContactListCommandHandler(
+            _logger,
+            _mediator,
+            _emailTemplateEngine,
+            _contactListRepository,
+            _contactListUnsubscriptionRepository
+        );
+
+        // Return a valid unsubscription record with required properties.
+        _contactListUnsubscriptionRepository.AddAsync(
+            Arg.Any<ContactListUnsubscription>(),
+            Arg.Any<CancellationToken>()
+        ).Returns(Task.FromResult(Result.Ok(new ContactListUnsubscription
+        {
+            EmailAddress = "test@example.com",
+            ContactListId = 1
+        })));
     }
 
     private void ConfigureFindAsync(Result<List<ContactList>> result) =>
-        _repository.FindAsync(
+        _contactListRepository.FindAsync(
             Arg.Any<Expression<Func<ContactList, bool>>>(),
             Arg.Any<bool>(),
             Arg.Any<CancellationToken>()
         ).Returns(Task.FromResult(result));
 
     private void ConfigureUpdateAsync(ContactList expectedContactList, Result<ContactList> result) =>
-        _repository.UpdateAsync(
+        _contactListRepository.UpdateAsync(
             expectedContactList,
             Arg.Any<CancellationToken>()
         ).Returns(Task.FromResult(result));
@@ -78,6 +96,7 @@ public class UnsubscribeFromContactListCommandTests
 
         var contactList = new ContactList
         {
+            Id = 1,
             Name = "List1",
             Description = "First list",
             Contacts = [recipient, otherRecipient]
@@ -88,6 +107,7 @@ public class UnsubscribeFromContactListCommandTests
         // Simulate an update where the recipient is successfully removed.
         var updatedContactList = new ContactList
         {
+            Id = 1,
             Name = contactList.Name,
             Description = contactList.Description,
             Contacts = [otherRecipient]
@@ -98,7 +118,7 @@ public class UnsubscribeFromContactListCommandTests
         ConfigureUpdateAsync(Arg.Any<ContactList>(), Result.Ok(updatedContactList));
 
         // Configure email template engine.
-        _emailTemplateEngine.GenerateBodiesFromTemplate("UnsubscribeReceipt.html").Returns(Result.Ok());
+        _emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html", Arg.Any<(string key, string value)[]>()).Returns(Result.Ok());
         _emailTemplateEngine.GetSubject().Returns("Unsubscribe Receipt");
         _emailTemplateEngine.GetHtmlBody().Returns("<html>You have been unsubscribed.</html>");
         _emailTemplateEngine.GetPlainTextBody().Returns("You have been unsubscribed.");
@@ -124,6 +144,7 @@ public class UnsubscribeFromContactListCommandTests
         var recipient = new Recipient { EmailAddress = "test@example.com" };
         var contactList = new ContactList
         {
+            Id = 1,
             Name = "List1",
             Description = "First list",
             Contacts = [recipient]
@@ -136,6 +157,7 @@ public class UnsubscribeFromContactListCommandTests
         // Simulate that the recipient was not removed.
         var copyOfContactList = new ContactList
         {
+            Id = 1,
             Name = contactList.Name,
             Description = contactList.Description,
             Contacts = [..contactList.Contacts]
@@ -153,6 +175,7 @@ public class UnsubscribeFromContactListCommandTests
         var recipient = new Recipient { EmailAddress = "test@example.com" };
         var contactList = new ContactList
         {
+            Id = 1,
             Name = "List1",
             Description = "First list",
             Contacts = [recipient]
@@ -172,7 +195,7 @@ public class UnsubscribeFromContactListCommandTests
     public async Task UnsubscribeFromContactList_ExceptionThrown_ReturnsFailure()
     {
         var command = new UnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid());
-        _repository.FindAsync(
+        _contactListRepository.FindAsync(
             Arg.Any<Expression<Func<ContactList, bool>>>(),
             Arg.Any<bool>(),
             Arg.Any<CancellationToken>()
@@ -190,6 +213,63 @@ public class UnsubscribeFromContactListCommandTests
                 Arg.Any<Exception>(),
                 Arg.Any<Func<object, Exception, string>>()!
             );
+        });
+    }
+}
+
+[TestFixture, Category("IntegrationTests")]
+public class UnsubscribeFromContactListIntegrationTests
+{
+    private IntegrationTestingHelper _integrationTestingHelper;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp() =>
+        _integrationTestingHelper = new IntegrationTestingHelper();
+
+    [SetUp]
+    public async Task Setup() =>
+        await _integrationTestingHelper.ResetDatabase();
+
+    [Test]
+    public async Task UnsubscribeFromContactList_HappyPath_ReturnsSuccessAndCreatesUnsubscriptionRecord()
+    {
+        const string email = "ommelsamvirketest1@gmail.com";
+        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
+        if (contactListRepository == null) throw new Exception("ContactList repository not found");
+
+        var contactList = new ContactList
+        {
+            Name = "Integration List",
+            Description = "Integration test contact list",
+            Contacts =
+            [
+                new Recipient { EmailAddress = email },
+                new Recipient { EmailAddress = "ommelsamvirketest2@gmail.com" }
+            ]
+        };
+
+        Result<ContactList> addResult = await contactListRepository.AddAsync(contactList);
+        Assert.That(addResult.IsSuccess, Is.True);
+
+        var command = new UnsubscribeFromContactListCommand(email, addResult.Value.UnsubscribeToken);
+        Result result = await _integrationTestingHelper.Mediator.Send(command);
+        Assert.That(result.IsSuccess, Is.True);
+
+        Result<ContactList> fetchedContactList = await contactListRepository.GetByIdAsync(addResult.Value.Id);
+        Assert.Multiple(() =>
+        {
+            Assert.That(fetchedContactList.IsSuccess, Is.True);
+            Assert.That(fetchedContactList.Value.Contacts.Exists(r => r.EmailAddress == email), Is.False);
+        });
+
+        var unsubscriptionRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactListUnsubscription>)) as IRepository<ContactListUnsubscription>;
+        if (unsubscriptionRepository == null) throw new Exception("ContactListUnsubscription repository not found");
+
+        Result<List<ContactListUnsubscription>> allUnsubscriptions = await unsubscriptionRepository.GetAllAsync();
+        Assert.Multiple(() =>
+        {
+            Assert.That(allUnsubscriptions.IsSuccess, Is.True);
+            Assert.That(allUnsubscriptions.Value.Exists(u => u.EmailAddress == email && u.ContactListId == addResult.Value.Id), Is.True);
         });
     }
 }

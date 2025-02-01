@@ -48,4 +48,13 @@
     <data name="ContactList_UnsubscribeTokenEmptyQuery" xml:space="preserve">
         <value>We could not find the contact list you're trying to unsubscribe from. Please click the unsubscribe link in the email again.</value>
     </data>
+    <data name="ContactList_UndoTokenNotFound" xml:space="preserve">
+        <value>An error occured. Please try to click the link in the email again.</value>
+    </data>
+    <data name="ContactList_UndoTokenExpired" xml:space="preserve">
+        <value>You unsubscribed more than 2 weeks ago. If you want to undo your unsubscription you have to sign up to the contact list again.</value>
+    </data>
+    <data name="ContactList_NotFound_UndoUnsubscribe" xml:space="preserve">
+        <value>The contact list you're trying to subscribe to could not be found. It might have been deleted since you unsubscribed.</value>
+    </data>
 </root>

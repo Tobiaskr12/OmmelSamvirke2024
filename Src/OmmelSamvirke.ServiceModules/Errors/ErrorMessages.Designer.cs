@@ -69,6 +69,33 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The contact list you&apos;re trying to subscribe to could not be found. It might have been deleted since you unsubscribed..
+        /// </summary>
+        public static string ContactList_NotFound_UndoUnsubscribe {
+            get {
+                return ResourceManager.GetString("ContactList_NotFound_UndoUnsubscribe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You unsubscribed more than 2 weeks ago. If you want to undo your unsubscription you have to sign up to the contact list again..
+        /// </summary>
+        public static string ContactList_UndoTokenExpired {
+            get {
+                return ResourceManager.GetString("ContactList_UndoTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occured. Please try to click the link in the email again..
+        /// </summary>
+        public static string ContactList_UndoTokenNotFound {
+            get {
+                return ResourceManager.GetString("ContactList_UndoTokenNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We could not find the contact list you&apos;re trying to unsubscribe from. Please click the unsubscribe link in the email again..
         /// </summary>
         public static string ContactList_UnsubscribeTokenEmptyQuery {

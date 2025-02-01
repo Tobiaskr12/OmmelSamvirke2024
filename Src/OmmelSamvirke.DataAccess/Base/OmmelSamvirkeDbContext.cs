@@ -13,6 +13,7 @@ public class OmmelSamvirkeDbContext : DbContext
     public DbSet<ContactList> ContactLists { get; init; }
     public DbSet<DailyEmailAnalytics> DailyEmailAnalytics { get; init; }
     public DbSet<DailyContactListAnalytics> DailyContactListAnalytics { get; init; }
+    public DbSet<ContactListUnsubscription> ContactListUnsubscriptions { get; init; }
     
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     

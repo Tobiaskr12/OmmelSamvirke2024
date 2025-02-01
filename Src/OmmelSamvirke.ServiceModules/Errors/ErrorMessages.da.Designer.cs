@@ -69,6 +69,33 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kontaktlisten du prøver at tilmelde dig kunne ikke findes. Den er måske blevet slettet siden du afmeldte dig..
+        /// </summary>
+        public static string ContactList_NotFound_UndoUnsubscribe {
+            get {
+                return ResourceManager.GetString("ContactList_NotFound_UndoUnsubscribe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Du afmeldte dig denne kontaktliste for mere end 2 uger siden. Hvis du ønsker at tilmelde dig kontaktlisten igen, skal du gøre det via den oprindelige metode..
+        /// </summary>
+        public static string ContactList_UndoTokenExpired {
+            get {
+                return ResourceManager.GetString("ContactList_UndoTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl. Prøv at klikke på linket i e-mailen igen..
+        /// </summary>
+        public static string ContactList_UndoTokenNotFound {
+            get {
+                return ResourceManager.GetString("ContactList_UndoTokenNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vi kunne finde den kontaktliste du forsøger at afmelde dig fra. Prøv at klikke på linket i e-mailen igen..
         /// </summary>
         public static string ContactList_UnsubscribeTokenEmptyQuery {

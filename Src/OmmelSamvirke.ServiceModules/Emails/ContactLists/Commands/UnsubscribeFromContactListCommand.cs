@@ -7,6 +7,7 @@ using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
+using Exception = System.Exception;
 
 namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 
@@ -18,25 +19,28 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
     private readonly IMediator _mediator;
     private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IRepository<ContactList> _contactListRepository;
+    private readonly IRepository<ContactListUnsubscription> _contactListUnsubscriptionRepository;
 
     public UnsubscribeFromContactListCommandHandler(
         ILogger logger, 
         IMediator mediator,
         IEmailTemplateEngine emailTemplateEngine,
-        IRepository<ContactList> contactListRepository)
+        IRepository<ContactList> contactListRepository,
+        IRepository<ContactListUnsubscription> contactListUnsubscriptionRepository)
     {
         _logger = logger;
         _mediator = mediator;
         _emailTemplateEngine = emailTemplateEngine;
         _contactListRepository = contactListRepository;
+        _contactListUnsubscriptionRepository = contactListUnsubscriptionRepository;
     }
     
     public async Task<Result> Handle(UnsubscribeFromContactListCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            Result<List<ContactList>> contactListQueryResult = await _contactListRepository.FindAsync(x => 
-                x.UnsubscribeToken == request.UnsubscribeToken,
+            Result<List<ContactList>> contactListQueryResult = await _contactListRepository.FindAsync(
+                x => x.UnsubscribeToken == request.UnsubscribeToken,
                 readOnly: false,
                 cancellationToken: cancellationToken
             );
@@ -46,7 +50,6 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
                 return Result.Fail(ErrorMessages.ContactList_UnsubscribeTokenEmptyQuery);
             }
 
-            // There should only be one contact list with the provided token, so if more exist, log the warning!
             if (contactListQueryResult.Value.Count > 1)
             {
                 _logger.LogWarning(
@@ -58,7 +61,7 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
 
             ContactList contactList = contactListQueryResult.Value.First();
             
-            // There should only be 0-1 matches, but if more somehow exist they should also be removed
+            // Remove all matching recipients.
             List<Recipient> recipients = contactList.Contacts.Where(x => x.EmailAddress == request.EmailAddress).ToList();
             foreach (Recipient recipient in recipients)
             {
@@ -74,15 +77,30 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
                     return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
                 }
 
-                // Send email receipt notifying the user of successful unsubscription.
-                var emailRecipient = new Recipient { EmailAddress = request.EmailAddress };
+                // Create a new unsubscription record with the email and contact list id.
+                var unsubscription = new ContactListUnsubscription
+                {
+                    EmailAddress = request.EmailAddress,
+                    ContactListId = contactList.Id
+                };
 
-                // TODO - Write template
-                Result emailTemplateResult = _emailTemplateEngine.GenerateBodiesFromTemplate("UnsubscribeReceipt.html");
+                Result<ContactListUnsubscription> unsubscriptionResult = await _contactListUnsubscriptionRepository.AddAsync(unsubscription, cancellationToken);
+                if (unsubscriptionResult.IsFailed)
+                {
+                    return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+                }
+
+                // Generate email receipt using the new UndoToken.
+                Result emailTemplateResult = _emailTemplateEngine.GenerateBodiesFromTemplate(
+                    "Empty.html", // TODO - Use real template
+                    parameters: ("UndoToken", unsubscriptionResult.Value.UndoToken.ToString())
+                );
                 if (emailTemplateResult.IsFailed)
                 {
                     throw new Exception("Email body generation failed.");
                 }
+
+                var emailRecipient = new Recipient { EmailAddress = request.EmailAddress };
 
                 await _mediator.Send(new SendEmailCommand(new Email
                 {
