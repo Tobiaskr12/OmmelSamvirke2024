@@ -23,8 +23,6 @@ The following sections contain detailed descriptions of the features offered by 
 
 ## Emails
 
-## Email Module Requirements
-
 ### Email Sending
 ✅ **Send Emails to Recipients:**  
 Users can send an email to one or more recipients, including one or more attachments.
