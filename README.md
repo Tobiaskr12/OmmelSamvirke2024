@@ -64,12 +64,11 @@ Users can create a contact list with zero or more contacts / email addresses.
 - Admins can add or remove addresses from a contact list.
 - Users can subscribe to or unsubscribe from a contact list.
 
-✅ **Unsubscribe Process:**  
-- Users can unsubscribe from a contact list.
-- When the system unsubscribes the user, it sends a confirmation email containing a link that can be used if the user wishes to undo the unsubscribe action. The link is valid for 14 days.
+✅ **Unsubscribe Process:**
+When the system unsubscribes the user, it sends a confirmation email containing a link that can be used if the user wishes to undo the unsubscribe action. The link is valid for 14 days.
 
 ✅ **Unsubscribe Links:**  
-All emails sent to a recipient via a contact list contains and unsubscribe link. 
+All emails sent to a recipient via a contact list contains an unsubscribe link. 
 
 ✅ **Contact List Queries:**  
 - Users can query a contact list to see its associated email addresses.
