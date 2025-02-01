@@ -13,10 +13,19 @@
 <PageTitle>Email Template Preview</PageTitle>
 
 <div id="container">
+    @* Render email subject (inferred from template markup) *@
+    @if (!string.IsNullOrEmpty(EmailTemplatesViewModel.Subject))
+    {
+        <MudText Typo="Typo.h4" Style="margin-bottom: 24px">
+            Email Subject: @EmailTemplatesViewModel.Subject
+        </MudText>
+    }
+    
+    @* Render controls for modifying email template parameters *@
     @if (EmailTemplatesViewModel.Parameters.Any())
     {
         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 768px">
-            <MudSelect T="string" 
+            <MudSelect T="string"
                        Label="Select Parameter"
                        @bind-Value="EmailTemplatesViewModel.SelectedParameterName"
                        AnchorOrigin="Origin.BottomCenter"
@@ -35,16 +44,28 @@
                               @bind-Value="EmailTemplatesViewModel.SelectedParameter.Value"
                               Variant="Variant.Outlined"
                               Style="@($"{(_isDarkMode ? "" : "background: white;")}")"
-                              AdornmentColor="Color.Primary" />
+                              AdornmentColor="Color.Primary"/>
             }
         </div>
     }
 
+    @* Render email content *@
     <iframe
         srcdoc="@EmailTemplatesViewModel.Content"
         class="test mud-elevation-1"
         style="@($"width: {_containerSize}px; {(_isDarkMode ? "" : "background: white")}")">
     </iframe>
+    
+    @* Show button for sending a test email to a test email address *@
+    @if (!string.IsNullOrEmpty(EmailTemplatesViewModel.Content))
+    {
+        <MudButton
+            Variant="Variant.Filled"
+            OnClick="EmailTemplatesViewModel.OnSendEmailToTestAddress"
+            Color="Color.Primary">
+            Send to ommelsamvirketest1@gmail.com
+        </MudButton>
+    }
 </div>
 
 @code {

@@ -1,12 +1,19 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using OmmelSamvirke.DomainModules.Emails.Constants;
+using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Models;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 
@@ -14,6 +21,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
 {
     private readonly NavigationManager _navigationManager;
     private readonly FileWatcherService _fileWatcherService;
+    private readonly IMediator _mediator;
     private readonly IEmailTemplateEngine _templateEngine;
 
     private readonly string _fullTemplatesDirectory = Path.Combine(
@@ -26,11 +34,13 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
     public EmailTemplatesViewModel(
         ILogger logger,
         NavigationManager navigationManager,
-        FileWatcherService fileWatcherService
+        FileWatcherService fileWatcherService,
+        IMediator mediator
     )
     {
         _navigationManager = navigationManager;
         _fileWatcherService = fileWatcherService;
+        _mediator = mediator;
         _templateEngine = new TemplateEngine(
             logger, 
             Path.Combine(GetSolutionDirectory(), "Src", "OmmelSamvirke.ServiceModules")
@@ -44,6 +54,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
 
     [ObservableProperty] private Dictionary<string, List<EmailTemplate>> _emailTemplates = new();
     [ObservableProperty] private string _content = string.Empty;
+    [ObservableProperty] private string _subject = string.Empty;
     [ObservableProperty] private ObservableCollection<Parameter> _parameters = [];
     [ObservableProperty] private Parameter? _selectedParameter;
     [ObservableProperty] private string _selectedParameterName = string.Empty;
@@ -65,6 +76,36 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
 
         InitializeParameters();
         UpdateContent();
+    }
+
+    public async Task OnSendEmailToTestAddress()
+    {
+        (string Name, string Value)[] parametersArray = Parameters.Select(p => (p.Name, p.Value)).ToArray();
+        Result generationResult = _templateEngine.GenerateBodiesFromTemplate(_currentTemplate, parametersArray);
+
+        if (generationResult.IsSuccess)
+        {
+            Email email = new()
+            {
+                SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+                Recipients = [new Recipient { EmailAddress = "ommelsamvirketest1@gmail.com" }],
+                Attachments = [],
+                Subject = _templateEngine.GetSubject(),
+                HtmlBody = _templateEngine.GetHtmlBody(),
+                PlainTextBody = _templateEngine.GetPlainTextBody()
+            };
+
+            Result<EmailSendingStatus> sendResult = await _mediator.Send(new SendEmailCommand(email));
+            if (sendResult.IsFailed)
+            {
+                Debug.WriteLine("Could not send the email generated from this template");
+            }
+        }
+        else
+        {
+            Debug.WriteLine("Could not generate email from template");
+        }
+        
     }
 
     private void InitializeFileWatcherHubConnection()
@@ -134,6 +175,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
         (string Name, string Value)[] parametersArray = Parameters.Select(p => (p.Name, p.Value)).ToArray();
         _templateEngine.GenerateBodiesFromTemplate(_currentTemplate, parametersArray);
         Content = _templateEngine.GetHtmlBody();
+        Subject = _templateEngine.GetSubject();
     }
 
     private void PopulateTemplatesSelection()
