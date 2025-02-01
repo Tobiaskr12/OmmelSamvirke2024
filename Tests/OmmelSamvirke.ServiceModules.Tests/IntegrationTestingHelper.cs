@@ -45,8 +45,22 @@ public class IntegrationTestingHelper
         }
         private set => _configuration = value;
     }
+    
+    public T GetService<T>() where T : class => ServiceProvider.GetService<T>() ?? throw new Exception($"Service of type {typeof(T).Name} not found");
+    
+    public async Task ResetDatabase()
+    {
+        var dbContext = ServiceProvider.GetService<OmmelSamvirkeDbContext>();
+        if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
+        
+        if (_configuration?.GetSection("ExecutionEnvironment").Value == "Test")
+        {
+            await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.MigrateAsync();
+        }
+    }
 
-    public ServiceProvider ServiceProvider
+    private ServiceProvider ServiceProvider
     {
         get
         {
@@ -57,7 +71,7 @@ public class IntegrationTestingHelper
             
             return _serviceProvider!;
         }
-        private set => _serviceProvider = value;
+        set => _serviceProvider = value;
     }
 
     private void Setup()
@@ -83,17 +97,5 @@ public class IntegrationTestingHelper
         ServiceProvider = services.BuildServiceProvider();
         
         Mediator = ServiceProvider.GetService<IMediator>() ?? throw new Exception("Mediator service not found");
-    }
-
-    public async Task ResetDatabase()
-    {
-        var dbContext = ServiceProvider.GetService<OmmelSamvirkeDbContext>();
-        if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
-        
-        if (_configuration?.GetSection("ExecutionEnvironment").Value == "Test")
-        {
-            await dbContext.Database.EnsureDeletedAsync();
-            await dbContext.Database.MigrateAsync();
-        }
     }
 }

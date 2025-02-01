@@ -133,10 +133,8 @@ public class CountContactsInContactListIntegrationTests
     {
         await _integrationTestingHelper.ResetDatabase();
         
-        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
-        var recipientRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<Recipient>)) as IRepository<Recipient>;
-        if (contactListRepository == null) throw new ArgumentNullException(nameof(contactListRepository));
-        if (recipientRepository == null) throw new ArgumentNullException(nameof(contactListRepository));
+        var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
+        var recipientRepository = _integrationTestingHelper.GetService<IRepository<Recipient>>();
 
         List<Recipient> contacts =
         [

@@ -91,8 +91,7 @@ public class GetContactListIntegrationTests
 
     private async Task<int> SeedTestData()
     {
-        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
-        if (contactListRepository == null) throw new ArgumentNullException(nameof(contactListRepository));
+        var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
         
         var contactList = new ContactList
         {

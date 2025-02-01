@@ -196,8 +196,8 @@ public class UndoUnsubscribeFromContactListIntegrationTests
     public async Task UndoUnsubscribeFromContactList_HappyPath_ReturnsSuccess_AndDeletesUnsubscriptionRecord()
     {
         // Seed a contact list
-        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
-        if (contactListRepository == null) throw new Exception("ContactList repository not found");
+        var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
+
         var contactList = new ContactList
         {
             Name = "Integration List",
@@ -209,8 +209,7 @@ public class UndoUnsubscribeFromContactListIntegrationTests
 
         // Seed a valid unsubscription record with matching email and contact list id.
         const string email = "ommelsamvirketest1@gmail.com";
-        var unsubscriptionRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactListUnsubscription>)) as IRepository<ContactListUnsubscription>;
-        if (unsubscriptionRepository == null) throw new Exception("ContactListUnsubscription repository not found");
+        var unsubscriptionRepository = _integrationTestingHelper.GetService<IRepository<ContactListUnsubscription>>();
         var unsubscription = new ContactListUnsubscription
         {
             EmailAddress = email,

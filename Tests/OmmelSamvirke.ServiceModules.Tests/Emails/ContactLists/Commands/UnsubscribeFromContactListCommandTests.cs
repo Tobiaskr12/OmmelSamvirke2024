@@ -234,8 +234,7 @@ public class UnsubscribeFromContactListIntegrationTests
     public async Task UnsubscribeFromContactList_HappyPath_ReturnsSuccessAndCreatesUnsubscriptionRecord()
     {
         const string email = "ommelsamvirketest1@gmail.com";
-        var contactListRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactList>)) as IRepository<ContactList>;
-        if (contactListRepository == null) throw new Exception("ContactList repository not found");
+        var contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
 
         var contactList = new ContactList
         {
@@ -262,8 +261,7 @@ public class UnsubscribeFromContactListIntegrationTests
             Assert.That(fetchedContactList.Value.Contacts.Exists(r => r.EmailAddress == email), Is.False);
         });
 
-        var unsubscriptionRepository = _integrationTestingHelper.ServiceProvider.GetService(typeof(IRepository<ContactListUnsubscription>)) as IRepository<ContactListUnsubscription>;
-        if (unsubscriptionRepository == null) throw new Exception("ContactListUnsubscription repository not found");
+        var unsubscriptionRepository = _integrationTestingHelper.GetService<IRepository<ContactListUnsubscription>>();
 
         Result<List<ContactListUnsubscription>> allUnsubscriptions = await unsubscriptionRepository.GetAllAsync();
         Assert.Multiple(() =>
