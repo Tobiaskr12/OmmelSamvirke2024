@@ -5,7 +5,10 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 
@@ -15,6 +18,7 @@ public class UnsubscribeFromContactListCommandTests
     private ILogger _logger;
     private IMediator _mediator;
     private IRepository<ContactList> _repository;
+    private IEmailTemplateEngine _emailTemplateEngine;
     private UnsubscribeFromContactListCommandHandler _handler;
 
     [SetUp]
@@ -23,9 +27,23 @@ public class UnsubscribeFromContactListCommandTests
         _logger = Substitute.For<ILogger>();
         _mediator = Substitute.For<IMediator>();
         _repository = Substitute.For<IRepository<ContactList>>();
-        _handler = new UnsubscribeFromContactListCommandHandler(_logger, _mediator, _repository);
+        _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
+        _handler = new UnsubscribeFromContactListCommandHandler(_logger, _mediator, _emailTemplateEngine, _repository);
     }
-    
+
+    private void ConfigureFindAsync(Result<List<ContactList>> result) =>
+        _repository.FindAsync(
+            Arg.Any<Expression<Func<ContactList, bool>>>(),
+            Arg.Any<bool>(),
+            Arg.Any<CancellationToken>()
+        ).Returns(Task.FromResult(result));
+
+    private void ConfigureUpdateAsync(ContactList expectedContactList, Result<ContactList> result) =>
+        _repository.UpdateAsync(
+            expectedContactList,
+            Arg.Any<CancellationToken>()
+        ).Returns(Task.FromResult(result));
+
     [Test]
     public async Task UnsubscribeFromContactList_FailedFindQuery_ReturnsFailure()
     {
@@ -50,7 +68,7 @@ public class UnsubscribeFromContactListCommandTests
 
     /// <summary>
     /// When a single contact list is returned and the recipient is present,
-    /// removal succeeds and the command returns success.
+    /// removal succeeds, an email receipt is sent, and the command returns a success response.
     /// </summary>
     [Test]
     public async Task UnsubscribeFromContactList_SingleContactList_RemovesRecipientAndReturnsSuccess()
@@ -62,7 +80,7 @@ public class UnsubscribeFromContactListCommandTests
         {
             Name = "List1",
             Description = "First list",
-            Contacts = new List<Recipient> { recipient, otherRecipient }
+            Contacts = [recipient, otherRecipient]
         };
         Guid token = contactList.UnsubscribeToken;
         var command = new UnsubscribeFromContactListCommand("test@example.com", token);
@@ -75,11 +93,21 @@ public class UnsubscribeFromContactListCommandTests
             Contacts = [otherRecipient]
         };
 
+        // Configure repository calls.
         ConfigureFindAsync(Result.Ok(new List<ContactList> { contactList }));
-        ConfigureUpdateAsync(
-            Arg.Any<ContactList>(),
-            Result.Ok(updatedContactList)
-        );
+        ConfigureUpdateAsync(Arg.Any<ContactList>(), Result.Ok(updatedContactList));
+
+        // Configure email template engine.
+        _emailTemplateEngine.GenerateBodiesFromTemplate("UnsubscribeReceipt.html").Returns(Result.Ok());
+        _emailTemplateEngine.GetSubject().Returns("Unsubscribe Receipt");
+        _emailTemplateEngine.GetHtmlBody().Returns("<html>You have been unsubscribed.</html>");
+        _emailTemplateEngine.GetPlainTextBody().Returns("You have been unsubscribed.");
+
+        // Configure mediator to return a successful result when sending the email.
+        _mediator.Send(
+            Arg.Any<SendEmailCommand>(),
+            Arg.Any<CancellationToken>()
+        ).Returns(Task.FromResult(Result.Ok(new EmailSendingStatus(null!, SendingStatus.Succeeded, []))));
 
         Result result = await _handler.Handle(command, CancellationToken.None);
 
@@ -88,7 +116,7 @@ public class UnsubscribeFromContactListCommandTests
 
     /// <summary>
     /// If the update returns success but the recipient still exists in the contact list,
-    /// the command returns failure.
+    /// the command returns a failure.
     /// </summary>
     [Test]
     public async Task UnsubscribeFromContactList_UpdateSucceedsButRecipientStillPresent_ReturnsFailure()
@@ -164,17 +192,4 @@ public class UnsubscribeFromContactListCommandTests
             );
         });
     }
-    
-    private void ConfigureFindAsync(Result<List<ContactList>> result) =>
-        _repository.FindAsync(
-            Arg.Any<Expression<Func<ContactList, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(result));
-
-    private void ConfigureUpdateAsync(ContactList expectedContactList, Result<ContactList> result) =>
-        _repository.UpdateAsync(
-            expectedContactList,
-            Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(result));
 }

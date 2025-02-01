@@ -2,7 +2,10 @@ using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
+using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
@@ -13,15 +16,18 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
 {
     private readonly ILogger _logger;
     private readonly IMediator _mediator;
+    private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IRepository<ContactList> _contactListRepository;
 
     public UnsubscribeFromContactListCommandHandler(
         ILogger logger, 
         IMediator mediator,
+        IEmailTemplateEngine emailTemplateEngine,
         IRepository<ContactList> contactListRepository)
     {
         _logger = logger;
         _mediator = mediator;
+        _emailTemplateEngine = emailTemplateEngine;
         _contactListRepository = contactListRepository;
     }
     
@@ -63,9 +69,32 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
             if (updateResult.IsSuccess)
             {
                 bool recipientStillInContactList = updateResult.Value.Contacts.Any(x => x.EmailAddress == request.EmailAddress);
-                return recipientStillInContactList
-                    ? Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt)
-                    : Result.Ok();
+                if (recipientStillInContactList)
+                {
+                    return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+                }
+
+                // Send email receipt notifying the user of successful unsubscription.
+                var emailRecipient = new Recipient { EmailAddress = request.EmailAddress };
+
+                // TODO - Write template
+                Result emailTemplateResult = _emailTemplateEngine.GenerateBodiesFromTemplate("UnsubscribeReceipt.html");
+                if (emailTemplateResult.IsFailed)
+                {
+                    throw new Exception("Email body generation failed.");
+                }
+
+                await _mediator.Send(new SendEmailCommand(new Email
+                {
+                    SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+                    Recipients = [emailRecipient],
+                    Attachments = [],
+                    Subject = _emailTemplateEngine.GetSubject(),
+                    HtmlBody = _emailTemplateEngine.GetHtmlBody(),
+                    PlainTextBody = _emailTemplateEngine.GetPlainTextBody()
+                }), cancellationToken);
+
+                return Result.Ok();
             }
 
             return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
