@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Vi kunne finde den kontaktliste du forsøger at afmelde dig fra. Prøv at klikke på linket i e-mailen igen..
+        /// </summary>
+        public static string ContactList_UnsubscribeTokenEmptyQuery {
+            get {
+                return ResourceManager.GetString("ContactList_UnsubscribeTokenEmptyQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Den valgte dato er i fremtiden. Vælg dags dato eller en tidligere dato for at se email-analyser for den valgte dato..
         /// </summary>
         public static string DailyEmailAnalytics_DateMustBeInPast {

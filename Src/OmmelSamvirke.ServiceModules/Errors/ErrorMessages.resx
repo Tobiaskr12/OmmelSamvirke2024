@@ -45,4 +45,7 @@
     <data name="SearchContactListsByEmail_InvalidEmail" xml:space="preserve">
         <value>The email address is invalid</value>
     </data>
+    <data name="ContactList_UnsubscribeTokenEmptyQuery" xml:space="preserve">
+        <value>We could not find the contact list you're trying to unsubscribe from. Please click the unsubscribe link in the email again.</value>
+    </data>
 </root>

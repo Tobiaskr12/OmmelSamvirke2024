@@ -45,4 +45,7 @@
     <data name="SearchContactListsByEmail_InvalidEmail" xml:space="preserve">
         <value>E-mailadressen er ikke gyldig</value>
     </data>
+    <data name="ContactList_UnsubscribeTokenEmptyQuery" xml:space="preserve">
+        <value>Vi kunne finde den kontaktliste du forsøger at afmelde dig fra. Prøv at klikke på linket i e-mailen igen.</value>
+    </data>
 </root>

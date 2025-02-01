@@ -69,6 +69,15 @@ namespace OmmelSamvirke.ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We could not find the contact list you&apos;re trying to unsubscribe from. Please click the unsubscribe link in the email again..
+        /// </summary>
+        public static string ContactList_UnsubscribeTokenEmptyQuery {
+            get {
+                return ResourceManager.GetString("ContactList_UnsubscribeTokenEmptyQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected date is in the future. Select today or a date in the past to see an email-analysis for that date..
         /// </summary>
         public static string DailyEmailAnalytics_DateMustBeInPast {
