@@ -7,6 +7,7 @@ using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
 
@@ -79,11 +80,8 @@ public class SearchContactListsByEmailQueryTests
         const string failureMessage = "Database error";
 
         _repository
-            .FindAsync(
-                Arg.Any<Expression<Func<ContactList, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>()
-            ).Returns(Task.FromResult(Result.Fail<List<ContactList>>(new List<string> { failureMessage })));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(MockHelpers.FailedAsyncResult<List<ContactList>>());
 
         Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
 
@@ -101,11 +99,8 @@ public class SearchContactListsByEmailQueryTests
         var query = new SearchContactListsByEmailQuery(emailAddress);
 
         _repository
-            .FindAsync(
-                Arg.Any<Expression<Func<ContactList, bool>>>(), 
-                Arg.Any<bool>(), 
-                Arg.Any<CancellationToken>()
-            ).Returns<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
 
         Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
 
@@ -140,11 +135,8 @@ public class SearchContactListsByEmailQueryTests
 
     private void SetupRepositoryFind(List<ContactList> returnList) =>
         _repository
-            .FindAsync(
-                Arg.Any<Expression<Func<ContactList, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>()
-            ).Returns(Task.FromResult(Result.Ok(returnList)));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(returnList));
 }
 
 [TestFixture, Category("IntegrationTests")]

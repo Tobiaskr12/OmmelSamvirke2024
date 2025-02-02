@@ -6,6 +6,7 @@ using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Analytics.Queries;
 
@@ -195,8 +196,8 @@ public class LoadVsServiceLimitReportQueryTests
         var query = new LoadVsServiceLimitReportQuery(startTime, ServiceLimitInterval.PerMinute);
 
         _emailRepository
-            .FindAsync(Arg.Any<Expression<Func<Email, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<List<Email>>(new List<string> { "Database error" })));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(MockHelpers.FailedAsyncResult<List<Email>>());
         
         Result<LoadVsServiceLimitReport> result = await _handler.Handle(query, _cancellationToken);
         
@@ -252,6 +253,6 @@ public class LoadVsServiceLimitReportQueryTests
                 Arg.Any<bool>(),
                 Arg.Any<CancellationToken>()
             )
-            .Returns(Task.FromResult(Result.Ok(emailList)));
+            .Returns(MockHelpers.SuccessAsyncResult(emailList));
     }
 }

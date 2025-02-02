@@ -75,11 +75,8 @@ public class SendEmailToContactListCommandHandlerTests
             _configuration);
         
         _genericRecipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(new List<Recipient>());
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(new List<Recipient>());
         
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Prod");
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);

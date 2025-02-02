@@ -164,9 +164,7 @@ public class EmailsSentInIntervalQueryTests
     {
         DateTime startTime = DateTime.UtcNow.AddMinutes(-10);
         var query = new EmailsSentInIntervalQuery(startTime, ServiceLimitInterval.PerMinute);
-        _emailRepository
-            .FindAsync(Arg.Any<Expression<Func<Email, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
-            .Returns(Result.Fail<List<Email>>(new List<string> { "Database error" }));
+        _emailRepository.FindAsync(default!).ReturnsForAnyArgs(Result.Fail<List<Email>>(new List<string> { "Database error" }));
         
         Result<int> result = await _handler.Handle(query, CancellationToken.None);
         Assert.Multiple(() =>

@@ -1,0 +1,16 @@
+using FluentResults;
+
+namespace TestDatabaseFixtures;
+
+public static class MockHelpers
+{
+    public static Task<Result<T>> FailedAsyncResult<T>()
+    {
+        return Task.FromResult(Result.Fail<T>(string.Empty));
+    }
+
+    public static Task<Result<T>> SuccessAsyncResult<T>(T returnValue)
+    {
+        return Task.FromResult(Result.Ok(returnValue));
+    }
+}

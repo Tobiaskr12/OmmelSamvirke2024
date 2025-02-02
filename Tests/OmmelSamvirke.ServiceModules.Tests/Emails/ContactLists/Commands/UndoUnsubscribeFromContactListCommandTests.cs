@@ -26,18 +26,10 @@ public class UndoUnsubscribeFromContactListCommandTests
     }
     
     private void ConfigureUnsubscriptionFindAsync(Result<List<ContactListUnsubscription>> result) =>
-         _unsubscriptionRepository.FindAsync(
-             Arg.Any<Expression<Func<ContactListUnsubscription, bool>>>(),
-             Arg.Any<bool>(),
-             Arg.Any<CancellationToken>()
-         ).Returns(Task.FromResult(result));
+         _unsubscriptionRepository.FindAsync(default!).ReturnsForAnyArgs(Task.FromResult(result));
     
     private void ConfigureContactListFindAsync(Result<List<ContactList>> result) =>
-         _contactListRepository.FindAsync(
-             Arg.Any<Expression<Func<ContactList, bool>>>(),
-             Arg.Any<bool>(),
-             Arg.Any<CancellationToken>()
-         ).Returns(Task.FromResult(result));
+         _contactListRepository.FindAsync(default!).ReturnsForAnyArgs(Task.FromResult(result));
     
     private void ConfigureContactListUpdateAsync(ContactList expectedContactList, Result<ContactList> result) =>
          _contactListRepository.UpdateAsync(
@@ -157,11 +149,9 @@ public class UndoUnsubscribeFromContactListCommandTests
     public async Task UndoUnsubscribe_ExceptionThrown_ReturnsFailure()
     {
         var command = new UndoUnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid(), Guid.NewGuid());
-        _unsubscriptionRepository.FindAsync(
-            Arg.Any<Expression<Func<ContactListUnsubscription, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns<Task<Result<List<ContactListUnsubscription>>>>(_ => throw new Exception("Simulated exception"));
+        _unsubscriptionRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs<Task<Result<List<ContactListUnsubscription>>>>(_ => throw new Exception("Simulated exception"));
     
         Result result = await _handler.Handle(command, CancellationToken.None);
     

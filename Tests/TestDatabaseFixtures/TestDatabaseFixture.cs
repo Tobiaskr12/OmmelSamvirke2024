@@ -7,7 +7,7 @@ namespace TestDatabaseFixtures;
 
 public abstract class TestDatabaseFixture
 {
-    protected OmmelSamvirkeDbContext Context { get; private set; }
+    protected OmmelSamvirkeDbContext Context { get; private set; } = null!;
 
     [SetUp]
     public async Task TestSetup()
@@ -41,7 +41,7 @@ public abstract class TestDatabaseFixture
     
     private bool IsContextDisposed()
     {
-        var result = true;            
+        bool result = true;            
         Type typeDbContext = typeof(OmmelSamvirkeDbContext);
         FieldInfo? isDisposedTypeField = typeDbContext.GetField("_disposed", BindingFlags.NonPublic | BindingFlags.Instance);
 

@@ -43,11 +43,7 @@ public class EmailSendingUtilTests
             CreateRecipient("existing2@example.com", 2)
         };
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository.FindAsync(default!).ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
 
@@ -79,11 +75,9 @@ public class EmailSendingUtilTests
 
         var existingRecipients = new List<Recipient>();
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
         
@@ -117,11 +111,9 @@ public class EmailSendingUtilTests
             CreateRecipient("existing@example.com", 1)
         };
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
         Recipient firstRecipient = email.Recipients[0];
@@ -152,11 +144,9 @@ public class EmailSendingUtilTests
 
         var repositoryError = new DatabaseError("Database connection failed.");
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Fail<List<Recipient>>(repositoryError));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Fail<List<Recipient>>(repositoryError));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
         Assert.Multiple(() =>
@@ -186,11 +176,9 @@ public class EmailSendingUtilTests
 
         List<Recipient> existingRecipients = [];
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
 
@@ -225,11 +213,9 @@ public class EmailSendingUtilTests
             // "unique@example.com" does not exist
         };
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
 
@@ -271,11 +257,9 @@ public class EmailSendingUtilTests
             CreateRecipient("existing2@example.com", 2)
         };
 
-        _recipientRepository.FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>())
-            .Returns(Result.Ok(existingRecipients));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(existingRecipients));
         
         Result result = await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _recipientRepository, CancellationToken.None);
 

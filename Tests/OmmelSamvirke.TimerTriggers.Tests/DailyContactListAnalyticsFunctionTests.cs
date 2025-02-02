@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.TimerTriggers.Tests;
 
@@ -28,13 +29,12 @@ public class DailyContactListAnalyticsFunctionTests
     public void Run_WhenContactListRetrievalFails_ThrowsException()
     {
         _contactListRepository
-            .FindAsync(Arg.Any<Expression<Func<ContactList, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<List<ContactList>>(new List<string> { "Retrieval error" })));
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(MockHelpers.FailedAsyncResult<List<ContactList>>());
         _dailyAnalyticsRepository
             .AddAsync(Arg.Any<DailyContactListAnalytics>())
-            .Returns(Task.FromResult(Result.Ok(CreateTestDailyAnalytics("Dummy", DateTime.UtcNow, 0))));
-
-
+            .Returns(MockHelpers.SuccessAsyncResult(CreateTestDailyAnalytics("Dummy", DateTime.UtcNow, 0)));
+        
         Assert.Multiple(() =>
         {
             Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
@@ -50,8 +50,7 @@ public class DailyContactListAnalyticsFunctionTests
         SetupContactListRepository([contactList]);
         _dailyAnalyticsRepository
             .AddAsync(Arg.Any<List<DailyContactListAnalytics>>())
-            .Returns(Task.FromResult(Result.Fail<List<DailyContactListAnalytics>>(new List<string> { "Save error" }))
-        );
+            .Returns(MockHelpers.FailedAsyncResult<List<DailyContactListAnalytics>>());
         
         Assert.Multiple(() =>
         {
@@ -72,7 +71,9 @@ public class DailyContactListAnalyticsFunctionTests
         DailyContactListAnalytics analytics12= CreateTestContactListAnalytics(contactList1);
         List<DailyContactListAnalytics> expectedAnalytics = [analytics1, analytics12];
         
-        _dailyAnalyticsRepository.AddAsync(Arg.Any<List<DailyContactListAnalytics>>()).Returns(Task.FromResult(Result.Ok(expectedAnalytics)));
+        _dailyAnalyticsRepository
+            .AddAsync(Arg.Any<List<DailyContactListAnalytics>>())
+            .Returns(MockHelpers.SuccessAsyncResult(expectedAnalytics));
 
         Assert.Multiple(() =>
         {
@@ -120,10 +121,7 @@ public class DailyContactListAnalyticsFunctionTests
         };
 
     private void SetupContactListRepository(List<ContactList> contactLists) =>
-        _contactListRepository.FindAsync(
-            Arg.Any<Expression<Func<ContactList, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(Result.Ok(contactLists))
-    );
+        _contactListRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(contactLists));
 }

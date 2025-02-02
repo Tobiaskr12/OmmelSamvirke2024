@@ -1,10 +1,10 @@
-using System.Linq.Expressions;
 using FluentResults;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Analytics.Queries;
 
@@ -63,11 +63,10 @@ public class DailyContactListAnalyticsQueryHandlerTests
     {
         var queryDate = new DateTime(2023, 01, 03);
         var query = new DailyContactListAnalyticsQuery(queryDate);
-        const string failureMessage = "Database error";
 
         _repository
-            .FindAsync(Arg.Any<Expression<Func<DailyContactListAnalytics, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<List<DailyContactListAnalytics>>(new List<string> { failureMessage })));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(MockHelpers.FailedAsyncResult<List<DailyContactListAnalytics>>());
 
         Result<List<DailyContactListAnalytics>> result = await _handler.Handle(query, _cancellationToken);
 
@@ -108,10 +107,6 @@ public class DailyContactListAnalyticsQueryHandlerTests
 
     private void SetupRepositoryFind(List<DailyContactListAnalytics> returnList) =>
         _repository
-            .FindAsync(
-                Arg.Any<Expression<Func<DailyContactListAnalytics, bool>>>(),
-                Arg.Any<bool>(),
-                Arg.Any<CancellationToken>()
-            ).Returns(Task.FromResult(Result.Ok(returnList))
-        );
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(returnList));
 }

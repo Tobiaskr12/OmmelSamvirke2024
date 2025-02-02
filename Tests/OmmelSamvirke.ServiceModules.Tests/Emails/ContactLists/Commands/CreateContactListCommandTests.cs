@@ -38,11 +38,7 @@ public class CreateContactListCommandTests
     {
         var command = new CreateContactListCommand(_baseValidContactList);
         // Simulate a successful lookup returning no duplicates
-        _recipientRepository.FindAsync(
-            Arg.Any<Expression<Func<Recipient, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Result.Ok(new List<Recipient>()));
+        _recipientRepository.FindAsync(default!).ReturnsForAnyArgs(Result.Ok(new List<Recipient>()));
         _repository.AddAsync(_baseValidContactList, Arg.Any<CancellationToken>()).Returns(_baseValidContactList);
         
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
@@ -60,11 +56,9 @@ public class CreateContactListCommandTests
 
         // Simulate the repository returning a duplicate recipient
         var duplicateRecipientTwo = new Recipient { EmailAddress = duplicateEmail };
-        _recipientRepository.FindAsync(
-            Arg.Any<Expression<Func<Recipient, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Result.Ok(new List<Recipient> { duplicateRecipientTwo }));
+        _recipientRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(Result.Ok(new List<Recipient> { duplicateRecipientTwo }));
         _repository
             .AddAsync(_baseValidContactList, Arg.Any<CancellationToken>())
             .Returns(_baseValidContactList);
@@ -86,11 +80,9 @@ public class CreateContactListCommandTests
         var recipient = new Recipient { EmailAddress = "fail@example.com" };
         _baseValidContactList.Contacts = [recipient];
         
-        _recipientRepository.FindAsync(
-            Arg.Any<Expression<Func<Recipient, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
+        _recipientRepository
+            .FindAsync(default!)
+            .Returns(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
 
         var command = new CreateContactListCommand(_baseValidContactList);
         

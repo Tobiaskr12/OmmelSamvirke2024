@@ -5,6 +5,7 @@ using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.TimerTriggers.Tests;
 
@@ -36,9 +37,7 @@ public class DailyEmailAnalyticsFunctionTests
             CreateEmail(2, _yesterdayUtc.AddHours(-1)),
             CreateEmail(1, _yesterdayUtc.AddHours(-2))
         };
-        _emailRepository
-            .FindAsync(Arg.Any<Expression<Func<Email, bool>>>())
-            .Returns(Task.FromResult(Result.Ok(emails)));
+        _emailRepository.FindAsync(default!).ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(emails));
     
         Result<DailyEmailAnalytics> failedSaveResult = Result.Fail<DailyEmailAnalytics>("Unable to save analytics");
         _dailyAnalyticsRepository
@@ -61,8 +60,8 @@ public class DailyEmailAnalyticsFunctionTests
             CreateEmail(1, _yesterdayUtc.AddHours(-2))
         };
         _emailRepository
-            .FindAsync(Arg.Any<Expression<Func<Email, bool>>>())
-            .Returns(Task.FromResult(Result.Ok(emails)));
+            .FindAsync(default!)
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(emails));
     
         var analytics = new DailyEmailAnalytics
         {
@@ -85,9 +84,7 @@ public class DailyEmailAnalyticsFunctionTests
     [Test]
     public void Run_WhenEmailRepositoryFails_ThrowsException()
     {
-        _emailRepository
-            .FindAsync(Arg.Any<Expression<Func<Email, bool>>>())
-            .Returns(Task.FromResult(Result.Fail<List<Email>>("Email search failed")));
+        _emailRepository.FindAsync(default!).Returns(MockHelpers.FailedAsyncResult<List<Email>>());
     
         Result<DailyEmailAnalytics> failedSaveResult = Result.Fail<DailyEmailAnalytics>("Unable to save analytics");
         _dailyAnalyticsRepository

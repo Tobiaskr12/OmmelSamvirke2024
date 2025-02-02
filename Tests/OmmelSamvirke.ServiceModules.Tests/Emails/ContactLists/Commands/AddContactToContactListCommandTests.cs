@@ -46,10 +46,8 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                cancellationToken: Arg.Any<CancellationToken>()
-            ).Returns(Result.Ok(new List<Recipient>()));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(Result.Ok(new List<Recipient>()));
 
         _contactListRepository
             .UpdateAsync(
@@ -72,10 +70,8 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                cancellationToken: Arg.Any<CancellationToken>()
-            ).Returns(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
@@ -88,10 +84,8 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                cancellationToken: Arg.Any<CancellationToken>()
-            ).Returns(Result.Ok(new List<Recipient>()));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(Result.Ok(new List<Recipient>()));
 
         _contactListRepository
             .UpdateAsync(Arg.Any<ContactList>(), Arg.Any<CancellationToken>())
@@ -108,10 +102,8 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                cancellationToken: Arg.Any<CancellationToken>()
-            ).Throws(new Exception("Simulated exception"));
+            .FindAsync(default!, cancellationToken: default)
+            .ThrowsForAnyArgs(new Exception("Simulated exception"));
 
         Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
 
@@ -126,10 +118,8 @@ public class AddContactToContactListCommandTests
         var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
 
         _recipientRepository
-            .FindAsync(
-                Arg.Any<Expression<Func<Recipient, bool>>>(),
-                cancellationToken: Arg.Any<CancellationToken>()
-            ).Returns(Result.Ok(new List<Recipient> { duplicateRecipient }));
+            .FindAsync(default!, cancellationToken: default)
+            .ReturnsForAnyArgs(Result.Ok(new List<Recipient> { duplicateRecipient }));
 
         _contactListRepository
             .UpdateAsync(

@@ -29,7 +29,7 @@ public class RemoveContactFromContactListCommandTests
         _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
         _mediator = Substitute.For<IMediator>();
         
-        _emailTemplateEngine.GenerateBodiesFromTemplate(Arg.Any<string>(), Arg.Any<(string Key, string value)[]>()).Returns(Result.Ok());
+        _emailTemplateEngine.GenerateBodiesFromTemplate(default!, default, default).ReturnsForAnyArgs(Result.Ok());
         _emailTemplateEngine.GetHtmlBody().Returns("<h1>This is a test body for an email</h1>");
         _emailTemplateEngine.GetPlainTextBody().Returns("This is a test body for an email");
 

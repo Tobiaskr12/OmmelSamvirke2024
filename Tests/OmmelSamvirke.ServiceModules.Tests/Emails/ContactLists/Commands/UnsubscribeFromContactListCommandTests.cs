@@ -9,6 +9,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 
@@ -42,19 +43,15 @@ public class UnsubscribeFromContactListCommandTests
         _contactListUnsubscriptionRepository.AddAsync(
             Arg.Any<ContactListUnsubscription>(),
             Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(Result.Ok(new ContactListUnsubscription
+        ).Returns(MockHelpers.SuccessAsyncResult(new ContactListUnsubscription
         {
             EmailAddress = "test@example.com",
             ContactListId = 1
-        })));
+        }));
     }
 
     private void ConfigureFindAsync(Result<List<ContactList>> result) =>
-        _contactListRepository.FindAsync(
-            Arg.Any<Expression<Func<ContactList, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(result));
+        _contactListRepository.FindAsync(default!).ReturnsForAnyArgs(Task.FromResult(result));
 
     private void ConfigureUpdateAsync(ContactList expectedContactList, Result<ContactList> result) =>
         _contactListRepository.UpdateAsync(
@@ -127,7 +124,7 @@ public class UnsubscribeFromContactListCommandTests
         _mediator.Send(
             Arg.Any<SendEmailCommand>(),
             Arg.Any<CancellationToken>()
-        ).Returns(Task.FromResult(Result.Ok(new EmailSendingStatus(null!, SendingStatus.Succeeded, []))));
+        ).Returns(MockHelpers.SuccessAsyncResult(new EmailSendingStatus(null!, SendingStatus.Succeeded, [])));
 
         Result result = await _handler.Handle(command, CancellationToken.None);
 
@@ -195,11 +192,9 @@ public class UnsubscribeFromContactListCommandTests
     public async Task UnsubscribeFromContactList_ExceptionThrown_ReturnsFailure()
     {
         var command = new UnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid());
-        _contactListRepository.FindAsync(
-            Arg.Any<Expression<Func<ContactList, bool>>>(),
-            Arg.Any<bool>(),
-            Arg.Any<CancellationToken>()
-        ).Returns<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
+        _contactListRepository
+            .FindAsync(default!)
+            .ReturnsForAnyArgs<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
 
         Result result = await _handler.Handle(command, CancellationToken.None);
 

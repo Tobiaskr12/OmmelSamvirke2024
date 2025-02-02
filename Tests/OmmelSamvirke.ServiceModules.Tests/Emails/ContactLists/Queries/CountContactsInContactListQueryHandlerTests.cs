@@ -5,6 +5,7 @@ using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
+using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
 
@@ -44,7 +45,7 @@ public class CountContactsInContactListQueryHandlerTests
 
         _repository
             .GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Ok(_testContactList)));
+            .Returns(MockHelpers.SuccessAsyncResult(_testContactList));
         
         Result<int> result = await _handler.Handle(query, _cancellationToken);
         
@@ -62,7 +63,7 @@ public class CountContactsInContactListQueryHandlerTests
 
         _repository
             .GetByIdAsync(99, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<ContactList>("Not found")));
+            .Returns(MockHelpers.FailedAsyncResult<ContactList>());
         
         Result<int> result = await _handler.Handle(query, _cancellationToken);
         
@@ -77,11 +78,10 @@ public class CountContactsInContactListQueryHandlerTests
     public async Task Handle_WhenRepositoryFails_ReturnsGenericError()
     {
         var query = new CountContactsInContactListQuery(1);
-        const string failureMessage = "Database error";
 
         _repository
             .GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<ContactList>(new List<string> { failureMessage })));
+            .Returns(MockHelpers.FailedAsyncResult<ContactList>());
         
         Result<int> result = await _handler.Handle(query, _cancellationToken);
         
