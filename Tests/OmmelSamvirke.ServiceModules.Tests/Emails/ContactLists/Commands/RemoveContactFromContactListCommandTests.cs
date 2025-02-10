@@ -1,5 +1,4 @@
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
@@ -15,7 +14,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 [TestFixture, Category("UnitTests")]
 public class RemoveContactFromContactListCommandTests
 {
-    private ILogger _logger;
     private IRepository<ContactList> _contactListRepository;
     private IEmailTemplateEngine _emailTemplateEngine;
     private IMediator _mediator;
@@ -24,7 +22,6 @@ public class RemoveContactFromContactListCommandTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger>();
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _emailTemplateEngine = Substitute.For<IEmailTemplateEngine>();
         _mediator = Substitute.For<IMediator>();
@@ -36,8 +33,7 @@ public class RemoveContactFromContactListCommandTests
         _handler = new RemoveContactFromContactListCommandHandler(
             _contactListRepository,
             _emailTemplateEngine,
-            _mediator, 
-            _logger);
+            _mediator);
     }
 
     [Test]

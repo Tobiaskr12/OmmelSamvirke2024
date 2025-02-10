@@ -1,6 +1,5 @@
 using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
@@ -11,16 +10,13 @@ public record UndoUnsubscribeFromContactListCommand(string EmailAddress, Guid Un
 
 public class UndoUnsubscribeFromContactListCommandHandler : IRequestHandler<UndoUnsubscribeFromContactListCommand, Result>
 {
-    private readonly ILogger _logger;
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IRepository<ContactListUnsubscription> _contactListUnsubscriptionRepository;
 
     public UndoUnsubscribeFromContactListCommandHandler(
-        ILogger logger,
         IRepository<ContactList> contactListRepository,
         IRepository<ContactListUnsubscription> contactListUnsubscriptionRepository)
     {
-        _logger = logger;
         _contactListRepository = contactListRepository;
         _contactListUnsubscriptionRepository = contactListUnsubscriptionRepository;
     }
@@ -76,9 +72,8 @@ public class UndoUnsubscribeFromContactListCommandHandler : IRequestHandler<Undo
             }
             return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError("{errorMessage}", ex.Message);
             return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
     }

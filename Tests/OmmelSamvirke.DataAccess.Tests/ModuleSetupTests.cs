@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
@@ -18,12 +16,7 @@ public class ModuleSetupTests
     [SetUp]
     public async Task Setup()
     {
-        var mockLogger = Substitute.For<ILogger>();
-        var mockLoggerFactory = Substitute.For<ILoggerFactory>();
-
         _services = new ServiceCollection();
-        _services.AddSingleton(mockLogger);
-        _services.AddSingleton(mockLoggerFactory);
 
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddKeyVaultSecrets(ExecutionEnvironment.Testing);
         await _services.InitializeDataAccessModule(configurationBuilder.Build());

@@ -1,11 +1,11 @@
 using System.ComponentModel;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 
@@ -16,7 +16,7 @@ public static class ServiceLimitAlerter
         IExternalEmailServiceWrapper externalEmailServiceWrapper,
         double threshold,
         double currentUsage,
-        ILogger logger,
+        ILoggingHandler logger,
         IEmailTemplateEngine emailTemplateEngine,
         CancellationToken cancellationToken = default)
     {
@@ -34,7 +34,7 @@ public static class ServiceLimitAlerter
             Result result = emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html"); // TODO - Fix warning message to use HTML template
             if (result.IsFailed) throw new Exception("Email body generation failed");
             
-            logger.LogWarning("{}", emailTemplateEngine.GetPlainTextBody());
+            logger.LogWarning($"{emailTemplateEngine.GetPlainTextBody()}");
             await externalEmailServiceWrapper.SendAsync(new Email
             {
                 SenderEmailAddress = ValidSenderEmailAddresses.Auto,

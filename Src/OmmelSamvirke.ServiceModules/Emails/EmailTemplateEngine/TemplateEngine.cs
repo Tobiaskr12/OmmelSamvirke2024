@@ -1,20 +1,20 @@
 using System.Text;
 using FluentResults;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Logging;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 
 public partial class TemplateEngine : IEmailTemplateEngine
 {
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly string _templatesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails", "EmailTemplateEngine", "Templates");
     private readonly string _partialsBaseDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Emails", "EmailTemplateEngine", "Partials");
     private string _htmlBody = string.Empty;
     private string _plainTextBody = string.Empty;
     private string _subject = string.Empty;
 
-    public TemplateEngine(ILogger logger)
+    public TemplateEngine(ILoggingHandler logger)
     {
         _logger = logger;
     }
@@ -23,7 +23,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
     /// This constructor should only be used by the EmailTemplatePreviewGuide program so it can reference
     /// the source files directly and listen for changes.
     /// </summary>
-    public TemplateEngine(ILogger logger, string baseDirectory)
+    public TemplateEngine(ILoggingHandler logger, string baseDirectory)
     {
         _logger = logger;
         _templatesDirectory = Path.Combine(baseDirectory, "Emails", "EmailTemplateEngine", "Templates");
@@ -51,7 +51,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
             
                 if (!File.Exists(partialFilePath))
                 {
-                    _logger.LogWarning("Could not find partials file {partialFilePath}", partialFilePath);
+                    _logger.LogWarning($"Could not find partials file {partialFilePath}");
                     return string.Empty;
                 }
                 
@@ -76,7 +76,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
         }
         catch (Exception ex)
         {
-            _logger.LogError("{errorMessage}", ex.Message);
+            _logger.LogError(ex);
             return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
         }
     }
@@ -97,7 +97,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
         }
         catch (Exception ex)
         {
-            _logger.LogError("{errorMessage}", ex.Message);
+            _logger.LogError(ex);
             return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
         }
     }

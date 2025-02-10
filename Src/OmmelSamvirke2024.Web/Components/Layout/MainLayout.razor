@@ -1,23 +1,104 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.ComponentModel
+@using OmmelSamvirke2024.Web.Components.ViewModels
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+@inject ThemeViewModel ThemeViewModel
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+@implements IDisposable
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<MudPopoverProvider />
+<MudThemeProvider IsDarkMode="@_isDarkMode" Theme="_theme" />
+
+<MudLayout>
+    <MudDrawer @bind-Open="_navBarOpen"
+               ClipMode="DrawerClipMode.Always"
+               Variant="DrawerVariant.Temporary"
+               Elevation="1"
+               Anchor="Anchor.Left"
+               Breakpoint="Breakpoint.Md"
+               Class="mud-height-full">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudAppBar Color="Color.Primary" Fixed="false">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Style="margin-right: 20px;"
+                       Color="Color.Inherit"
+                       OnClick="ToggleNavBar" />
+
+        <MudText Align="Align.Center" Typo="Typo.h5">Ommel Samvirke</MudText>
+        <MudSpacer/>
+
+        <MudIconButton Icon="@ToggleIcon"
+                       Style="@ToggleStyle"
+                       OnClick="ToggleDarkMode"/>
+    </MudAppBar>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private readonly MudTheme _theme = new()
+    {
+        Typography = new Typography
+        {
+            Default = new Default
+            {
+                FontFamily = ["Helvetica", "Arial", "sans-serif"]
+            }
+        }
+    };
+
+    private bool _isDarkMode;
+    private bool _navBarOpen;
+
+    private string ToggleIcon => _isDarkMode ? Icons.Material.Filled.WbSunny : Icons.Material.Filled.NightsStay;
+    private string ToggleStyle => $"color: {(_isDarkMode ? Colors.Yellow.Darken1 : Colors.Gray.Lighten3)};";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        ThemeViewModel.PropertyChanged += OnThemeChanged;
+        _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
+
+        _theme.PaletteLight = ThemeViewModel.PaletteLight;
+        _theme.PaletteDark = ThemeViewModel.PaletteDark;
+    }
+
+    private void ToggleDarkMode()
+    {
+        _isDarkMode = !_isDarkMode;
+        ThemeViewModel.Theme = _isDarkMode ? AppTheme.Dark : AppTheme.Light;
+
+
+        StateHasChanged();
+    }
+
+    private void OnThemeChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ThemeViewModel.Theme))
+        {
+            _isDarkMode = ThemeViewModel.Theme == AppTheme.Dark;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+    
+    private void ToggleNavBar()
+    {
+        _navBarOpen = !_navBarOpen;
+    }
+
+    public void Dispose()
+    {
+        ThemeViewModel.PropertyChanged -= OnThemeChanged;
+    }
+}

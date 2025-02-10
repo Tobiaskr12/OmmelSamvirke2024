@@ -1,7 +1,5 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 using OmmelSamvirke.DomainModules;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
@@ -15,12 +13,7 @@ public class ModuleSetupTests
     [SetUp]
     public void Setup()
     {
-        var mockLogger = Substitute.For<ILogger>();
-        var mockLoggerFactory = Substitute.For<ILoggerFactory>();
-        
         _services = new ServiceCollection();
-        _services.AddSingleton(mockLogger);
-        _services.AddSingleton(mockLoggerFactory);
         
         _services.InitializeDomainModule(); // Load in validator dependencies
         _services.InitializeServicesModule();

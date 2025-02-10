@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -15,7 +13,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
 public class SearchContactListsByEmailQueryTests
 {
     private IRepository<ContactList> _repository;
-    private ILogger<SearchContactListsByEmailQueryHandler> _logger;
     private SearchContactListsByEmailQueryHandler _handler;
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
@@ -23,8 +20,7 @@ public class SearchContactListsByEmailQueryTests
     public void Setup()
     {
         _repository = Substitute.For<IRepository<ContactList>>();
-        _logger = Substitute.For<ILogger<SearchContactListsByEmailQueryHandler>>();
-        _handler = new SearchContactListsByEmailQueryHandler(_repository, _logger);
+        _handler = new SearchContactListsByEmailQueryHandler(_repository);
     }
 
     [Test]
@@ -77,7 +73,6 @@ public class SearchContactListsByEmailQueryTests
     {
         const string emailAddress = "error@example.com";
         var query = new SearchContactListsByEmailQuery(emailAddress);
-        const string failureMessage = "Database error";
 
         _repository
             .FindAsync(default!, cancellationToken: default)
@@ -108,13 +103,6 @@ public class SearchContactListsByEmailQueryTests
         {
             Assert.That(result.IsFailed, Is.True);
             Assert.That(result.Errors.First().Message, Does.StartWith(ErrorMessages.GenericErrorWithErrorCode));
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Length > 0),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
         });
     }
 

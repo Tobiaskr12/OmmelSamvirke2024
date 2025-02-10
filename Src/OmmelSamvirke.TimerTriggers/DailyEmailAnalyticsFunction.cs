@@ -1,19 +1,19 @@
 using FluentResults;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.TimerTriggers;
 
 public class DailyEmailAnalyticsFunction
 {
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IRepository<Email> _emailRepository;
     private readonly IRepository<DailyEmailAnalytics> _dailyEmailAnalyticsRepository;
 
     public DailyEmailAnalyticsFunction(
-        ILogger logger,
+        ILoggingHandler logger,
         IRepository<Email> emailRepository,
         IRepository<DailyEmailAnalytics> dailyEmailAnalyticsRepository)
     {
@@ -34,9 +34,7 @@ public class DailyEmailAnalyticsFunction
             if (emailsSentResult.IsSuccess)
             {
                 _logger.LogInformation(
-                    "Successfully calculated number of emails sent yesterday via {functionName}. Sent emails: {Count}",
-                    nameof(DailyEmailAnalyticsFunction),
-                    emailsSentResult.Value
+                    $"Successfully calculated number of emails sent yesterday. Sent emails: {emailsSentResult.Value}"
                 );
             }
             else
@@ -49,9 +47,7 @@ public class DailyEmailAnalyticsFunction
             if (emailRecipientsResult.IsSuccess)
             {
                 _logger.LogInformation(
-                    "Successfully calculated number of recipients of emails sent yesterday via {functionName}. Recipients: {Count}",
-                    nameof(DailyEmailAnalyticsFunction),
-                    emailRecipientsResult.Value
+                    "Successfully calculated number of recipients of emails sent yesterday. Recipients: {emailRecipientsResult.Value}"
                 );
             }
             else
@@ -69,10 +65,7 @@ public class DailyEmailAnalyticsFunction
             Result<DailyEmailAnalytics> saveResult = await _dailyEmailAnalyticsRepository.AddAsync(dailyEmailAnalytics);
             if (saveResult.IsSuccess)
             {
-                _logger.LogInformation(
-                    "Successfully completed execution of {functionName}",
-                    nameof(DailyEmailAnalyticsFunction)
-                );
+                _logger.LogInformation("Successfully completed execution");
             }
             else
             {
@@ -81,7 +74,7 @@ public class DailyEmailAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error during execution of {functionName}. Error Message: {errorMessage}", nameof(DailyEmailAnalyticsFunction), ex.Message);
+            _logger.LogError(ex);
             throw;
         }
     }
@@ -106,7 +99,7 @@ public class DailyEmailAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in {errorMessage}", nameof(GetNumberOfEmailsSentYesterday));
+            _logger.LogError(ex);
             return Result.Fail<int>(ex.Message);
         }
     }
@@ -131,7 +124,7 @@ public class DailyEmailAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in {methodName}", nameof(GetNumberOfEmailRecipientsYesterday));
+            _logger.LogError(ex);
             return Result.Fail<int>(ex.Message);
         }
     }

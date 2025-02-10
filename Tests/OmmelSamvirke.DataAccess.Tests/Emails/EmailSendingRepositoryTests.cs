@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.DataAccess.Tests.Emails;
@@ -25,7 +25,7 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
     [SetUp]
     public void Setup()
     {
-        var logger = Substitute.For<ILogger>();
+        var logger = Substitute.For<ILoggingHandler>();
         _emailSendingRepository = new EmailSendingRepository(Context, logger);
     }
     

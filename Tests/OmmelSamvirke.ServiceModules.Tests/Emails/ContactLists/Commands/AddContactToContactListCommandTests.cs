@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using OmmelSamvirke.DataAccess.Base;
@@ -13,7 +11,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 [TestFixture, Category("UnitTests")]
 public class AddContactToContactListCommandTests
 {
-    private ILogger _logger;
     private IRepository<ContactList> _contactListRepository;
     private IRepository<Recipient> _recipientRepository;
     private AddContactToContactListCommandHandler _handler;
@@ -33,11 +30,10 @@ public class AddContactToContactListCommandTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger>();
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _recipientRepository = Substitute.For<IRepository<Recipient>>();
         
-        _handler = new AddContactToContactListCommandHandler(_contactListRepository, _recipientRepository, _logger);
+        _handler = new AddContactToContactListCommandHandler(_contactListRepository, _recipientRepository);
     }
 
     [Test]

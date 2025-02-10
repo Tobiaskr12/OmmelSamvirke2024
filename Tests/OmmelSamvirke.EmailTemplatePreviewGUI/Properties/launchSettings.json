@@ -1,5 +1,11 @@
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
+    "HotReload": {
+      "commandName": "Executable",
+      "workingDirectory": "$(ProjectDir)",
+      "executablePath": "dotnet",
+      "commandLineArgs": "watch run debug --launch-profile http"
+    },
     "iisSettings": {
       "windowsAuthentication": false,
       "anonymousAuthentication": true,

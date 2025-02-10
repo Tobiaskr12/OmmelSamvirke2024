@@ -1,11 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using Microsoft.AspNetCore.Localization;
-using OmmelSamvirke.DataAccess;
-using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.Infrastructure;
 using OmmelSamvirke.ServiceModules;
-using OmmelSamvirke.SupportModules.Logging;
 using OmmelSamvirke.SupportModules.SecretsManager;
 using OmmelSamvirke2024.Api.Middleware;
 using OmmelSamvirke2024.ServiceDefaults;
@@ -34,12 +30,17 @@ builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 
 // Setup Configuration
-builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false)
-    .AddKeyVaultSecrets(builder.Environment.IsDevelopment() ? ExecutionEnvironment.Development : ExecutionEnvironment.Production)
-    .AddEnvironmentVariables()
-    .Build();
+ExecutionEnvironment executionEnvironment = builder.Environment.IsDevelopment()
+    ? ExecutionEnvironment.Development
+    : ExecutionEnvironment.Production;
+
+IConfigurationRoot configuration = 
+    builder.Configuration
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json", optional: false)
+        .AddKeyVaultSecrets(executionEnvironment)
+        .AddEnvironmentVariables()
+        .Build();
 
 // Register supported languages
 const string defaultCulture = "en";
@@ -59,17 +60,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options => {
     options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
 });
 
-// Register custom logger
-ILogger appLogger = AppLoggerFactory.CreateLogger(builder.Configuration);
-builder.Logging.ClearProviders();
-builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
-
 // Register services
-builder.Services.AddSingleton(appLogger)
-       .InitializeDataAccessModule(builder.Configuration).Result
-       .InitializeInfrastructureModule()
-       .InitializeDomainModule()
-       .InitializeServicesModule();
+builder.Services.InitializeAllServices(configuration, executionEnvironment);
 
 WebApplication app = builder.Build();
 

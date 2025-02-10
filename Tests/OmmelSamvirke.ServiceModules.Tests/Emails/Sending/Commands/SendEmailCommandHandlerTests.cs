@@ -1,7 +1,5 @@
-using System.Linq.Expressions;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using OmmelSamvirke.DataAccess.Base;
@@ -13,13 +11,13 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands;
 
 [TestFixture, Category("UnitTests")]
 public class SendEmailCommandHandlerTests
 {
-    private ILogger<SendEmailCommandHandler> _logger;
     private IRepository<Email> _genericEmailRepository;
     private IRepository<Recipient> _genericRecipientRepository;
     private IEmailSendingRepository _emailSendingRepository;
@@ -31,7 +29,6 @@ public class SendEmailCommandHandlerTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger<SendEmailCommandHandler>>();
         _genericEmailRepository = Substitute.For<IRepository<Email>>();
         _genericRecipientRepository = Substitute.For<IRepository<Recipient>>();
         _emailSendingRepository = Substitute.For<IEmailSendingRepository>();
@@ -43,8 +40,9 @@ public class SendEmailCommandHandlerTests
         _emailTemplateEngine.GetHtmlBody().Returns("<h1>This is a test body for an email</h1>");
         _emailTemplateEngine.GetPlainTextBody().Returns("This is a test body for an email");
 
+        var logger = Substitute.For<ILoggingHandler>();
         _handler = new SendEmailCommandHandler(
-            _logger,
+            logger,
             _genericEmailRepository,
             _genericRecipientRepository,
             _emailSendingRepository,

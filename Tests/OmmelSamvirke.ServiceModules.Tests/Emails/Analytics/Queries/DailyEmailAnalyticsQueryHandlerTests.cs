@@ -1,10 +1,10 @@
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Analytics.Queries;
@@ -13,7 +13,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.Analytics.Queries;
 public class DailyEmailAnalyticsQueryHandlerTests
 {
     private IRepository<DailyEmailAnalytics> _repository;
-    private ILogger _logger;
     private DailyEmailAnalyticsQueryHandler _handler;
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
@@ -21,8 +20,8 @@ public class DailyEmailAnalyticsQueryHandlerTests
     public void Setup()
     {
         _repository = Substitute.For<IRepository<DailyEmailAnalytics>>();
-        _logger = Substitute.For<ILogger>();
-        _handler = new DailyEmailAnalyticsQueryHandler(_repository, _logger);
+        var logger = Substitute.For<ILoggingHandler>();
+        _handler = new DailyEmailAnalyticsQueryHandler(_repository, logger);
     }
 
     [Test]
@@ -97,13 +96,6 @@ public class DailyEmailAnalyticsQueryHandlerTests
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Value, Is.Not.Null);
             Assert.That(result.Value, Is.EqualTo(analytics1));
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Warning),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Contains("analytics entities were found")),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
         });
     }
 

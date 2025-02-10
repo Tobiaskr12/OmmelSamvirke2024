@@ -39,11 +39,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.Api", "Sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke2024.Web", "Src\OmmelSamvirke2024.Web\OmmelSamvirke2024.Web.csproj", "{4889372D-6624-4A6B-A0FB-20B536E4AA09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.EmailTemplatePreviewGUI", "Tests\OmmelSamvirke.EmailTemplatePreviewGUI\OmmelSamvirke.EmailTemplatePreviewGUI.csproj", "{05868F12-0D62-4B4C-A355-75C841F6B463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.EmailTemplatePreviewGUI", "Tests\OmmelSamvirke.EmailTemplatePreviewGUI\OmmelSamvirke.EmailTemplatePreviewGUI.csproj", "{05868F12-0D62-4B4C-A355-75C841F6B463}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.TimerTriggers", "Src\OmmelSamvirke.TimerTriggers\OmmelSamvirke.TimerTriggers.csproj", "{FB0AB408-2207-410B-97B0-17C028A2B230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.TimerTriggers", "Src\OmmelSamvirke.TimerTriggers\OmmelSamvirke.TimerTriggers.csproj", "{FB0AB408-2207-410B-97B0-17C028A2B230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmmelSamvirke.TimerTriggers.Tests", "Tests\OmmelSamvirke.TimerTriggers.Tests\OmmelSamvirke.TimerTriggers.Tests.csproj", "{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.TimerTriggers.Tests", "Tests\OmmelSamvirke.TimerTriggers.Tests\OmmelSamvirke.TimerTriggers.Tests.csproj", "{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

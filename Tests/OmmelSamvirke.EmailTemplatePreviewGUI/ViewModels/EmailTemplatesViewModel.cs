@@ -14,6 +14,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Models;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 
@@ -32,7 +33,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
     private string _currentTemplate = string.Empty;
 
     public EmailTemplatesViewModel(
-        ILogger logger,
+        ILoggingHandler logger,
         NavigationManager navigationManager,
         FileWatcherService fileWatcherService,
         IMediator mediator

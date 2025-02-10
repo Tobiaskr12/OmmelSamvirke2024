@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.SignalR;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI;
 
 public class FileWatcherService : IHostedService, IDisposable
 {
-    private readonly ILogger<FileWatcherService> _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IHubContext<FileChangeHub> _hubContext;
     private FileSystemWatcher? _watcher;
     private string? _currentFilePath;
     private readonly object _lock = new();
 
-    public FileWatcherService(ILogger<FileWatcherService> logger, IHubContext<FileChangeHub> hubContext)
+    public FileWatcherService(ILoggingHandler logger, IHubContext<FileChangeHub> hubContext)
     {
         _logger = logger;
         _hubContext = hubContext;

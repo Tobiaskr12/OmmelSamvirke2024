@@ -2,12 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using OmmelSamvirke.DataAccess;
 using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.Infrastructure;
-using OmmelSamvirke.SupportModules.Logging;
 using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
@@ -85,15 +80,7 @@ public class IntegrationTestingHelper
         services.AddSingleton<IConfiguration>(Configuration);
         services.AddSingleton(Configuration); // Adds as IConfigurationRoot
         
-        ILogger appLogger = AppLoggerFactory.CreateLogger(Configuration);
-        services.AddSingleton(appLogger);
-        services.AddLogging(loggingBuilder => loggingBuilder.AddProvider(new AppLoggerProvider(appLogger)));
-        
-        services
-            .InitializeDataAccessModule(Configuration).Result
-            .InitializeInfrastructureModule()
-            .InitializeDomainModule()
-            .InitializeServicesModule();
+        services.InitializeAllServices(Configuration, ExecutionEnvironment.Testing);
         
         ServiceProvider = services.BuildServiceProvider();
         

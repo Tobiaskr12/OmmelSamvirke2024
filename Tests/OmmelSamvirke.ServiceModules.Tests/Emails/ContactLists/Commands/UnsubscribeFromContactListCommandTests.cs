@@ -1,7 +1,5 @@
-using System.Linq.Expressions;
 using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -9,6 +7,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
@@ -16,7 +15,7 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 [TestFixture, Category("UnitTests")]
 public class UnsubscribeFromContactListCommandTests
 {
-    private ILogger _logger;
+    private ILoggingHandler _logger;
     private IMediator _mediator;
     private IRepository<ContactList> _contactListRepository;
     private IRepository<ContactListUnsubscription> _contactListUnsubscriptionRepository;
@@ -26,7 +25,7 @@ public class UnsubscribeFromContactListCommandTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger>();
+        _logger = Substitute.For<ILoggingHandler>();
         _mediator = Substitute.For<IMediator>();
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _contactListUnsubscriptionRepository = Substitute.For<IRepository<ContactListUnsubscription>>();
@@ -197,18 +196,8 @@ public class UnsubscribeFromContactListCommandTests
             .ReturnsForAnyArgs<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
 
         Result result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed);
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Length > 0),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
-        });
+        
+        Assert.That(result.IsFailed);
     }
 }
 

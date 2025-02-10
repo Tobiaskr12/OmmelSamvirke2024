@@ -2,10 +2,10 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 
@@ -25,9 +25,9 @@ public class DailyEmailAnalyticsQueryValidator : AbstractValidator<DateTime>
 public class DailyEmailAnalyticsQueryHandler : IRequestHandler<DailyEmailAnalyticsQuery, Result<DailyEmailAnalytics?>>
 {
     private readonly IRepository<DailyEmailAnalytics> _dailyEmailAnalyticsRepository;
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
 
-    public DailyEmailAnalyticsQueryHandler(IRepository<DailyEmailAnalytics> dailyEmailAnalyticsRepository, ILogger logger)
+    public DailyEmailAnalyticsQueryHandler(IRepository<DailyEmailAnalytics> dailyEmailAnalyticsRepository, ILoggingHandler logger)
     {
         _dailyEmailAnalyticsRepository = dailyEmailAnalyticsRepository;
         _logger = logger;
@@ -49,10 +49,7 @@ public class DailyEmailAnalyticsQueryHandler : IRequestHandler<DailyEmailAnalyti
         if (queryResult.Value.Count > 1)
         {
             _logger.LogWarning(
-                "When querying for daily email analytics in {queryName}, {resultCount} analytics entities were found. Date: {date}",
-                nameof(DailyEmailAnalyticsQueryHandler),
-                queryResult.Value.Count,
-                request.Date.ToString("dd-MM-yy")
+                $"When querying for daily email analytics in {nameof(DailyEmailAnalyticsQueryHandler)}, {queryResult.Value.Count} analytics entities were found. Date: {request.Date:dd-MM-yy}"
             );
         }
 

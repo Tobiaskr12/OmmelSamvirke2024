@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OmmelSamvirke.DTOs\OmmelSamvirke.DTOs.csproj" />
+      <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
     </ItemGroup>
 
 </Project>

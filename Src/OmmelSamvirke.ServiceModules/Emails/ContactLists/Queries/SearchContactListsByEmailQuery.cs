@@ -2,7 +2,6 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
@@ -27,14 +26,10 @@ public class SearchContactListsByEmailQueryValidator : AbstractValidator<SearchC
 public class SearchContactListsByEmailQueryHandler : IRequestHandler<SearchContactListsByEmailQuery, Result<List<ContactList>>>
 {
     private readonly IRepository<ContactList> _contactListRepository;
-    private readonly ILogger _logger;
 
-    public SearchContactListsByEmailQueryHandler(
-        IRepository<ContactList> contactListRepository,
-        ILogger logger)
+    public SearchContactListsByEmailQueryHandler(IRepository<ContactList> contactListRepository)
     {
         _contactListRepository = contactListRepository;
-        _logger = logger;
     }
 
     public async Task<Result<List<ContactList>>> Handle(SearchContactListsByEmailQuery request, CancellationToken cancellationToken)
@@ -51,10 +46,9 @@ public class SearchContactListsByEmailQueryHandler : IRequestHandler<SearchConta
                 Result.Fail<List<ContactList>>(ErrorMessages.GenericErrorWithRetryPrompt) : 
                 Result.Ok(queryResult.Value);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{Code}] - {Message}", errorCode, ex.Message);
             return Result.Fail<List<ContactList>>(ErrorMessages.GenericErrorWithErrorCode + errorCode);
         }
     }

@@ -3,7 +3,6 @@ using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Constants;
@@ -12,6 +11,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
@@ -52,7 +52,7 @@ public class SendEmailToContactListCommandValidator : AbstractValidator<SendEmai
 
 public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToContactListCommand, Result>
 {
-    private readonly ILogger<SendEmailCommandHandler> _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IRepository<Email> _genericEmailRepository;
     private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
@@ -61,7 +61,7 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
     private readonly IConfigurationRoot _configuration;
 
     public SendEmailToContactListCommandHandler(
-        ILogger<SendEmailCommandHandler> logger,
+        ILoggingHandler logger,
         IRepository<Email> genericEmailRepository,
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
@@ -144,10 +144,9 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
             
             return Result.Ok();
         } 
-        catch (Exception ex)
+        catch (Exception)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{code}] - {message}", errorCode, ex.Message);
             return Result.Fail(ErrorMessages.EmailSending_Exception + errorCode);
         }
     }

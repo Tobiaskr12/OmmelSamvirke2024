@@ -2,7 +2,6 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -35,18 +34,15 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IMediator _mediator;
-    private readonly ILogger _logger;
 
     public RemoveContactFromContactListCommandHandler(
         IRepository<ContactList> contactListRepository,
         IEmailTemplateEngine emailTemplateEngine,
-        IMediator mediator,
-        ILogger logger)
+        IMediator mediator)
     {
         _contactListRepository = contactListRepository;
         _emailTemplateEngine = emailTemplateEngine;
         _mediator = mediator;
-        _logger = logger;
     }
     
     public async Task<Result<ContactList>> Handle(RemoveContactFromContactListCommand request, CancellationToken cancellationToken)
@@ -87,10 +83,9 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
 
             return Result.Ok();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{code}] - {message}", errorCode, ex.Message);
             return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
         }
     }

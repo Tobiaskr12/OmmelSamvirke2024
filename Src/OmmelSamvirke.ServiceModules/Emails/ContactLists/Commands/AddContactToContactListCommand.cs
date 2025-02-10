@@ -2,7 +2,6 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
@@ -25,16 +24,13 @@ public class AddContactToContactListCommandHandler : IRequestHandler<AddContactT
 {
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IRepository<Recipient> _recipientRepository;
-    private readonly ILogger _logger;
 
     public AddContactToContactListCommandHandler(
         IRepository<ContactList> contactListRepository,
-        IRepository<Recipient> recipientRepository,
-        ILogger logger)
+        IRepository<Recipient> recipientRepository)
     {
         _contactListRepository = contactListRepository;
         _recipientRepository = recipientRepository;
-        _logger = logger;
     }
     
     public async Task<Result<ContactList>> Handle(AddContactToContactListCommand request, CancellationToken cancellationToken)
@@ -60,10 +56,9 @@ public class AddContactToContactListCommandHandler : IRequestHandler<AddContactT
                 Result.Ok(updateResult.Value) : 
                 Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{code}] - {message}", errorCode, ex.Message);
             return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
         }
     }

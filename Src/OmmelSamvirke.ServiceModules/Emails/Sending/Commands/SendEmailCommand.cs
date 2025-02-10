@@ -3,7 +3,6 @@ using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -11,6 +10,7 @@ using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
@@ -31,7 +31,7 @@ public class SendEmailCommandValidator : AbstractValidator<SendEmailCommand>
 /// </summary>
 public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<EmailSendingStatus>>
 {
-    private readonly ILogger<SendEmailCommandHandler> _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IRepository<Email> _genericEmailRepository;
     private readonly IRepository<Recipient> _genericRecipientRepository;
     private readonly IEmailSendingRepository _emailSendingRepository;
@@ -40,7 +40,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
     private readonly IEmailTemplateEngine _emailTemplateEngine;
 
     public SendEmailCommandHandler(
-        ILogger<SendEmailCommandHandler> logger,
+        ILoggingHandler logger,
         IRepository<Email> genericEmailRepository,
         IRepository<Recipient> genericRecipientRepository,
         IEmailSendingRepository emailSendingRepository,
@@ -90,7 +90,7 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
         catch (Exception ex)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{code}] - {message}", errorCode, ex.Message);
+            _logger.LogError(ex);
             return Result.Fail(ErrorMessages.EmailSending_Exception + errorCode);
         }
     }

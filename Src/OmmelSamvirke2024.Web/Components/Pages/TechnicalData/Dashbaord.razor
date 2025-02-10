@@ -1,0 +1,128 @@
+@page "/teknisk-data"
+
+@using System.Globalization
+@using OmmelSamvirke.SupportModules.Logging.Interfaces
+@using OmmelSamvirke.SupportModules.Logging.Models
+@using OmmelSamvirke2024.Web.Components.Pages;
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline
+@using System.ComponentModel
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Logs
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Traces
+
+@inject DashboardViewModel DashboardViewModel
+@inject TimelineViewModel TimelineViewModel
+
+@implements IDisposable
+
+<PageTitle>Logs & Traces</PageTitle>
+
+<MudPaper Class="pa-4 mx-4 mb-4">
+    <div class="d-flex align-center flex-wrap justify-space-between mb-5">
+        <div class="d-inline-flex" style="gap: 20px">
+            <MudIconButton 
+                Icon="@Icons.Material.Filled.ArrowUpward" 
+                Variant="Variant.Filled" 
+                Color="Color.Primary"
+                Size="Size.Medium"
+                Style="margin-right: -10px; align-self: center; padding: 8px; margin-top: 4px"
+                OnClick="OnUndoButtonClicked"
+                Disabled="@(DashboardViewModel.CurrentView == DashboardView.MultipleDays)"
+                />
+
+            <div style="width: 300px">
+                <MudDateRangePicker 
+                    @bind-DateRange="@DashboardViewModel.DateRange"
+                    DateFormat="dd/MM/yyyy"
+                    TitleDateFormat="MMMM" 
+                    Margin="Margin.Dense"
+                    Variant="Variant.Outlined" 
+                    MaxDate="DateTime.Now.Date"
+                    MinDate="DateTime.Now.AddDays(-7).Date"
+                    Label="Interval"/>
+            </div>
+            <MudToggleGroup 
+                T="DashboardTab" 
+                Color="Color.Primary" 
+                ValueChanged="value => OnTabsSwitched(value)" 
+                SelectionMode="SelectionMode.SingleSelection" 
+                Style="align-self: center; height: auto; margin-top: 4px">
+                <MudToggleItem Value="@DashboardTab.Logs" Text="Logs" />
+                <MudToggleItem Value="@DashboardTab.Traces" Text="Traces" />
+            </MudToggleGroup>
+        </div>
+        <div style="width: 300px;">
+            <MudTextField 
+                @bind-Value="_searchString" 
+                Placeholder="Search"
+                Margin="Margin.Dense"
+                Adornment="Adornment.Start" 
+                AdornmentIcon="@Icons.Material.Filled.Search" 
+                IconSize="Size.Medium"
+                Variant="Variant.Outlined"
+                Class="mt-0" />
+        </div>
+    </div>
+
+    @if (DashboardViewModel.Logs.Count() > 0 || DashboardViewModel.Traces.Count() > 0) {
+        <Timeline />
+        <MudDivider Class="mb-8" />
+    }
+
+    <!-- Logs Section -->
+    @if (DashboardViewModel.CurrentlyActiveTab == DashboardTab.Logs)
+    {
+        <LogsGraphs />
+        <MudDivider Class="my-8" />
+        <LogsTable SearchString="@_searchString" />
+    }
+
+    <!-- Traces Section -->
+    @if (DashboardViewModel.CurrentlyActiveTab == DashboardTab.Traces)
+    {
+        <TracesTable SearchString="@_searchString" />
+    }
+</MudPaper>
+
+@code {
+    private string _searchString = string.Empty;
+
+    private void OnTabsSwitched(DashboardTab dashboardTab)
+    {
+        DashboardViewModel.CurrentlyActiveTab = dashboardTab;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        DashboardViewModel.PropertyChanged += OnDashboardViewModelChanged;
+
+        await FindDataInSelectedRange();
+    }
+
+    private async void OnDashboardViewModelChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(DashboardViewModel.DateRange))
+        {
+            await FindDataInSelectedRange();
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task FindDataInSelectedRange()
+    {
+        DashboardViewModel.ReloadData(DashboardViewModel.DateRange);
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void OnUndoButtonClicked()
+    {
+        TimelineViewModel.XAxisFormat = DashboardViewModel.IncreaseDashboardScope();
+    }
+
+    public void Dispose()
+    {
+        DashboardViewModel.PropertyChanged -= OnDashboardViewModelChanged;
+    }
+}

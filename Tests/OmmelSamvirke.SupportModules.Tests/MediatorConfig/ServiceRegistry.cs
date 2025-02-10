@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.MediatorConfig;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
@@ -36,7 +36,7 @@ public static class ServiceRegistry
     {
         var services = new ServiceCollection();
         
-        var mockLogger = Substitute.For<ILogger>();
+        var mockLogger = Substitute.For<ILoggingHandler>();
         services.AddSingleton(mockLogger);
         
         services.AddValidatorsFromAssembly(typeof(ServiceRegistry).Assembly);

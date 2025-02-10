@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -11,7 +9,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 [TestFixture, Category("UnitTests")]
 public class UndoUnsubscribeFromContactListCommandTests
 {
-    private ILogger _logger;
     private IRepository<ContactList> _contactListRepository;
     private IRepository<ContactListUnsubscription> _unsubscriptionRepository;
     private UndoUnsubscribeFromContactListCommandHandler _handler;
@@ -19,10 +16,9 @@ public class UndoUnsubscribeFromContactListCommandTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger>();
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _unsubscriptionRepository = Substitute.For<IRepository<ContactListUnsubscription>>();
-        _handler = new UndoUnsubscribeFromContactListCommandHandler(_logger, _contactListRepository, _unsubscriptionRepository);
+        _handler = new UndoUnsubscribeFromContactListCommandHandler(_contactListRepository, _unsubscriptionRepository);
     }
     
     private void ConfigureUnsubscriptionFindAsync(Result<List<ContactListUnsubscription>> result) =>
@@ -154,18 +150,8 @@ public class UndoUnsubscribeFromContactListCommandTests
             .ReturnsForAnyArgs<Task<Result<List<ContactListUnsubscription>>>>(_ => throw new Exception("Simulated exception"));
     
         Result result = await _handler.Handle(command, CancellationToken.None);
-    
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed);
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Length > 0),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
-        });
+        
+        Assert.That(result.IsFailed);
     }
 }
 

@@ -2,19 +2,19 @@ using System.Linq.Expressions;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Common;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.DataAccess.Base;
 
 public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 {
     private readonly OmmelSamvirkeDbContext _context;
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly DbSet<T> _dbSet;
 
-    public GenericRepository(OmmelSamvirkeDbContext context, ILogger logger)
+    public GenericRepository(OmmelSamvirkeDbContext context, ILoggingHandler logger)
     {
         _context = context;
         _logger = logger;
@@ -23,7 +23,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
     
     public async Task<Result<T>> GetByIdAsync(int id, bool readOnly = true, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("GetByIdAsync called with id: {Id}", id);
+        _logger.LogInformation($"GetByIdAsync called with id: {id}");
         try
         {
             IQueryable<T> query = BuildQuery(predicate: e => e.Id == id, readOnly);
@@ -31,19 +31,19 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 
             if (entity != null) return Result.Ok(entity);
             
-            _logger.LogInformation("Entity with ID {Id} not found.", id);
+            _logger.LogInformation($"Entity with ID {id} not found.");
             return Result.Fail<T>(new NotFoundError($"Entity with ID {id} not found."));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting entity by id: {Id}", id);
+            _logger.LogError(ex, $"An error occurred while getting entity by id: {id}");
             return Result.Fail<T>(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }
     
     public async Task<Result<List<T>>> GetByIdsAsync(List<int> ids, bool readOnly = true, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("GetByIdsAsync called with ids: {Ids}", ids);
+        _logger.LogInformation($"GetByIdsAsync called with ids: {ids}");
         try
         {
             IQueryable<T> query = BuildQuery(predicate: e => ids.Contains(e.Id), readOnly);
@@ -52,12 +52,12 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 
             if (entities.Count != 0) return Result.Ok(entities);
             
-            _logger.LogInformation("No entities found with the provided IDs: {Ids}", ids);
+            _logger.LogInformation($"No entities found with the provided IDs: {ids}");
             return Result.Fail<List<T>>(new NotFoundError("No entities found with the provided IDs."));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting entities by ids: {Ids}", ids);
+            _logger.LogError(ex, $"An error occurred while getting entities by ids: {ids}");
             return Result.Fail<List<T>>(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }
@@ -135,7 +135,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 
     public async Task<Result<T>> UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("UpdateAsync called for entity with ID {Id}.", entity.Id);
+        _logger.LogInformation($"UpdateAsync called for entity with ID {entity.Id}.");
         try
         {
             EntityEntry<T> entry = _dbSet.Update(entity);
@@ -145,7 +145,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating entity with ID {Id}.", entity.Id);
+            _logger.LogError(ex, $"An error occurred while updating entity with ID {entity.Id}.");
             return Result.Fail<T>(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }
@@ -153,7 +153,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
     public async Task<Result<List<T>>> UpdateAsync(List<T> entities, CancellationToken cancellationToken = default)
     {
         List<int> entityIds = entities.Select(e => e.Id).ToList();
-        _logger.LogInformation("UpdateAsync called for entities with IDs {Ids}.", entityIds);
+        _logger.LogInformation($"UpdateAsync called for entities with IDs {entityIds}.");
         try
         {
             _dbSet.UpdateRange(entities);
@@ -163,14 +163,14 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating entities with IDs {Ids}.", entityIds);
+            _logger.LogError(ex, $"An error occurred while updating entities with IDs {entityIds}.");
             return Result.Fail<List<T>>(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }
 
     public async Task<Result> DeleteAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("DeleteAsync called for entity with ID {Id}.", entity.Id);
+        _logger.LogInformation($"DeleteAsync called for entity with ID {entity.Id}.");
         try
         {
             _dbSet.Remove(entity);
@@ -180,7 +180,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while deleting entity with ID {Id}.", entity.Id);
+            _logger.LogError(ex, $"An error occurred while deleting entity with ID {entity.Id}.");
             return Result.Fail(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }
@@ -189,7 +189,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
         List<T> entityList = entities.ToList();
         List<int> entityIds = entityList.Select(e => e.Id).ToList();
-        _logger.LogInformation("DeleteAsync called for entities with IDs {Ids}.", entityIds);
+        _logger.LogInformation($"DeleteAsync called for entities with IDs {entityIds}.");
 
         try
         {
@@ -214,7 +214,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting existing entities with IDs {Ids}.", existingEntities.Select(e => e.Id));
+                _logger.LogError(ex, $"An error occurred while deleting existing entities with IDs {existingEntities.Select(e => e.Id)}.");
                 return Result.Fail(new DatabaseError($"An error occurred: {ex.Message}"));
             }
 
@@ -224,7 +224,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
             }
 
             List<int> nonexistentIds = nonexistentEntities.Select(e => e.Id).ToList();
-            _logger.LogInformation("Entities with IDs {Ids} do not exist and could not be deleted.", nonexistentIds);
+            _logger.LogInformation($"Entities with IDs {nonexistentIds} do not exist and could not be deleted.");
             List<string> errorMessages = 
                 nonexistentEntities
                     .Select(e => $"Entity with ID {e.Id} does not exist.")
@@ -233,7 +233,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while deleting entities with IDs {Ids}.", entityIds);
+            _logger.LogError(ex, $"An error occurred while deleting entities with IDs {entityIds}.");
             return Result.Fail(new DatabaseError($"An error occurred: {ex.Message}"));
         }
     }

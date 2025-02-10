@@ -4,11 +4,11 @@ using Azure;
 using Azure.Communication.Email;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Moq;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.Infrastructure.Tests.Emails;
 
@@ -16,7 +16,7 @@ namespace OmmelSamvirke.Infrastructure.Tests.Emails;
 public class AzureEmailServiceWrapperTests
 {
     private Mock<IConfiguration> _configurationMock;
-    private Mock<ILogger<AzureEmailServiceWrapper>> _loggerMock;
+    private Mock<ILoggingHandler> _loggerMock;
     private Mock<EmailClient>? _emailClientMock;
 
     private const string ValidConnectionString = "Endpoint=https://example.com/;AccessKey=examplekey";
@@ -24,7 +24,7 @@ public class AzureEmailServiceWrapperTests
     [SetUp]
     public void SetUp()
     {
-        _loggerMock = new Mock<ILogger<AzureEmailServiceWrapper>>();
+        _loggerMock = new Mock<ILoggingHandler>();
         _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
         
         var acsConnectionStringSectionMock = new Mock<IConfigurationSection>();

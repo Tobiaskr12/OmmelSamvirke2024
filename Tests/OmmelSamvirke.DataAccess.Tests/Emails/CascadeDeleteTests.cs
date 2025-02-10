@@ -2,11 +2,11 @@ using System.Data.Common;
 using System.Net.Mime;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.DataAccess.Tests.Emails;
@@ -21,7 +21,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
     [SetUp]
     public void Setup()
     {
-        var logger = Substitute.For<ILogger>();
+        var logger = Substitute.For<ILoggingHandler>();
         
         _emailRepository = new GenericRepository<Email>(Context, logger);
         _attachmentRepository = new GenericRepository<Attachment>(Context, logger);

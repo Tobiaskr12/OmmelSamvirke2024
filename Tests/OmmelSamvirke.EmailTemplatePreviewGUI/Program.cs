@@ -1,11 +1,7 @@
 using MudBlazor.Services;
-using OmmelSamvirke.DataAccess;
-using OmmelSamvirke.DomainModules;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Components;
 using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
-using OmmelSamvirke.Infrastructure;
 using OmmelSamvirke.ServiceModules;
-using OmmelSamvirke.SupportModules.Logging;
 using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI;
@@ -14,33 +10,27 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
                .AddInteractiveServerComponents();
         
         // Setup Configuration
-        var configuration = builder.Configuration
-               .AddKeyVaultSecrets(builder.Environment.IsDevelopment() ? ExecutionEnvironment.Development : ExecutionEnvironment.Production)
-               .AddEnvironmentVariables()
-               .Build();
-        
-        // Register custom logger
-        ILogger appLogger = AppLoggerFactory.CreateLogger(builder.Configuration);
-        builder.Logging.ClearProviders();
-        builder.Logging.AddProvider(new AppLoggerProvider(appLogger));
+        ExecutionEnvironment executionEnvironment = builder.Environment.IsDevelopment()
+            ? ExecutionEnvironment.Development
+            : ExecutionEnvironment.Production;
+        IConfigurationRoot configuration = 
+            builder.Configuration
+                .AddKeyVaultSecrets(executionEnvironment)
+                .AddEnvironmentVariables()
+                .Build();
         
         builder.Services.AddSingleton(configuration);
-        builder.Services.AddSingleton<FileWatcherService>();
+        builder.Services.AddScoped<FileWatcherService>();
         
         // Register services
-        builder.Services
-            .AddSingleton(appLogger)
-            .InitializeDataAccessModule(builder.Configuration).Result
-            .InitializeInfrastructureModule()
-            .InitializeDomainModule()
-            .InitializeServicesModule();
+        builder.Services.InitializeAllServices(configuration, executionEnvironment);
 
         // Register ViewModels
         builder.Services.AddScoped<TargetDeviceViewModel>();
@@ -49,11 +39,8 @@ public class Program
 
         // Add MudBlazor
         builder.Services.AddMudServices();
-
-        builder.Services.AddSingleton(configuration);
-        builder.Services.AddSingleton<FileWatcherService>();
-
-        var app = builder.Build();
+        
+        WebApplication app = builder.Build();
 
         app.MapHub<FileChangeHub>("/fileChangeHub");
 

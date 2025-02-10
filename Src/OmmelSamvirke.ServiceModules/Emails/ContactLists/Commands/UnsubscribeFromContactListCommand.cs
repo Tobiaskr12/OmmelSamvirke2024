@@ -1,12 +1,12 @@
 using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using Exception = System.Exception;
 
 namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
@@ -15,14 +15,14 @@ public record UnsubscribeFromContactListCommand(string EmailAddress, Guid Unsubs
 
 public class UnsubscribeFromContactListCommandHandler : IRequestHandler<UnsubscribeFromContactListCommand, Result>
 {
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IMediator _mediator;
     private readonly IEmailTemplateEngine _emailTemplateEngine;
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IRepository<ContactListUnsubscription> _contactListUnsubscriptionRepository;
 
     public UnsubscribeFromContactListCommandHandler(
-        ILogger logger, 
+        ILoggingHandler logger, 
         IMediator mediator,
         IEmailTemplateEngine emailTemplateEngine,
         IRepository<ContactList> contactListRepository,
@@ -53,9 +53,7 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
             if (contactListQueryResult.Value.Count > 1)
             {
                 _logger.LogWarning(
-                    "Multiple contact lists with the same unsubscribe token were found in {command}. Total count: {count}",
-                    nameof(UnsubscribeFromContactListCommand),
-                    contactListQueryResult.Value.Count
+                    "Multiple contact lists with the same unsubscribe token were found in {nameof(UnsubscribeFromContactListCommand)}. Total count: {contactListQueryResult.Value.Count}"
                 );
             }
 
@@ -117,9 +115,8 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
 
             return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError("{errorMessage}", ex.Message);
             return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
     }

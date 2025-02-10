@@ -3,10 +3,13 @@
 @using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels
 @using System.ComponentModel
 @using OmmelSamvirke.EmailTemplatePreviewGUI.Models
+@using OmmelSamvirke.SupportModules.Logging.Interfaces
 
 @inject TargetDeviceViewModel TargetDeviceViewModel
 @inject ThemeViewModel ThemeViewModel
 @inject EmailTemplatesViewModel EmailTemplatesViewModel
+@inject ILoggingHandler Logger
+@inject ITraceHandler Tracer
 
 @implements IDisposable
 
@@ -84,6 +87,13 @@
         EmailTemplatesViewModel.PropertyChanged += OnEmailTemplateChanged;
         TargetDeviceViewModel.PropertyChanged += OnTargetDeviceChanged;
         ThemeViewModel.PropertyChanged += OnThemeChanged;
+        
+        Logger.LogInformation("This is a test");
+        Tracer.Trace("This is a test", true, 200, "test");
+        Logger.LogInformation("This is a test");
+        Tracer.Trace("This is a test", true, 200, "test");
+        Logger.LogInformation("This is a test");
+        Tracer.Trace("This is a test", true, 200, "test");
     }
 
     private void OnEmailTemplateChanged(object? sender, PropertyChangedEventArgs e)

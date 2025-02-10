@@ -1,6 +1,4 @@
 using FluentResults;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Queries;
 
@@ -9,14 +7,12 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Queries;
 [TestFixture, Category("UnitTests")]
 public class RecipientsValidationQueryTests
 {
-    private ILogger _logger;
     private RecipientsValidationQueryHandler _handler;
 
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger>();
-        _handler = new RecipientsValidationQueryHandler(_logger);
+        _handler = new RecipientsValidationQueryHandler();
     }
 
     /// <summary>
@@ -101,16 +97,7 @@ public class RecipientsValidationQueryTests
         Result<(List<Recipient> ValidRecipients, List<Recipient> InvalidRecipients)> result =
             await _handler.Handle(query, CancellationToken.None);
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed);
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Length > 0),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
-        });
+
+        Assert.That(result.IsFailed);
     }
 }

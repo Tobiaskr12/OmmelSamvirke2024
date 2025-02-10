@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj" />
+      <ProjectReference Include="..\..\Src\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
     </ItemGroup>
 
 </Project>

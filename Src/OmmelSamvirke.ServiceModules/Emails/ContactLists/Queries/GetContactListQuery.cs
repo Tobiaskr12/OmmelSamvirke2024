@@ -1,6 +1,5 @@
 using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
@@ -11,12 +10,10 @@ public record GetContactListQuery(int Id) : IRequest<Result<ContactList>>;
 
 public class GetContactListQueryHandler : IRequestHandler<GetContactListQuery, Result<ContactList>>
 {
-    private readonly ILogger _logger;
     private readonly IRepository<ContactList> _contactListRepository;
 
-    public GetContactListQueryHandler(ILogger logger, IRepository<ContactList> contactListRepository)
+    public GetContactListQueryHandler(IRepository<ContactList> contactListRepository)
     {
-        _logger = logger;
         _contactListRepository = contactListRepository;
     }
     
@@ -30,10 +27,9 @@ public class GetContactListQueryHandler : IRequestHandler<GetContactListQuery, R
                 Result.Ok(result.Value) : 
                 Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             var errorCode = Guid.NewGuid();
-            _logger.LogError("[{code}] - {message}", errorCode, ex.Message);
             return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
         }
     }

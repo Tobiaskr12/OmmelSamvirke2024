@@ -1,6 +1,6 @@
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.EmailTemplateEngine;
 
@@ -10,7 +10,6 @@ public class TemplateEngineTests
     private string _templatesDirectory;
     private string _partialsDirectory;
     private IEmailTemplateEngine _emailTemplateEngine;
-    private ILogger _logger;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -29,8 +28,8 @@ public class TemplateEngineTests
             Directory.CreateDirectory(_partialsDirectory);
         }
         
-        _logger = NSubstitute.Substitute.For<ILogger>();
-        _emailTemplateEngine = new TemplateEngine(_logger);
+        var logger = NSubstitute.Substitute.For<ILoggingHandler>();
+        _emailTemplateEngine = new TemplateEngine(logger);
     }
 
     // Clean up the Templates directory after each test.

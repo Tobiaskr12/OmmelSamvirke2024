@@ -11,11 +11,11 @@
         <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="OmmelSamvirke.EmailTemplatePreviewGUI.styles.css?v=@Version"/>
         @* ReSharper restore Html.PathError *@
-        <HeadOutlet @rendermode="InteractiveServer"/>
+        <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         <title>OmmelSamvirke Email Previewer</title>
     </head>
     <body>
-        <Routes @rendermode="InteractiveServer"/>
+        <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         @* ReSharper disable Html.PathError *@
         <script src="_framework/blazor.web.js"></script>
         <script src="_content/MudBlazor/MudBlazor.min.js"></script>

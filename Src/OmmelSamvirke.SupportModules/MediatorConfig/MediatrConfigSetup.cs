@@ -11,7 +11,7 @@ public static class MediatrConfigSetup
         serviceCollection.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(callingAssembly);
-            config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
     }

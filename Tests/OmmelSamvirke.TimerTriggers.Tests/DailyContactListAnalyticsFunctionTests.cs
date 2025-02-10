@@ -1,9 +1,8 @@
 using System.Linq.Expressions;
-using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.TimerTriggers.Tests;
@@ -13,7 +12,7 @@ public class DailyContactListAnalyticsFunctionTests
 {
     private IRepository<ContactList> _contactListRepository;
     private IRepository<DailyContactListAnalytics> _dailyAnalyticsRepository;
-    private ILogger _logger;
+    private ILoggingHandler _logger;
     private DailyContactListAnalyticsFunction _function;
 
     [SetUp]
@@ -21,7 +20,7 @@ public class DailyContactListAnalyticsFunctionTests
     {
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _dailyAnalyticsRepository = Substitute.For<IRepository<DailyContactListAnalytics>>();
-        _logger = Substitute.For<ILogger>();
+        _logger = Substitute.For<ILoggingHandler>();
         _function = new DailyContactListAnalyticsFunction(_logger, _contactListRepository, _dailyAnalyticsRepository);
     }
 

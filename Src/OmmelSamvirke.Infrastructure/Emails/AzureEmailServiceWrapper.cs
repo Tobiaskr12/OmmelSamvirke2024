@@ -2,19 +2,19 @@
 using Azure.Communication.Email;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.Infrastructure.Emails;
 
 public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
 {
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly EmailClient _emailClient;
 
-    public AzureEmailServiceWrapper(IConfiguration configuration, ILogger logger)
+    public AzureEmailServiceWrapper(IConfiguration configuration, ILoggingHandler logger)
     {
         string? connectionString = configuration.GetSection("AcsConnectionString").Value;
         if (string.IsNullOrEmpty(connectionString))
@@ -36,7 +36,7 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         }
         catch (Exception ex)
         {
-            _logger.LogError("Could not send email via Azure: {message}", ex.Message);
+            _logger.LogError(ex, "Could not send email via Azure");
             return Result.Fail(ErrorMessages.AzureEmailSendingFailed);
         }
     }

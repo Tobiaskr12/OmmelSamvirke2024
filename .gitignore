@@ -16,6 +16,11 @@ appsettings.*.json
 *.userosscache
 *.sln.docstates
 
+# MudBlazor Intellisense
+MudBlazor.min.css
+MudBlazor.min.js
+wwwroot/temp
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

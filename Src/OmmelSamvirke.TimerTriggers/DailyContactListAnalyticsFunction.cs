@@ -1,19 +1,19 @@
 using FluentResults;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.TimerTriggers;
 
 public class DailyContactListAnalyticsFunction
 {
-    private readonly ILogger _logger;
+    private readonly ILoggingHandler _logger;
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
 
     public DailyContactListAnalyticsFunction(
-        ILogger logger,
+        ILoggingHandler logger,
         IRepository<ContactList> contactListRepository,
         IRepository<DailyContactListAnalytics> dailyContactListAnalyticsRepository)
     {
@@ -33,9 +33,7 @@ public class DailyContactListAnalyticsFunction
             if (contactListAnalyticsResult.IsSuccess)
             {
                 _logger.LogInformation(
-                    "Successfully gathered analytics for contacts in contact lists yesterday via {functionName}. ContactList count: {Count}",
-                    nameof(DailyContactListAnalytics),
-                    contactListAnalyticsResult.Value.Count
+                    $"Successfully gathered analytics for contacts in contact lists yesterday. ContactList count: {contactListAnalyticsResult.Value.Count}"
                 );
             }
             else
@@ -46,10 +44,7 @@ public class DailyContactListAnalyticsFunction
             Result<List<DailyContactListAnalytics>> saveResult = await _dailyContactListAnalyticsRepository.AddAsync(contactListAnalyticsResult.Value);
             if (saveResult.IsSuccess)
             {
-                _logger.LogInformation(
-                    "Successfully completed execution of {functionName}",
-                    nameof(DailyContactListAnalyticsFunction)
-                );
+                _logger.LogInformation("Successfully completed execution");
             }
             else
             {
@@ -58,7 +53,7 @@ public class DailyContactListAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error during execution of {functionName}. Error Message: {errorMessage}", nameof(DailyContactListAnalyticsFunction), ex.Message);
+            _logger.LogError(ex);
             throw;
         }
     }
@@ -95,7 +90,7 @@ public class DailyContactListAnalyticsFunction
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error in {methodName}.", nameof(GetContactListSubscribersYesterday));
+            _logger.LogError(ex);
             return Result.Fail<List<DailyContactListAnalytics>>(ex.Message);
         }
     }

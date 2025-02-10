@@ -1,5 +1,4 @@
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
@@ -13,7 +12,6 @@ namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Queries;
 public class CountContactsInContactListQueryHandlerTests
 {
     private IRepository<ContactList> _repository;
-    private ILogger _logger;
     private CountContactsInContactListQueryHandler _handler;
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
 
@@ -34,8 +32,7 @@ public class CountContactsInContactListQueryHandlerTests
     public void Setup()
     {
         _repository = Substitute.For<IRepository<ContactList>>();
-        _logger = Substitute.For<ILogger>();
-        _handler = new CountContactsInContactListQueryHandler(_repository, _logger);
+        _handler = new CountContactsInContactListQueryHandler(_repository);
     }
 
     [Test]
@@ -107,13 +104,6 @@ public class CountContactsInContactListQueryHandlerTests
         {
             Assert.That(result.IsFailed, Is.True);
             Assert.That(result.Errors.First().Message, Does.StartWith(ErrorMessages.GenericErrorWithErrorCode));
-            _logger.Received(1).Log(
-                Arg.Is<LogLevel>(lvl => lvl == LogLevel.Error),
-                Arg.Any<EventId>(),
-                Arg.Is<object>(state => state.ToString()!.Length > 0),
-                Arg.Any<Exception>(),
-                Arg.Any<Func<object, Exception, string>>()!
-            );
         });
     }
 }

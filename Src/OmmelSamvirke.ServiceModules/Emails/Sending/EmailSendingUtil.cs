@@ -1,6 +1,5 @@
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
@@ -9,6 +8,7 @@ using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending;
 
@@ -17,7 +17,7 @@ public static class EmailSendingUtil
     public static async Task<Result> ValidateRequestIsWithinServiceLimits(
         int numberOfEmailsToSend,
         IEmailSendingRepository emailSendingRepository,
-        ILogger logger,
+        ILoggingHandler logger,
         IExternalEmailServiceWrapper externalEmailServiceWrapper,
         IEmailTemplateEngine emailTemplateEngine,
         CancellationToken cancellationToken)
@@ -35,13 +35,16 @@ public static class EmailSendingUtil
         // If the usage can't be calculated, log the error and return failure
         if (minuteLimitResult.IsFailed || hourlyLimitResult.IsFailed)
         {
-            logger.LogError(
-                "Tried sending an email, but could not check service limit usage, so the operation was aborted. Errors: {errors}",
-                minuteLimitResult.Errors.Select(e => e.Message).Concat(hourlyLimitResult.Errors.Select(e => e.Message))
+            IEnumerable<string> errors = 
+                minuteLimitResult.Errors
+                    .Select(e => e.Message)
+                    .Concat(hourlyLimitResult.Errors.Select(e => e.Message));
+            
+            logger.LogError(null, 
+                $"Tried sending an email, but could not check service limit usage, so the operation was aborted. Errors: {errors}"
             );
-            {
-                return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
-            }
+            
+            return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
         }
         
         // Log and send high service limit usage warning to developer if service limit usage exceed threshold
@@ -67,14 +70,11 @@ public static class EmailSendingUtil
         if (minuteLimitResult.Value < 100.00 && hourlyLimitResult.Value < 100.00) return Result.Ok();
         
         // Else, Log error and return failure 
-        logger.LogError(
-            "Tried sending one or more emails, but doing so would exceed at least one service limit." +
-            "\nEmails to send: {emailsToSend}" +
-            "\nMinute-limit used: {minuteLimit}" +
-            "\nHour-limit used: {hourLimit}",
-            numberOfEmailsToSend,
-            minuteLimitResult.Value.ToString("0.00") + "%",
-            hourlyLimitResult.Value.ToString("0.00") + "%");
+        logger.LogError(null,
+            $"Tried sending one or more emails, but doing so would exceed at least one service limit." +
+            $"\nEmails to send: {numberOfEmailsToSend}" +
+            $"\nMinute-limit used: {minuteLimitResult.Value.ToString("0.00") + "%"}" +
+            $"\nHour-limit used: {hourlyLimitResult.Value.ToString("0.00") + "%"}");
 
         return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
     }

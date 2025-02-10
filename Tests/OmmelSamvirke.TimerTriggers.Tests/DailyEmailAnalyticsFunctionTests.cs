@@ -1,10 +1,10 @@
 using System.Linq.Expressions;
 using FluentResults;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.TimerTriggers.Tests;
@@ -12,7 +12,6 @@ namespace OmmelSamvirke.TimerTriggers.Tests;
 [TestFixture, Category("UnitTests")]
 public class DailyEmailAnalyticsFunctionTests
 {
-    private ILogger<DailyEmailAnalyticsFunction> _logger;
     private IRepository<Email> _emailRepository;
     private IRepository<DailyEmailAnalytics> _dailyAnalyticsRepository;
     private DailyEmailAnalyticsFunction _function;
@@ -21,10 +20,11 @@ public class DailyEmailAnalyticsFunctionTests
     [SetUp]
     public void Setup()
     {
-        _logger = Substitute.For<ILogger<DailyEmailAnalyticsFunction>>();
         _emailRepository = Substitute.For<IRepository<Email>>();
         _dailyAnalyticsRepository = Substitute.For<IRepository<DailyEmailAnalytics>>();
-        _function = new DailyEmailAnalyticsFunction(_logger, _emailRepository, _dailyAnalyticsRepository);
+        
+        var logger = Substitute.For<ILoggingHandler>();
+        _function = new DailyEmailAnalyticsFunction(logger, _emailRepository, _dailyAnalyticsRepository);
         
         _yesterdayUtc = DateTime.UtcNow.AddDays(-1);
     }
