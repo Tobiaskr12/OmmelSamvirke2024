@@ -3,6 +3,8 @@
 @using OmmelSamvirke.SupportModules.Logging.Enums
 @using Align = MudBlazor.Align;
 @using OmmelSamvirke.SupportModules.Logging.Models
+@using OmmelSamvirke2024.Web.Components.Localization
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
 @using OmmelSamvirke2024.Web.Components.ViewModels
 
 @implements IDisposable
@@ -15,18 +17,18 @@
         <MudPaper Elevation="1" Class="pa-3 d-flex flex-column mud-width-full">
             <MudTable Items="@TraceAnalytics" Dense="true" Hover="true" Bordered="true" Breakpoint="Breakpoint.Sm" RowsPerPage="4" AllowUnsorted="false">
                 <HeaderContent>
-                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.RequestName)">Request</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<TraceAnalysisAggregate, object>(x => x.TotalCalls)">Total Calls</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.MedianExecutionTime)">Execution Time (Median)</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.HighestExecutionTime)">Execution Time (Max)</MudTableSortLabel></MudTh>
-                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.SuccessRate)">Success Rate</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.RequestName)">@TechnicalDataLocalization.Request</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<TraceAnalysisAggregate, object>(x => x.TotalCalls)">@TechnicalDataLocalization.TotalCalls</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.MedianExecutionTime)">@TechnicalDataLocalization.ExecutionTimeMedian</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.HighestExecutionTime)">@TechnicalDataLocalization.ExecutionTimeMax</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<TraceAnalysisAggregate, object>(x => x.SuccessRate)">@TechnicalDataLocalization.SuccessRate</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="RequestName">@context.RequestName</MudTd>
-                    <MudTd DataLabel="RequestName">@context.TotalCalls</MudTd>
-                    <MudTd DataLabel="RequestName">@context.MedianExecutionTime</MudTd>
-                    <MudTd DataLabel="RequestName">@context.HighestExecutionTime</MudTd>
-                    <MudTd DataLabel="RequestName">@context.SuccessRate</MudTd>
+                    <MudTd DataLabel="@TechnicalDataLocalization.Request">@context.RequestName</MudTd>
+                    <MudTd DataLabel="@TechnicalDataLocalization.TotalCalls">@context.TotalCalls</MudTd>
+                    <MudTd DataLabel="@TechnicalDataLocalization.ExecutionTimeMedian">@context.MedianExecutionTime</MudTd>
+                    <MudTd DataLabel="@TechnicalDataLocalization.ExecutionTimeMax">@context.HighestExecutionTime</MudTd>
+                    <MudTd DataLabel="@TechnicalDataLocalization.SuccessRate">@context.SuccessRate</MudTd>
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager HideRowsPerPage="true" />
@@ -37,7 +39,7 @@
 
     <MudItem xs="12" md="4" lg="3">
         <MudPaper Elevation="1" Class="pb-1 d-flex flex-column" Style="max-height: 250px">
-            <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4 pt-3">Success Rate</MudText>
+            <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4 pt-3">@TechnicalDataLocalization.SuccessRate</MudText>
             <ApexChart @ref="_chart"
                        TItem="ResultRate"
                        Options="@_chartOptions"
@@ -46,7 +48,6 @@
                 <ApexPointSeries TItem="ResultRate"
                                  Items="ResultDistribution"
                                  SeriesType="SeriesType.Donut"
-                                 Name="Gross Value"
                                  XValue="@(e => e.Result)"
                                  YValue="@(e => e.Count)" />
             </ApexChart>
@@ -177,9 +178,9 @@
         switch (result)
         {
             case true:
-                return "Success";
+                return GlobalLocalization.Success;
             case false:
-                return "Failed";
+                return GlobalLocalization.Failed;
         }
     }
 

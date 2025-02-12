@@ -1,5 +1,7 @@
 ﻿@using OmmelSamvirke.SupportModules.Logging.Models
 @using System.ComponentModel
+@using OmmelSamvirke2024.Web.Components.Localization
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
 
 @implements IDisposable
 
@@ -13,27 +15,27 @@ else
 {
     <MudTable Items="@DashboardViewModel.FilteredTraces" Dense="true" Hover="true" Bordered="true" Breakpoint="Breakpoint.Md" Filter="new Func<TraceEntry, bool>(DashboardViewModel.TracesFilterFunc)" RowsPerPage="15" AllowUnsorted="false">
         <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<TraceEntry, object>(x => x.Timestamp)">Timestamp</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.OperationType)">Operation</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.RequestName)">Request</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.IsSuccess)">Success</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.ExecutionTimeMs)">Execution (ms)</MudTableSortLabel></MudTh>
-            <MudTh>Session</MudTh>
-            <MudTh>Operation Id</MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<TraceEntry, object>(x => x.Timestamp)">@TechnicalDataLocalization.Timestamp</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.OperationType)">@TechnicalDataLocalization.Operation</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.RequestName)">@TechnicalDataLocalization.Request</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.IsSuccess)">@GlobalLocalization.Success</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.ExecutionTimeMs)">@TechnicalDataLocalization.ExecutionTimeMS</MudTableSortLabel></MudTh>
+            <MudTh>@TechnicalDataLocalization.Session</MudTh>
+            <MudTh>@TechnicalDataLocalization.Operation</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Timestamp">
+            <MudTd DataLabel="@TechnicalDataLocalization.Timestamp">
                 @context.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff")
             </MudTd>
-            <MudTd DataLabel="OperationType">@context.OperationType</MudTd>
-            <MudTd DataLabel="RequestName">@context.RequestName</MudTd>
-            <MudTd DataLabel="IsSuccess">@context.IsSuccess</MudTd>
-            <MudTd DataLabel="ExecutionTime">@context.ExecutionTimeMs</MudTd>
-            <MudTd DataLabel="SessionId">@context.SessionId</MudTd>
-            <MudTd DataLabel="OperationId">@context.OperationId</MudTd>
+            <MudTd DataLabel="@TechnicalDataLocalization.Operation">@context.OperationType</MudTd>
+            <MudTd DataLabel="@TechnicalDataLocalization.Request">@context.RequestName</MudTd>
+            <MudTd DataLabel="@GlobalLocalization.Success">@context.IsSuccess</MudTd>
+            <MudTd DataLabel="@TechnicalDataLocalization.ExecutionTimeMS">@context.ExecutionTimeMs</MudTd>
+            <MudTd DataLabel="@TechnicalDataLocalization.Session">@context.SessionId</MudTd>
+            <MudTd DataLabel="@TechnicalDataLocalization.Operation">@context.OperationId</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 5, 15, 25, 50 }" />
+            <MudTablePager PageSizeOptions="new int[] { 5, 15, 25, 50 }" RowsPerPageString="@GlobalLocalization.RowsPerPage" />
         </PagerContent>
     </MudTable>
 }

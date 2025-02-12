@@ -1,4 +1,6 @@
 using ApexCharts;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using OmmelSamvirke.ServiceModules;
 using OmmelSamvirke.SupportModules.SecretsManager;
@@ -6,6 +8,7 @@ using OmmelSamvirke2024.ServiceDefaults;
 using OmmelSamvirke2024.Web.Components;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData;
 using OmmelSamvirke2024.Web.Components.ViewModels;
+using System.Globalization;
 
 namespace OmmelSamvirke2024.Web;
 
@@ -46,16 +49,49 @@ public class Program
         // Add third-party libraries
         builder.Services.AddMudServices();
         builder.Services.AddApexCharts();
-        
-        builder.Services.AddOutputCache();
-        builder.Services.AddHttpClient<WeatherApiClient>(client =>
+
+        // Setup localization
+        var supportedCultureCodes = new[] { "da", "en" };
+        var supportedCultures = supportedCultureCodes.Select(code => new CultureInfo(code)).ToList();
+
+        builder.Services.AddLocalization();
+        builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-            // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-            client.BaseAddress = new("https+http://apiservice");
+            options.DefaultRequestCulture = new RequestCulture("da");
+            options.SupportedCultures = supportedCultures;
+            options.SupportedUICultures = supportedCultures;
+
+            options.FallBackToParentCultures = true;
+            options.FallBackToParentUICultures = true;
+
+            options.RequestCultureProviders.Clear();
+
+            options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
+            {
+                var acceptLangs = context.Request.Headers["Accept-Language"].ToString();
+                string primaryLanguage = acceptLangs.Split(',').FirstOrDefault() ?? "da";
+
+                if (primaryLanguage.Contains("en", StringComparison.OrdinalIgnoreCase))
+                {
+                    primaryLanguage = "en";
+                }
+                else if (primaryLanguage.Contains("da", StringComparison.OrdinalIgnoreCase))
+                {
+                    primaryLanguage = "da";
+                }
+                else
+                {
+                    primaryLanguage = "da";
+                }
+
+                return await Task.FromResult(new ProviderCultureResult(primaryLanguage, primaryLanguage));
+            }));
         });
 
         WebApplication app = builder.Build();
+
+        var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+        app.UseRequestLocalization(localizationOptions);
 
         if (!app.Environment.IsDevelopment())
         {
@@ -68,8 +104,6 @@ public class Program
 
         app.UseStaticFiles();
         app.UseAntiforgery();
-
-        app.UseOutputCache();
 
         app.MapRazorComponents<App>()
            .AddInteractiveServerRenderMode();

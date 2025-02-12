@@ -3,6 +3,7 @@
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline.Models
 @using System.ComponentModel
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
 @using OmmelSamvirke2024.Web.Components.ViewModels
 
 @implements IDisposable
@@ -16,8 +17,8 @@
 {
     <ApexChart 
         @ref="_chart"
-        TItem="BucketedEntry" 
-        Title="@(TimelineViewModel.Timeline.Type.Name == nameof(LogEntry) ? "Logs Timeline" : "Traces Timeline")"
+        TItem="BucketedEntry"
+               Title="@(TimelineViewModel.Timeline.Type.Name == nameof(LogEntry) ? TechnicalDataLocalization.TimelineTitle_Logs : TechnicalDataLocalization.TimelineTitle_Traces)"
         Width="@("100%")"
         OnDataPointSelection="OnDataPointSelectionHandler"
         Height="@("320px")" >

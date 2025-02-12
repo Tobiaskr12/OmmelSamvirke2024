@@ -1,21 +1,26 @@
 @page "/teknisk-data"
+@page "/technical-data"
 
 @using System.Globalization
+@using Microsoft.Extensions.Localization
 @using OmmelSamvirke.SupportModules.Logging.Interfaces
 @using OmmelSamvirke.SupportModules.Logging.Models
+@using OmmelSamvirke2024.Web.Components.Localization
 @using OmmelSamvirke2024.Web.Components.Pages;
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline
 @using System.ComponentModel
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Logs
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Traces
+@using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
 
 @inject DashboardViewModel DashboardViewModel
 @inject TimelineViewModel TimelineViewModel
+@inject IStringLocalizer<Dashboard> Localizer
 
 @implements IDisposable
 
-<PageTitle>Logs & Traces</PageTitle>
+<PageTitle>@TechnicalDataLocalization.DashboardPageTitle</PageTitle>
 
 <MudBreakpointProvider OnBreakpointChanged="BreakpointChanged" />
 
@@ -60,15 +65,15 @@
                         Style="@(BreakpointLessThanMd
                                 ? "align-self: center; margin-left: auto; height: auto; border-radius: 5px"
                                 : "align-self: center; height: auto; border-radius: 5px")">
-                        <MudToggleItem Value="@DashboardTab.Logs" Text="Logs" />
-                        <MudToggleItem Value="@DashboardTab.Traces" Text="Traces" />
+                        <MudToggleItem Value="@DashboardTab.Logs" Text="@TechnicalDataLocalization.Logs" />
+                        <MudToggleItem Value="@DashboardTab.Traces" Text="@TechnicalDataLocalization.Traces" />
                     </MudToggleGroup>
                 </div>
             </MudItem>
             <MudItem md="4" sm="12" xs="12">
                 <div class="d-flex flex-row" style="gap: 10px">
                     <MudTextField @bind-Value="DashboardViewModel.SearchString"
-                                    Placeholder="Search"
+                                    Placeholder="@GlobalLocalization.Search"
                                     Margin="Margin.Dense"
                                     Adornment="Adornment.Start"
                                     AdornmentIcon="@Icons.Material.Filled.Search"
@@ -84,8 +89,8 @@
                                     SelectionMode="SelectionMode.SingleSelection"
                                     Class="d-flex d-sm-none"
                                     Style="align-self: center; height: auto; border-radius: 5px">
-                        <MudToggleItem Value="@DashboardTab.Logs" Text="Logs" />
-                        <MudToggleItem Value="@DashboardTab.Traces" Text="Traces" />
+                        <MudToggleItem Value="@DashboardTab.Logs" Text="@TechnicalDataLocalization.Logs" />
+                        <MudToggleItem Value="@DashboardTab.Traces" Text="@TechnicalDataLocalization.Traces" />
                     </MudToggleGroup>
                 </div>
             </MudItem>
