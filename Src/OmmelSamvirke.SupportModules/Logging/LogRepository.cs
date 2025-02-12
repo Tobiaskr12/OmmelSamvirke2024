@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Text;
+using System.Text.Json;
 using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.Logging.Models;
@@ -50,12 +52,19 @@ public class LogRepository : ILogRepository
                 LogEntry entry;
                 try
                 {
+                    ExceptionInfo? logException = null;
+                    string exceptionJson = Encoding.UTF8.GetString(Convert.FromBase64String(parts[3]));
+                    if (exceptionJson != null) 
+                    {
+                        logException = JsonSerializer.Deserialize<ExceptionInfo>(exceptionJson);
+                    }
+
                     entry = new LogEntry
                     {
                         Timestamp = DateTime.Parse(parts[0]).ToUniversalTime(),
                         Level = Enum.Parse<LogLevel>(parts[1]),
                         Message = parts[2],
-                        Exception = string.IsNullOrWhiteSpace(parts[3]) ? null : new Exception(parts[3]),
+                        Exception = logException,
                         SessionId = parts[4],
                         OperationId = parts[5],
                         CallerLineNumber = int.Parse(parts[6]),

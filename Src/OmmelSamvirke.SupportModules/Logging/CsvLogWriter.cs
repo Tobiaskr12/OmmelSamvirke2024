@@ -1,5 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.Logging.Models;
@@ -73,7 +76,7 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         {
             Level = level,
             Message = message,
-            Exception = ex,
+            Exception = GetExceptionInfo(ex),
             SessionId = CorrelationContext.SessionId,
             OperationId = CorrelationContext.OperationId,
             CallerLineNumber = lineNumber,
@@ -97,6 +100,25 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         return assemblyName;
     }
 
+    private ExceptionInfo? GetExceptionInfo(Exception? exception)
+    {
+        if (exception is null) return null;
+
+        return new ExceptionInfo
+        {
+            Type = exception.GetType().FullName ?? "Unknown",
+            Message = string.IsNullOrEmpty(exception.Message) ? "None" : exception.Message,
+            StackTrace = exception.StackTrace ?? "None",
+            InnerException = GetExceptionInfo(exception.InnerException)
+        };
+    }
+
+    private string EncodeExceptionInfo(ExceptionInfo exceptionInfo)
+    {
+        string json = JsonSerializer.Serialize(exceptionInfo);
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+    }
+
     private static string InferServiceName(string filePath) =>
         string.IsNullOrWhiteSpace(filePath)
             ? "UnknownService"
@@ -110,11 +132,16 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
 
     protected override string FormatEntry(LogEntry e)
     {
+        string exceptionString = string.Empty;
+        if (e.Exception is not null) { 
+            exceptionString = EncodeExceptionInfo(e.Exception);
+        }
+
         return string.Join(",",
             e.Timestamp.ToString("o"),
             e.Level,
             EscapeCsv(e.Message),
-            EscapeCsv(e.Exception?.ToString() ?? ""),
+            EscapeCsv(exceptionString),
             EscapeCsv(e.SessionId),
             EscapeCsv(e.OperationId),
             e.CallerLineNumber,

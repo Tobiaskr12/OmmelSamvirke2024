@@ -1,7 +1,17 @@
 ﻿@inject NavigationManager NavigationManager
 
 <MudNavMenu>
-    <MudNavLink OnClick="@(() => NavigationManager.NavigateTo("/teknisk-data"))" Icon="@Icons.Material.Filled.DataSaverOff">
+    <MudNavLink OnClick="@(() => NavigateTo("/teknisk-data"))" Icon="@Icons.Material.Filled.DataSaverOff">
         Logs and Traces
     </MudNavLink>
 </MudNavMenu>
+
+@code {
+    [Parameter] public EventCallback OnCloseDrawer { get; set; }
+
+    public async void NavigateTo(string route)
+    {
+        NavigationManager.NavigateTo(route);
+        await OnCloseDrawer.InvokeAsync();
+    }
+}

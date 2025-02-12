@@ -36,10 +36,10 @@ public partial class TimelineViewModel : ObservableObject
             switch (_dashboardViewModel.CurrentlyActiveTab)
             {
                 case DashboardTab.Logs:
-                    Timeline = BuildLogsTimeline(_dashboardViewModel.Logs);
+                    Timeline = BuildLogsTimeline(_dashboardViewModel.FilteredLogs);
                     break;
                 case DashboardTab.Traces:
-                    Timeline = BuildTracesTimeline(_dashboardViewModel.Traces);
+                    Timeline = BuildTracesTimeline(_dashboardViewModel.FilteredTraces);
                     break;
             }
         }

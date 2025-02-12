@@ -6,7 +6,7 @@ public class LogEntry : TimestampedEntry
 {
     public required LogLevel Level { get; init; }
     public required string Message { get; init; }
-    public Exception? Exception { get; init; }
+    public ExceptionInfo? Exception { get; init; }
 
     // Correlation
     public string SessionId { get; set; } = string.Empty;

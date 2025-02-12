@@ -11,9 +11,9 @@
 }
 else
 {
-    <MudTable Items="@DashboardViewModel.Traces" Dense="true" Hover="true" Bordered="true" Breakpoint="Breakpoint.Sm" Filter="new Func<TraceEntry, bool>(TracesFilterFunc)" RowsPerPage="15">
+    <MudTable Items="@DashboardViewModel.FilteredTraces" Dense="true" Hover="true" Bordered="true" Breakpoint="Breakpoint.Md" Filter="new Func<TraceEntry, bool>(DashboardViewModel.TracesFilterFunc)" RowsPerPage="15" AllowUnsorted="false">
         <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<TraceEntry, object>(x => x.Timestamp)">Timestamp</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Descending" SortBy="new Func<TraceEntry, object>(x => x.Timestamp)">Timestamp</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.OperationType)">Operation</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.RequestName)">Request</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<TraceEntry, object>(x => x.IsSuccess)">Success</MudTableSortLabel></MudTh>
@@ -39,8 +39,6 @@ else
 }
 
 @code {
-    [Parameter] public required string SearchString { get; set; }
-
     protected override void OnInitialized()
     {
         DashboardViewModel.PropertyChanged += OnDashboardViewModelChanged;
@@ -49,19 +47,6 @@ else
     private async void OnDashboardViewModelChanged(object? sender, PropertyChangedEventArgs args)
     {
         await InvokeAsync(StateHasChanged);
-    }
-
-    private bool TracesFilterFunc(TraceEntry trace) => TracesFilterFunc(trace, SearchString);
-    private bool TracesFilterFunc(TraceEntry trace, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (trace.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff").Contains(searchString, StringComparison.Ordinal)) return true;
-        if (trace.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-        if (trace.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-        if (trace.RequestName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-        if (trace.OperationType.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-
-        return false;
     }
 
     public void Dispose()

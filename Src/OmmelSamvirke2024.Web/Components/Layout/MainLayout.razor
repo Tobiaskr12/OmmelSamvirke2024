@@ -3,11 +3,18 @@
 @inherits LayoutComponentBase
 
 @inject ThemeViewModel ThemeViewModel
+@inject NavigationManager NavigationManager
 
 @implements IDisposable
 
 <MudPopoverProvider />
 <MudThemeProvider IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudDialogProvider 
+    CloseOnEscapeKey="true"
+    CloseButton="false"
+    BackdropClick="true"
+    MaxWidth="MaxWidth.Medium"
+    Position="DialogPosition.Center"/>
 
 <MudLayout>
     <MudDrawer @bind-Open="_navBarOpen"
@@ -17,7 +24,7 @@
                Anchor="Anchor.Left"
                Breakpoint="Breakpoint.Md"
                Class="mud-height-full">
-        <NavMenu />
+        <NavMenu OnCloseDrawer="@(() => _navBarOpen = false)" />
     </MudDrawer>
 
     <MudAppBar Color="Color.Primary" Fixed="false">
@@ -26,7 +33,13 @@
                        Color="Color.Inherit"
                        OnClick="ToggleNavBar" />
 
-        <MudText Align="Align.Center" Typo="Typo.h5">Ommel Samvirke</MudText>
+        <MudText 
+            Align="Align.Center" 
+            Typo="Typo.h5" 
+            Style="cursor: pointer" 
+            onclick="@(() => { NavigationManager.NavigateTo("/"); _navBarOpen = false;})">
+            Ommel Samvirke
+        </MudText>
         <MudSpacer/>
 
         <MudIconButton Icon="@ToggleIcon"
@@ -35,7 +48,9 @@
     </MudAppBar>
 
     <MudMainContent>
-        @Body
+        <MudContainer MaxWidth="MaxWidth.Large" Gutters="false">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
@@ -50,7 +65,7 @@
     {
         Typography = new Typography
         {
-            Default = new Default
+            Default = new DefaultTypography
             {
                 FontFamily = ["Helvetica", "Arial", "sans-serif"]
             }

@@ -15,7 +15,7 @@
     <ItemGroup>
       <PackageReference Include="Blazor-ApexCharts" Version="5.1.0" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-      <PackageReference Include="MudBlazor" Version="7.15.0" />
+      <PackageReference Include="MudBlazor" Version="8.0.0" />
     </ItemGroup>
 
     <Target Name="CollectMudBlazorStaticAssets" DependsOnTargets="ResolveStaticWebAssetsInputs" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">

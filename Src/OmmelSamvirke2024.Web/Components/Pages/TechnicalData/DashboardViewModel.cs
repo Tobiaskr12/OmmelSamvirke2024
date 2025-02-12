@@ -25,7 +25,8 @@ public partial class DashboardViewModel : ObservableObject
 {
     private readonly ILogRepository _logRepository;
     private readonly ITraceRepository _traceRepository;
-    private DateTime? _selectedDate;
+    private DateTime? _selectedDate = null;
+    private string? _selectedMinute = null;
 
     public DashboardViewModel(ILogRepository logRepository, ITraceRepository traceRepository)
     {
@@ -36,6 +37,7 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty] private DashboardTab _currentlyActiveTab = DashboardTab.Logs;
     [ObservableProperty] private DateRange _dateRange = new(DateTime.UtcNow.AddDays(-7).Date, DateTime.UtcNow.Date);
     [ObservableProperty] private DashboardView _currentView = DashboardView.MultipleDays;
+    [ObservableProperty] private string _searchString = string.Empty;
 
     private IEnumerable<LogEntry> _logs = [];
     public IEnumerable<LogEntry> Logs 
@@ -49,6 +51,20 @@ public partial class DashboardViewModel : ObservableObject
     {
         get => _traces;
         private set => SetProperty(ref _traces, value);
+    }
+
+    public IEnumerable<LogEntry> FilteredLogs 
+    { 
+        get => string.IsNullOrWhiteSpace(SearchString) 
+            ? Logs 
+            : Logs.Where(log => LogsFilterFunc(log, SearchString));
+    }
+
+    public IEnumerable<TraceEntry> FilteredTraces
+    {
+        get => string.IsNullOrWhiteSpace(SearchString)
+            ? Traces
+            : Traces.Where(trace => TracesFilterFunc(trace, SearchString));
     }
 
     public void ReloadData(DateRange dateRange)
@@ -86,6 +102,7 @@ public partial class DashboardViewModel : ObservableObject
 
         }
 
+        _selectedMinute = null;
         return GetCurrentViewDateTimeFormat();
     }
 
@@ -115,20 +132,38 @@ public partial class DashboardViewModel : ObservableObject
                 break;
 
             case DashboardView.Hour:
-                bool minuteParseResult = TimeSpan.TryParse(selectedDataPoint.X.ToString(), out TimeSpan selectedMinute);
-                if (!minuteParseResult) break;
+                {
+                    bool minuteParseResult = TimeSpan.TryParse(selectedDataPoint.X.ToString(), out TimeSpan selectedMinute);
+                    if (!minuteParseResult) break;
 
-                CurrentView = DashboardView.Minute;
-                GetLogsForAMinute(selectedMinute);
+                    CurrentView = DashboardView.Minute;
+                    GetLogsForAMinute(selectedMinute);
 
-                break;
+                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm");
+
+                    break;
+                }
 
             case DashboardView.Minute:
-                bool hourWithMinutesParseResult = TimeSpan.TryParse(selectedDataPoint.X.ToString(), out TimeSpan selectedHourWithMinutes);
-                if (!hourWithMinutesParseResult) break;
+                if (_selectedMinute == selectedDataPoint.X.ToString())
+                {
+                    bool hourWithMinutesParseResult = TimeSpan.TryParse(selectedDataPoint.X.ToString(), out TimeSpan selectedHourWithMinutes);
+                    if (!hourWithMinutesParseResult) break;
 
-                CurrentView = DashboardView.Hour;
-                GetLogsForAnHour(TimeSpan.FromHours(selectedHourWithMinutes.Hours));
+                    CurrentView = DashboardView.Hour;
+                    GetLogsForAnHour(TimeSpan.FromHours(selectedHourWithMinutes.Hours));
+
+                    _selectedMinute = null;
+                } else
+                {
+                    bool minuteParseResult = TimeSpan.TryParse(selectedDataPoint.X.ToString(), out TimeSpan selectedMinute);
+                    if (!minuteParseResult) break;
+
+                    CurrentView = DashboardView.Minute;
+                    GetLogsForAMinute(selectedMinute);
+
+                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm");
+                }
 
                 break;
         }
@@ -179,9 +214,35 @@ public partial class DashboardViewModel : ObservableObject
                 return "HH:00";
             case DashboardView.Hour:
             case DashboardView.Minute:
-                return "HH:mm:ss";
+                return "HH:mm";
         }
 
         return "dd/MM/yyyy";
+    }
+
+    public bool LogsFilterFunc(LogEntry log) => LogsFilterFunc(log, SearchString);
+    private bool LogsFilterFunc(LogEntry log, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff").Contains(searchString, StringComparison.Ordinal)) return true;
+        if (log.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (log.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (log.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (log.CallerAssemblyName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (log.Exception?.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) return true;
+        if ($"{log.CallerServiceName} | {log.CallerMemberName}:{log.CallerLineNumber}".Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
+    public bool TracesFilterFunc(TraceEntry trace) => TracesFilterFunc(trace, SearchString);
+    private bool TracesFilterFunc(TraceEntry trace, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (trace.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff").Contains(searchString, StringComparison.Ordinal)) return true;
+        if (trace.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (trace.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (trace.RequestName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (trace.OperationType.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
     }
 }

@@ -87,13 +87,6 @@
         EmailTemplatesViewModel.PropertyChanged += OnEmailTemplateChanged;
         TargetDeviceViewModel.PropertyChanged += OnTargetDeviceChanged;
         ThemeViewModel.PropertyChanged += OnThemeChanged;
-        
-        Logger.LogInformation("This is a test");
-        Tracer.Trace("This is a test", true, 200, "test");
-        Logger.LogInformation("This is a test");
-        Tracer.Trace("This is a test", true, 200, "test");
-        Logger.LogInformation("This is a test");
-        Tracer.Trace("This is a test", true, 200, "test");
     }
 
     private void OnEmailTemplateChanged(object? sender, PropertyChangedEventArgs e)
