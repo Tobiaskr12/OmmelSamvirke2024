@@ -5,6 +5,7 @@ using MudBlazor.Services;
 using OmmelSamvirke.ServiceModules;
 using OmmelSamvirke.SupportModules.SecretsManager;
 using OmmelSamvirke2024.ServiceDefaults;
+using OmmelSamvirke2024.Web.BackgroundServices;
 using OmmelSamvirke2024.Web.Components;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData;
 using OmmelSamvirke2024.Web.Components.ViewModels;
@@ -87,6 +88,9 @@ public class Program
                 return await Task.FromResult(new ProviderCultureResult(primaryLanguage, primaryLanguage));
             }));
         });
+
+        // Register background services
+        builder.Services.AddHostedService<LogCleaningService>();
 
         WebApplication app = builder.Build();
 

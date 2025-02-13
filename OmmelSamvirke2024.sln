@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.TimerTriggers
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OmmelSamvirke.TimerTriggers.Tests", "Tests\OmmelSamvirke.TimerTriggers.Tests\OmmelSamvirke.TimerTriggers.Tests.csproj", "{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{4C57B2F6-B41F-4424-B77C-1228EB2880A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C57B2F6-B41F-4424-B77C-1228EB2880A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C57B2F6-B41F-4424-B77C-1228EB2880A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C57B2F6-B41F-4424-B77C-1228EB2880A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C57B2F6-B41F-4424-B77C-1228EB2880A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{05868F12-0D62-4B4C-A355-75C841F6B463} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
 		{FB0AB408-2207-410B-97B0-17C028A2B230} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
 		{56B4E8E7-52A9-491E-A5EB-4872A75A0FCF} = {18D14DFA-B713-4469-A915-CADB792BE8B3}
+		{4C57B2F6-B41F-4424-B77C-1228EB2880A5} = {1767E06F-F9A9-4AC1-B104-F2738897CEC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43FB53F9-CA0A-48E8-AAC8-360182CF1E7E}

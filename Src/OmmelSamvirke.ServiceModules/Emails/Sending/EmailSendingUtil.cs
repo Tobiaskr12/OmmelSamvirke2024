@@ -5,7 +5,7 @@ using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;

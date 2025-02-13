@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 using OmmelSamvirke.SupportModules.MediatorConfig;
 

@@ -26,4 +26,9 @@ public interface ILogRepository
         string? assemblyName = null,
         string? serviceName = null,
         string? memberName = null);
+
+    /// <summary>
+    /// Deletes all logs more than 7 days old
+    /// </summary>
+    bool DeleteOldLogs();
 }

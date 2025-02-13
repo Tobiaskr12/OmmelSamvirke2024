@@ -12,8 +12,8 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Models;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
-using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
@@ -132,6 +132,9 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
 
         foreach ((string key, string value) in generatedParameters)
         {
+            if (string.IsNullOrEmpty(key)) continue;
+            if (string.IsNullOrEmpty(value)) continue;
+
             var parameter = new Parameter
             {
                 Name = key,
@@ -154,7 +157,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
     
     private (string key, string value)[] GenerateTestParameters()
     {
-        string rawHtml = File.ReadAllText(Path.Combine(_fullTemplatesDirectory, _currentTemplate));
+        string rawHtml = ReadFileText(Path.Combine(_fullTemplatesDirectory, _currentTemplate));
         List<(string key, string value)> parameters = new();
 
         MatchCollection parameterMatches = ParametersRegex().Matches(rawHtml);
@@ -171,7 +174,14 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
 
         return parameters.ToArray();
     }
-    
+
+    private string ReadFileText(string filePath)
+    {
+        using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+
     private void UpdateContent(){
         (string Name, string Value)[] parametersArray = Parameters.Select(p => (p.Name, p.Value)).ToArray();
         _templateEngine.GenerateBodiesFromTemplate(_currentTemplate, parametersArray);

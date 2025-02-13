@@ -5,6 +5,7 @@
 @using System.ComponentModel
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
 @using OmmelSamvirke2024.Web.Components.ViewModels
+@using System.Globalization
 
 @implements IDisposable
 
@@ -25,7 +26,7 @@
         <ApexPointSeries 
             TItem="BucketedEntry"
             Items="TimelineViewModel.Timeline.Items"
-            XValue="@((BucketedEntry e) => e.BucketStart.ToLocalTime().ToString(TimelineViewModel.XAxisFormat))"
+            XValue="@((BucketedEntry e) => e.BucketStart.ToLocalTime().ToString(TimelineViewModel.XAxisFormat, CultureInfo.InvariantCulture))"
             YValue="@((BucketedEntry e) => e.Count)"
             OrderBy="@(e => e.X)"
             SeriesType="SeriesType.Bar"

@@ -9,7 +9,7 @@ using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 

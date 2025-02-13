@@ -4,10 +4,9 @@ using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
-using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 using MediatR;
-using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.Interfaces.Emails;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 

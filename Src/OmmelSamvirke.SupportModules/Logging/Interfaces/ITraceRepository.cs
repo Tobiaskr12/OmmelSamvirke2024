@@ -34,4 +34,9 @@ public interface ITraceRepository
         long? maxExecutionTimeMs = null,
         string? sessionId = null,
         string? operationId = null);
+
+    /// <summary>
+    /// Deletes all traces more than 7 days old
+    /// </summary>
+    bool DeleteOldTraces();
 }

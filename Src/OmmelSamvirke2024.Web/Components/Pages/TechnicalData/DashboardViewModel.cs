@@ -4,6 +4,7 @@ using MudBlazor;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.Logging.Models;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline.Models;
+using System.Globalization;
 
 namespace OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components;
 
@@ -139,7 +140,7 @@ public partial class DashboardViewModel : ObservableObject
                     CurrentView = DashboardView.Minute;
                     GetLogsForAMinute(selectedMinute);
 
-                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm");
+                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm", CultureInfo.InvariantCulture);
 
                     break;
                 }
@@ -162,7 +163,7 @@ public partial class DashboardViewModel : ObservableObject
                     CurrentView = DashboardView.Minute;
                     GetLogsForAMinute(selectedMinute);
 
-                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm");
+                    _selectedMinute = new DateTime().Add(selectedMinute).ToString("HH:mm", CultureInfo.InvariantCulture);
                 }
 
                 break;
@@ -224,7 +225,7 @@ public partial class DashboardViewModel : ObservableObject
     private bool LogsFilterFunc(LogEntry log, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff").Contains(searchString, StringComparison.Ordinal)) return true;
+        if (log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture).Contains(searchString, StringComparison.Ordinal)) return true;
         if (log.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (log.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (log.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
@@ -238,7 +239,7 @@ public partial class DashboardViewModel : ObservableObject
     private bool TracesFilterFunc(TraceEntry trace, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (trace.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff").Contains(searchString, StringComparison.Ordinal)) return true;
+        if (trace.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture).Contains(searchString, StringComparison.Ordinal)) return true;
         if (trace.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (trace.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (trace.RequestName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;

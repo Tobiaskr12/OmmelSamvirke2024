@@ -4,9 +4,8 @@ using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
-using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
-using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 

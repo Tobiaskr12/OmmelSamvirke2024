@@ -9,11 +9,15 @@ namespace OmmelSamvirke.SupportModules.Logging;
 public abstract class CsvBufferedWriter<T> : IDisposable
 {
     private const int MaxBufferSize = 10;
+    private const int MaxRetries = 5;
+    private const int RetryDelayMilliseconds = 100;
+
     private readonly TimeSpan _maxTimeBetweenFlush = TimeSpan.FromSeconds(5);
 
     private readonly ConcurrentQueue<T> _buffer = new();
     private DateTime _lastFlushTime = DateTime.UtcNow;
     private readonly object _flushLock = new();
+    private readonly object _fileLock = new object();
 
     private readonly Timer _timer;
     protected readonly string Directory;
@@ -59,9 +63,11 @@ public abstract class CsvBufferedWriter<T> : IDisposable
     /// </summary>
     private void FlushBuffer()
     {
-        var list = new List<T>();
+        // Dequeue all items in a thread-safe manner.
+        List<T> list;
         lock (_flushLock)
         {
+            list = new List<T>();
             while (_buffer.TryDequeue(out var entry))
             {
                 list.Add(entry);
@@ -72,21 +78,52 @@ public abstract class CsvBufferedWriter<T> : IDisposable
             return;
         }
         _lastFlushTime = DateTime.UtcNow;
-
         string fileName = GetFileName(_lastFlushTime);
-        bool fileExists = File.Exists(fileName);
 
-        using var stream = new FileStream(fileName, FileMode.Append, FileAccess.Write, FileShare.Read);
-        using var writer = new StreamWriter(stream);
-
-        if (!fileExists)
+        // Write to the file with a dedicated file lock and a retry loop.
+        lock (_fileLock)
         {
-            writer.WriteLine(GetHeaderLine());
-        }
+            int retryCount = 0;
+            bool success = false;
+            while (!success)
+            {
+                try
+                {
+                    using var stream = new FileStream(
+                        fileName,
+                        FileMode.OpenOrCreate,
+                        FileAccess.Write,
+                        FileShare.ReadWrite);
 
-        foreach (T entry in list)
-        {
-            writer.WriteLine(FormatEntry(entry));
+                    stream.Seek(0, SeekOrigin.End);
+                    using var writer = new StreamWriter(stream);
+
+                    // If the file was just created (i.e. its length is zero), write the header.
+                    if (stream.Length == 0)
+                    {
+                        writer.WriteLine(GetHeaderLine());
+                    }
+
+                    // Write each entry.
+                    foreach (T entry in list)
+                    {
+                        writer.WriteLine(FormatEntry(entry));
+                    }
+
+                    // Ensure everything is flushed.
+                    writer.Flush();
+                    success = true;
+                }
+                catch (IOException)
+                {
+                    retryCount++;
+                    if (retryCount > MaxRetries)
+                    {
+                        throw;
+                    }
+                    Thread.Sleep(RetryDelayMilliseconds);
+                }
+            }
         }
     }
 

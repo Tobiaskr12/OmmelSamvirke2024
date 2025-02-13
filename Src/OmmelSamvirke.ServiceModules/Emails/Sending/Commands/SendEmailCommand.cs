@@ -8,13 +8,11 @@ using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Errors;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
-
-public record SendEmailCommand(Email Email) : IRequest<Result<EmailSendingStatus>>;
 
 [UsedImplicitly]
 public class SendEmailCommandValidator : AbstractValidator<SendEmailCommand>

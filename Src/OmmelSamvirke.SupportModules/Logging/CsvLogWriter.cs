@@ -2,7 +2,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using MediatR;
+using OmmelSamvirke.DomainModules.Emails.Constants;
+using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.Logging.Models;
@@ -11,29 +14,51 @@ namespace OmmelSamvirke.SupportModules.Logging;
 
 public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
 {
-    public CsvLogWriter(ICorrelationContext correlationContext, ILoggingLocationInfo loggingLocationInfo)
-        : base(correlationContext, loggingLocationInfo) {}
+    private readonly IMediator _mediator;
+    private readonly Func<IEmailTemplateEngine> _emailTemplateEngineFactory;
+
+    public CsvLogWriter(
+        ICorrelationContext correlationContext, 
+        ILoggingLocationInfo loggingLocationInfo,
+        IMediator mediator,
+        Func<IEmailTemplateEngine> emailTemplateEngineFactory) : base(correlationContext, loggingLocationInfo)
+    {
+        _mediator = mediator;
+        _emailTemplateEngineFactory = emailTemplateEngineFactory;
+    }
 
     public void LogInformation(
         string message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0,
         [CallerMemberName] string memberName = ""
-    ) => EnqueueLog(LogLevel.Information, message, null, filePath, lineNumber, memberName);
+    ) {
+        string assemblyName = SanitizeAssemblyName(Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly");
+        EnqueueLog(LogLevel.Information, message, null, filePath, lineNumber, memberName, assemblyName);
+    } 
 
     public void LogWarning(
         string message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0,
         [CallerMemberName] string memberName = ""
-    ) => EnqueueLog(LogLevel.Warning, message, null, filePath, lineNumber, memberName);
+    )
+    {
+        string assemblyName = SanitizeAssemblyName(Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly");
+        EnqueueLog(LogLevel.Warning, message, null, filePath, lineNumber, memberName, assemblyName);
+    }
+        
 
     public void LogDebug(
         string message,
         [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0,
         [CallerMemberName] string memberName = ""
-    ) => EnqueueLog(LogLevel.Debug, message, null, filePath, lineNumber, memberName);
+    )
+    {
+        string assemblyName = SanitizeAssemblyName(Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly");
+        EnqueueLog(LogLevel.Debug, message, null, filePath, lineNumber, memberName, assemblyName);
+    }
 
     public void LogError(
         Exception? ex,
@@ -43,8 +68,9 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         [CallerMemberName] string memberName = ""
     )
     {
+        string assemblyName = SanitizeAssemblyName(Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly");
         string message = customMessage ?? ex?.Message ?? "N/A";
-        EnqueueLog(LogLevel.Error, message, ex, filePath, lineNumber, memberName);
+        EnqueueLog(LogLevel.Error, message, ex, filePath, lineNumber, memberName, assemblyName);
     }
 
     public void LogCritical(
@@ -55,9 +81,17 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         [CallerMemberName] string memberName = ""
     )
     {
+        string assemblyName = SanitizeAssemblyName(Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly");
         string message = customMessage ?? ex.Message;
-        EnqueueLog(LogLevel.Critical, message, ex, filePath, lineNumber, memberName);
-        // TODO: Send an email to the developer
+        EnqueueLog(LogLevel.Critical, message, ex, filePath, lineNumber, memberName, assemblyName);
+        
+        try
+        {
+            _mediator.Send(new SendEmailCommand(BuildCriticalErrorEmail(ex, customMessage)));
+        } catch (Exception ex2) 
+        {
+            LogError(ex2, "Could not send email when a critical error occurred");
+        }
     }
 
     private void EnqueueLog(
@@ -66,10 +100,10 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         Exception? ex,
         string filePath,
         int lineNumber,
-        string memberName
+        string memberName,
+        string assemblyName
     )
     {
-        string assemblyName = InferAssemblyName();
         string serviceName = InferServiceName(filePath);
 
         var entry = new LogEntry
@@ -88,10 +122,8 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
         AddEntry(entry);
     }
 
-    private static string InferAssemblyName()
+    private static string SanitizeAssemblyName(string assemblyName)
     {
-        string assemblyName = Assembly.GetCallingAssembly().GetName().Name ?? "UnknownAssembly";
-
         if (assemblyName.Contains('.'))
         {
             assemblyName = assemblyName.Split('.')[^1];
@@ -117,6 +149,36 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
     {
         string json = JsonSerializer.Serialize(exceptionInfo);
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+    }
+
+    private Email BuildCriticalErrorEmail(Exception ex, string? customMessage = null)
+    {
+        IEmailTemplateEngine emailTemplateEngine = _emailTemplateEngineFactory();
+
+        var generationResult = emailTemplateEngine.GenerateBodiesFromTemplate("CriticalErrorLog.html",
+        [
+            ("Timestamp", DateTime.UtcNow.ToString("HH:mm")),
+            ("CustomMessage", customMessage ?? "None"),
+            ("ExceptionType", ex.GetType().Name),
+            ("ExceptionMessage", ex.Message),
+            ("StackTrace", ex.StackTrace ?? "None")
+        ]);
+
+        if (generationResult.IsSuccess)
+        {
+            return new Email
+            {
+                Recipients = [new Recipient { EmailAddress = "tobiaskristensen12@gmail.com" }],
+                Subject = emailTemplateEngine.GetSubject(),
+                SenderEmailAddress = ValidSenderEmailAddresses.Auto,
+                Attachments = [],
+                PlainTextBody = emailTemplateEngine.GetPlainTextBody(),
+                HtmlBody = emailTemplateEngine.GetHtmlBody(),
+            };
+        } else
+        {
+            throw new Exception("Failed to generate the Critical Error email via the Email Template Engine");
+        }
     }
 
     private static string InferServiceName(string filePath) =>

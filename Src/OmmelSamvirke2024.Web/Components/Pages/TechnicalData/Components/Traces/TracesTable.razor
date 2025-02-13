@@ -2,6 +2,7 @@
 @using System.ComponentModel
 @using OmmelSamvirke2024.Web.Components.Localization
 @using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Localization
+@using System.Globalization
 
 @implements IDisposable
 
@@ -25,7 +26,7 @@ else
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@TechnicalDataLocalization.Timestamp">
-                @context.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff")
+                @context.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture)
             </MudTd>
             <MudTd DataLabel="@TechnicalDataLocalization.Operation">@context.OperationType</MudTd>
             <MudTd DataLabel="@TechnicalDataLocalization.Request">@context.RequestName</MudTd>

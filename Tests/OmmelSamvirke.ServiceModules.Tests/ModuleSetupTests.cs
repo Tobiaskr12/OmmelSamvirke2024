@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
+using OmmelSamvirke.Interfaces.Emails;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
 

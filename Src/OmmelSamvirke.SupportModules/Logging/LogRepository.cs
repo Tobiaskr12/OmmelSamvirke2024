@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using Microsoft.VisualBasic.FileIO;
 using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.Logging.Models;
@@ -29,34 +30,50 @@ public class LogRepository : ILogRepository
 
         foreach (string file in Directory.GetFiles(_logDirectory, "*-Logs.csv"))
         {
-            // Parse date from file name (expected format: ddMMyy).
+            // Parse date from file name (expected format: yyyy-MM-dd-Logs.csv).
             string fileName = Path.GetFileName(file);
             if (fileName.Length < 10) continue;
-            
+
             string datePart = fileName.Substring(0, 10).Replace("-", "");
             if (!DateTime.TryParseExact(
                 datePart,
                 "yyyyMMdd",
                 CultureInfo.InvariantCulture,
-                DateTimeStyles.None, 
+                DateTimeStyles.None,
                 out DateTime fileDate)
             ) continue;
-            
+
             if (fileDate < start.Date || fileDate > end.Date) continue;
 
-            foreach (string line in File.ReadLines(file).Skip(1)) // skip header
+            using var parser = new TextFieldParser(file)
             {
-                string[] parts = line.Split(',');
-                if (parts.Length < 10) continue;
-                
+                TextFieldType = FieldType.Delimited,
+                HasFieldsEnclosedInQuotes = true
+            };
+            parser.SetDelimiters(",");
+
+            // Skip the header line (if not empty):
+            if (!parser.EndOfData)
+            {
+                _ = parser.ReadLine();
+            }
+
+            while (!parser.EndOfData)
+            {
+                string[]? parts = parser.ReadFields();
+                if (parts == null || parts.Length < 10) continue;
+
                 LogEntry entry;
                 try
                 {
                     ExceptionInfo? logException = null;
-                    string exceptionJson = Encoding.UTF8.GetString(Convert.FromBase64String(parts[3]));
-                    if (exceptionJson != null) 
+                    if (!string.IsNullOrEmpty(parts[3]))
                     {
-                        logException = JsonSerializer.Deserialize<ExceptionInfo>(exceptionJson);
+                        string exceptionJson = Encoding.UTF8.GetString(Convert.FromBase64String(parts[3]));
+                        if (!string.IsNullOrEmpty(exceptionJson))
+                        {
+                            logException = JsonSerializer.Deserialize<ExceptionInfo>(exceptionJson);
+                        }
                     }
 
                     entry = new LogEntry
@@ -75,20 +92,57 @@ public class LogRepository : ILogRepository
                 }
                 catch
                 {
-                    // Skip malformed lines
+                    // Skip any malformed lines
                     continue;
                 }
-                
+
                 if (entry.Timestamp < start || entry.Timestamp > end) continue;
-                if (!string.IsNullOrEmpty(sessionId) && !entry.SessionId.Equals(sessionId, StringComparison.OrdinalIgnoreCase)) continue;
-                if (!string.IsNullOrEmpty(operationId) && !entry.OperationId.Equals(operationId, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.IsNullOrEmpty(sessionId)
+                    && !entry.SessionId.Equals(sessionId, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.IsNullOrEmpty(operationId)
+                    && !entry.OperationId.Equals(operationId, StringComparison.OrdinalIgnoreCase)) continue;
                 if (level.HasValue && entry.Level != level.Value) continue;
-                if (!string.IsNullOrEmpty(assemblyName) && !entry.CallerAssemblyName.Equals(assemblyName, StringComparison.OrdinalIgnoreCase)) continue;
-                if (!string.IsNullOrEmpty(serviceName) && !entry.CallerServiceName.Equals(serviceName, StringComparison.OrdinalIgnoreCase)) continue;
-                if (!string.IsNullOrEmpty(memberName) && !entry.CallerMemberName.Equals(memberName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.IsNullOrEmpty(assemblyName)
+                    && !entry.CallerAssemblyName.Equals(assemblyName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.IsNullOrEmpty(serviceName)
+                    && !entry.CallerServiceName.Equals(serviceName, StringComparison.OrdinalIgnoreCase)) continue;
+                if (!string.IsNullOrEmpty(memberName)
+                    && !entry.CallerMemberName.Equals(memberName, StringComparison.OrdinalIgnoreCase)) continue;
 
                 yield return entry;
             }
+        }
+    }
+
+    public bool DeleteOldLogs()
+    {
+        try
+        {
+            foreach (string file in Directory.GetFiles(_logDirectory, "*-Logs.csv"))
+            {
+                // Parse date from file name (expected format: ddMMyy).
+                string fileName = Path.GetFileName(file);
+                if (fileName.Length < 10) continue;
+
+                string datePart = fileName.Substring(0, 10).Replace("-", "");
+                if (!DateTime.TryParseExact(
+                    datePart,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime fileDate)
+                ) continue;
+
+                if (fileDate.AddDays(7) < DateTime.Now.Date)
+                {
+                    File.Delete(file);
+                }
+            }
+
+            return true;
+        } catch
+        {
+            return false;
         }
     }
 }

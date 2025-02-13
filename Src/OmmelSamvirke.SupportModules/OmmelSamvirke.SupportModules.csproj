@@ -28,4 +28,8 @@
       <None Remove="SecretsManager\KeyVaultUrls.secrets.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Interfaces\Interfaces.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using OmmelSamvirke.SupportModules.SecretsManager;
 
@@ -19,6 +20,9 @@ public static class ModuleSetup
         services.AddScoped<ICorrelationContext, CorrelationContext>();
         services.AddScoped<ILoggingHandler, CsvLogWriter>();
         services.AddScoped<ITraceHandler, CsvTraceWriter>();
+
+        // Inject IEmailTemplateEngine as a factory to break circular dependency
+        services.AddTransient<Func<IEmailTemplateEngine>>(sp => () => sp.GetRequiredService<IEmailTemplateEngine>());
         
         return services;
     }
