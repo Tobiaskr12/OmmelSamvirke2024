@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
+using Contracts.DataAccess.Base;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Common;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.DataAccess.Base;
 

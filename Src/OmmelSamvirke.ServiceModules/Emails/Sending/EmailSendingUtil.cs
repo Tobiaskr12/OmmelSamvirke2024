@@ -1,14 +1,14 @@
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails;
+using Contracts.DataAccess.Emails.Enums;
+using Contracts.Infrastructure.Emails;
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Enums;
-using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 using OmmelSamvirke.ServiceModules.Errors;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending;
 

@@ -1,3 +1,5 @@
+using Contracts.Infrastructure.Emails;
+using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;

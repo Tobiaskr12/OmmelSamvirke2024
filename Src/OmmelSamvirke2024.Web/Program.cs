@@ -2,14 +2,14 @@ using ApexCharts;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using MudBlazor.Services;
-using OmmelSamvirke.ServiceModules;
 using OmmelSamvirke.SupportModules.SecretsManager;
-using OmmelSamvirke2024.ServiceDefaults;
+using OmmelSamvirke.Bootstrapper;
 using OmmelSamvirke2024.Web.BackgroundServices;
 using OmmelSamvirke2024.Web.Components;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData;
 using OmmelSamvirke2024.Web.Components.ViewModels;
 using System.Globalization;
+using Contracts.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke2024.Web;
 
@@ -18,9 +18,6 @@ public class Program
     public static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        // Add service defaults & Aspire components.
-        builder.AddServiceDefaults();
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
@@ -111,8 +108,6 @@ public class Program
 
         app.MapRazorComponents<App>()
            .AddInteractiveServerRenderMode();
-
-        app.MapDefaultEndpoints();
 
         app.Run();
     }

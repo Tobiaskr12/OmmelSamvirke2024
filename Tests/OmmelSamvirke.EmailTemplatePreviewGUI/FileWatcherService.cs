@@ -1,5 +1,5 @@
+using Contracts.SupportModules.Logging;
 using Microsoft.AspNetCore.SignalR;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI;
 

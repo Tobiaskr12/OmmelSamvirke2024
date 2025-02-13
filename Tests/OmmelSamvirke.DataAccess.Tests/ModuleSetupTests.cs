@@ -1,10 +1,12 @@
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails;
+using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OmmelSamvirke.SupportModules.SecretsManager;
 using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.DataAccess.Tests;
 

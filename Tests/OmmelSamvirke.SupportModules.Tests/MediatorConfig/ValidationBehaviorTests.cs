@@ -2,7 +2,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using NSubstitute;
-using OmmelSamvirke.SupportModules.MediatorConfig.PipelineBehaviors;
+using OmmelSamvirke.ServiceModules.MediatorConfig.PipelineBehaviors;
 
 namespace OmmelSamvirke.SupportModules.Tests.MediatorConfig;
 

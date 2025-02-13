@@ -18,16 +18,13 @@
     <ItemGroup>
       <PackageReference Include="FluentResults" Version="3.16.0" />
       <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
+      <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
       <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Interfaces\Interfaces.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke.DTOs\OmmelSamvirke.DTOs.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
+      <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
     </ItemGroup>
 
     <!-- Always copy all email templates and partials to the output directory -->

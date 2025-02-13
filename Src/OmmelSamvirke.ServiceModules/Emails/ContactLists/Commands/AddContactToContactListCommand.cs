@@ -1,8 +1,8 @@
+using Contracts.DataAccess.Base;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
 

@@ -1,12 +1,12 @@
 using FluentResults;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Errors;
 using MediatR;
-using OmmelSamvirke.Interfaces.Emails;
+using Contracts.DataAccess.Base;
+using Contracts.ServiceModules.Emails;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;
 

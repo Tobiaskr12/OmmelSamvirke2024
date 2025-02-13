@@ -1,9 +1,11 @@
+using Contracts.SupportModules.SecretsManager;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.SupportModules.SecretsManager;
+using OmmelSamvirke.Bootstrapper;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
 

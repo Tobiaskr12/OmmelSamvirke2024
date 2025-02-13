@@ -1,3 +1,5 @@
+using Contracts.ServiceModules.Emails;
+using Contracts.ServiceModules.Emails.DTOs;
 using FluentResults;
 using MailKit;
 using MailKit.Net.Imap;
@@ -6,8 +8,6 @@ using MailKit.Security;
 using MimeKit;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.DTOs.Emails;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending.Commands.E2E;

@@ -1,8 +1,9 @@
 using MudBlazor.Services;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Components;
 using OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
-using OmmelSamvirke.ServiceModules;
+using OmmelSamvirke.Bootstrapper;
 using OmmelSamvirke.SupportModules.SecretsManager;
+using Contracts.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI;
 

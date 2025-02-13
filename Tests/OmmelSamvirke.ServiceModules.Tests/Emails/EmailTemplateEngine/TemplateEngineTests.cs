@@ -1,8 +1,7 @@
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
 using FluentResults;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
-
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.EmailTemplateEngine;
 
 [TestFixture, Category("UnitTests")]

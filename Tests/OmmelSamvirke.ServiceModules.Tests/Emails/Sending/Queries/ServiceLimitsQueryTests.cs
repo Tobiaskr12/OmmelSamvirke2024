@@ -1,5 +1,5 @@
+using Contracts.DataAccess.Emails.Enums;
 using FluentResults;
-using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.ServiceModules.Emails.Sending.Queries;
 using OmmelSamvirke.ServiceModules.Errors;

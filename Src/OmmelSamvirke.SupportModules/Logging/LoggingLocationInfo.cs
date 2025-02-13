@@ -1,6 +1,6 @@
 using System.Reflection;
+using Contracts.SupportModules.SecretsManager;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 

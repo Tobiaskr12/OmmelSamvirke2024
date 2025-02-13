@@ -1,12 +1,12 @@
 using System.Diagnostics;
+using Contracts.DataAccess.Emails.Enums;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.DataAccess.Tests.Emails;

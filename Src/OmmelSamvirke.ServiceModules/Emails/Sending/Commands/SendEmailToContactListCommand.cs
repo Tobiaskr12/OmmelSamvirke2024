@@ -1,17 +1,17 @@
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails;
+using Contracts.Infrastructure.Emails;
+using Contracts.ServiceModules.Emails;
+using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Configuration;
-using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.DTOs.Emails;
-using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Errors;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 

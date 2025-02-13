@@ -1,12 +1,12 @@
 using FluentResults;
 using MediatR;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Errors;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using Exception = System.Exception;
+using Contracts.SupportModules.Logging;
+using Contracts.ServiceModules.Emails;
+using Contracts.DataAccess.Base;
 
 namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 

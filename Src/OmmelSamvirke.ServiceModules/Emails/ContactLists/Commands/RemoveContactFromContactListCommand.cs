@@ -1,12 +1,12 @@
+using Contracts.DataAccess.Base;
+using Contracts.ServiceModules.Emails;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.DomainModules.Emails.Validators;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;

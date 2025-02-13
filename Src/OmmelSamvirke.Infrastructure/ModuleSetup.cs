@@ -1,3 +1,4 @@
+using Contracts.Infrastructure.Emails;
 using Microsoft.Extensions.DependencyInjection;
 using OmmelSamvirke.Infrastructure.Emails;
 

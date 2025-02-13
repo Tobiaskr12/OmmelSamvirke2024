@@ -1,4 +1,4 @@
-﻿using OmmelSamvirke.SupportModules.Logging.Interfaces;
+﻿using Contracts.SupportModules.Logging;
 using System.Diagnostics;
 
 namespace OmmelSamvirke2024.Web.BackgroundServices;

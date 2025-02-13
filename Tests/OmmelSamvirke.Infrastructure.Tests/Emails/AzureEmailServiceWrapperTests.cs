@@ -2,13 +2,13 @@ using System.Net.Mime;
 using System.Reflection;
 using Azure;
 using Azure.Communication.Email;
+using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.Infrastructure.Tests.Emails;
 

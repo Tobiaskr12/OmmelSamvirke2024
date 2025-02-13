@@ -1,8 +1,8 @@
 ﻿using ApexCharts;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Models;
 using MudBlazor;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.Logging.Models;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline.Models;
 using System.Globalization;
 

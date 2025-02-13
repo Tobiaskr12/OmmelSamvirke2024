@@ -1,6 +1,6 @@
+using Contracts.DataAccess.Base;
 using FluentResults;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Queries;
 

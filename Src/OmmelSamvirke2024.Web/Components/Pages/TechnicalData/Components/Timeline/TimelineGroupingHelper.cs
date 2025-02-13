@@ -1,4 +1,4 @@
-﻿using OmmelSamvirke.SupportModules.Logging.Models;
+﻿using Contracts.SupportModules.Logging.Models;
 using OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline.Models;
 
 namespace OmmelSamvirke2024.Web.Components.Pages.TechnicalData.Components.Timeline;

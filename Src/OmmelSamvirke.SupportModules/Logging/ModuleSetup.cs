@@ -1,8 +1,8 @@
-using System.Reflection;
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.SecretsManager;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 

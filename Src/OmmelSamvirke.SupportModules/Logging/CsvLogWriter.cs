@@ -2,13 +2,14 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Enums;
+using Contracts.SupportModules.Logging.Models;
 using MediatR;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.Interfaces.Emails;
-using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.Logging.Models;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 

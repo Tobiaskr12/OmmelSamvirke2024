@@ -1,7 +1,7 @@
+using Contracts.DataAccess.Base;
 using FluentResults;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
 using OmmelSamvirke.ServiceModules.Errors;

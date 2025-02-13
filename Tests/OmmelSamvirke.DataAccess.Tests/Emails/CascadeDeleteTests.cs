@@ -1,12 +1,12 @@
 using System.Data.Common;
 using System.Net.Mime;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.DataAccess.Tests.Emails;

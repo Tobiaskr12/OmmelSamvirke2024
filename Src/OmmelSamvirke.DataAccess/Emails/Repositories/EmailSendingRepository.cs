@@ -1,12 +1,12 @@
+using Contracts.DataAccess.Emails;
+using Contracts.DataAccess.Emails.Enums;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Enums;
-using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.DataAccess.Emails.Repositories;
 

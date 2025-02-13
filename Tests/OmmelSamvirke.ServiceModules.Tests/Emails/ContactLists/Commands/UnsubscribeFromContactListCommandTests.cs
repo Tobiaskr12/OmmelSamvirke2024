@@ -1,12 +1,13 @@
+using Contracts.DataAccess.Base;
+using Contracts.ServiceModules.Emails;
+using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.ServiceModules.Emails.Enums;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using MediatR;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.DTOs.Emails;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.ContactLists.Commands;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.ContactLists.Commands;

@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
+using Contracts.DataAccess.Base;
+using Contracts.SupportModules.Logging;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.TimerTriggers.Tests;

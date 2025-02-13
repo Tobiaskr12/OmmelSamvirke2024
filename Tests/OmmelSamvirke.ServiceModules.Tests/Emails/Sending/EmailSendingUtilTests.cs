@@ -1,10 +1,10 @@
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Errors;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using FluentResults;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.ServiceModules.Emails.Sending;
+using Contracts.DataAccess.Base;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Sending;
 

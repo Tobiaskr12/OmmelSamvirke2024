@@ -1,7 +1,8 @@
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Interfaces;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
 
 namespace OmmelSamvirke.DataAccess;

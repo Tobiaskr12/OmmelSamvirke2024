@@ -1,10 +1,10 @@
+using Contracts.DataAccess.Base;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 using OmmelSamvirke.ServiceModules.Errors;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 using TestDatabaseFixtures;
 
 namespace OmmelSamvirke.ServiceModules.Tests.Emails.Analytics.Queries;

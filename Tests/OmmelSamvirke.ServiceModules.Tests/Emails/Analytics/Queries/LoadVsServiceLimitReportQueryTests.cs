@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails.Enums;
 using FluentResults;
 using NSubstitute;
-using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 using OmmelSamvirke.ServiceModules.Errors;

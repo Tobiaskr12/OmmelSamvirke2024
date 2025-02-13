@@ -1,10 +1,11 @@
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Enums;
+using Contracts.SupportModules.Logging.Models;
 using Microsoft.VisualBasic.FileIO;
-using OmmelSamvirke.SupportModules.Logging.Enums;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.Logging.Models;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 

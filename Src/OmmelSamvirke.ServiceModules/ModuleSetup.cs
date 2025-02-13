@@ -1,8 +1,8 @@
+using Contracts.ServiceModules.Emails;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
-using OmmelSamvirke.SupportModules.MediatorConfig;
+using OmmelSamvirke.ServiceModules.MediatorConfig.PipelineBehaviors;
 
 namespace OmmelSamvirke.ServiceModules;
 
@@ -13,8 +13,13 @@ public static class ModuleSetup
         serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorMessages");
         serviceCollection.AddValidatorsFromAssembly(typeof(ModuleSetup).Assembly);
         serviceCollection.AddScoped<IEmailTemplateEngine, TemplateEngine>();
-        
-        MediatrConfigSetup.Setup(serviceCollection, typeof(ModuleSetup).Assembly);
+
+        serviceCollection.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssembly(typeof(ModuleSetup).Assembly);
+            // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
 
         return serviceCollection;
     }

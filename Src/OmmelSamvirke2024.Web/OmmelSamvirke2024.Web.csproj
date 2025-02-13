@@ -7,15 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\OmmelSamvirke2024.ServiceDefaults\OmmelSamvirke2024.ServiceDefaults.csproj" />
-        <ProjectReference Include="..\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj" />
-        <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Blazor-ApexCharts" Version="5.1.0" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
       <PackageReference Include="MudBlazor" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Bootstrapper\Bootstrapper.csproj" />
+      <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>

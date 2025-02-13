@@ -1,4 +1,5 @@
 ﻿using Azure.Identity;
+using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.Configuration;
 
 namespace OmmelSamvirke.SupportModules.SecretsManager;

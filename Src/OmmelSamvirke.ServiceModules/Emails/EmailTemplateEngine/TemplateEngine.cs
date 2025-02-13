@@ -1,8 +1,8 @@
 using System.Text;
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using HtmlAgilityPack;
-using OmmelSamvirke.Interfaces.Emails;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
 

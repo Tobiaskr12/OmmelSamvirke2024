@@ -4,17 +4,17 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Contracts.ServiceModules.Emails;
+using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.DTOs.Emails;
 using OmmelSamvirke.EmailTemplatePreviewGUI.Models;
-using OmmelSamvirke.Interfaces.Emails;
 using OmmelSamvirke.ServiceModules.Emails.EmailTemplateEngine;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.EmailTemplatePreviewGUI.ViewModels;
 

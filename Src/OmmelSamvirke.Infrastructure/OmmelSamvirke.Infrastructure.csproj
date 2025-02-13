@@ -20,12 +20,11 @@
     <ItemGroup>
       <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
       <PackageReference Include="FluentResults" Version="3.16.0" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OmmelSamvirke.DTOs\OmmelSamvirke.DTOs.csproj" />
-      <ProjectReference Include="..\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
+      <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
     </ItemGroup>
 
 </Project>

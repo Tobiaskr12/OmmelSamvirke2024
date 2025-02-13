@@ -1,7 +1,7 @@
+using Contracts.DataAccess.Base;
+using Contracts.DataAccess.Emails.Enums;
 using FluentResults;
 using MediatR;
-using OmmelSamvirke.DataAccess.Base;
-using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
 

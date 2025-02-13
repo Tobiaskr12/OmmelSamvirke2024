@@ -1,11 +1,11 @@
+using Contracts.DataAccess.Base;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.ServiceModules.Errors;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Analytics.Queries;
 

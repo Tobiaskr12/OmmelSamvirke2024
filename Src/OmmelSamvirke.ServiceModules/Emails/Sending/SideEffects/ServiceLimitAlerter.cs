@@ -1,11 +1,11 @@
 using System.ComponentModel;
+using Contracts.DataAccess.Emails.Enums;
+using Contracts.Infrastructure.Emails;
+using Contracts.ServiceModules.Emails;
+using Contracts.SupportModules.Logging;
 using FluentResults;
-using OmmelSamvirke.DataAccess.Emails.Enums;
 using OmmelSamvirke.DomainModules.Emails.Constants;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.Infrastructure.Emails;
-using OmmelSamvirke.Interfaces.Emails;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.SideEffects;
 

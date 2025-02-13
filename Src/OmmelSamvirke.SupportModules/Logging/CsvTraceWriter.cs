@@ -1,5 +1,6 @@
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Models;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.Logging.Models;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 

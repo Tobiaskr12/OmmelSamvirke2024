@@ -1,8 +1,8 @@
+using Contracts.DataAccess.Base;
+using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Azure.Functions.Worker;
-using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.TimerTriggers;
 
