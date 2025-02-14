@@ -49,7 +49,7 @@ public class DailyEmailAnalyticsQueryHandler : IRequestHandler<DailyEmailAnalyti
         if (queryResult.Value.Count > 1)
         {
             _logger.LogWarning(
-                $"When querying for daily email analytics in {nameof(DailyEmailAnalyticsQueryHandler)}, {queryResult.Value.Count} analytics entities were found. Date: {request.Date:dd-MM-yy}"
+                $"When querying for daily email analytics in {nameof(DailyEmailAnalyticsQueryHandler)}, {queryResult.Value.Count} analytics entities were found."
             );
         }
 

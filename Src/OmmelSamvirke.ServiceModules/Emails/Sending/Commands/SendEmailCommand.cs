@@ -10,7 +10,6 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using OmmelSamvirke.DomainModules.Emails.Entities;
-using OmmelSamvirke.ServiceModules.Errors;
 
 namespace OmmelSamvirke.ServiceModules.Emails.Sending.Commands;
 
@@ -57,39 +56,30 @@ public class SendEmailCommandHandler : IRequestHandler<SendEmailCommand, Result<
     
     public async Task<Result<EmailSendingStatus>> Handle(SendEmailCommand request, CancellationToken cancellationToken)
     {
-        try
+        // If in test or dev environment, only allow sending emails to whitelisted addresses
+        EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.Email.Recipients);
+            
+        // Check if email can be sent or if service limits have been exhausted
+        Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
+            1,
+            _emailSendingRepository,
+            _logger,
+            _externalEmailServiceWrapper,
+            _emailTemplateEngine,
+            cancellationToken);
+            
+        if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;
+            
+        // Add email to database
+        await EmailSendingUtil.FetchAndReplaceExistingRecipients(request.Email, _genericRecipientRepository, cancellationToken);
+        Result<Email> addResult = await _genericEmailRepository.AddAsync(request.Email, cancellationToken);
+        if (addResult.IsFailed)
         {
-            // If in test or dev environment, only allow sending emails to whitelisted addresses
-            EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.Email.Recipients);
-            
-            // Check if email can be sent or if service limits have been exhausted
-            Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
-                1,
-                _emailSendingRepository,
-                _logger,
-                _externalEmailServiceWrapper,
-                _emailTemplateEngine,
-                cancellationToken);
-            
-            if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;
-            
-            // Add email to database
-            await EmailSendingUtil.FetchAndReplaceExistingRecipients(request.Email, _genericRecipientRepository, cancellationToken);
-            Result<Email> addResult = await _genericEmailRepository.AddAsync(request.Email, cancellationToken);
-            if (addResult.IsFailed)
-            {
-                Result failedResult = Result.Fail(addResult.Errors);
-                return failedResult;
-            }
+            Result failedResult = Result.Fail(addResult.Errors);
+            return failedResult;
+        }
 
-            // Send email
-            return await _externalEmailServiceWrapper.SendAsync(request.Email, cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            var errorCode = Guid.NewGuid();
-            _logger.LogError(ex);
-            return Result.Fail(ErrorMessages.EmailSending_Exception + errorCode);
-        }
+        // Send email
+        return await _externalEmailServiceWrapper.SendAsync(request.Email, cancellationToken: cancellationToken);
     }
 }

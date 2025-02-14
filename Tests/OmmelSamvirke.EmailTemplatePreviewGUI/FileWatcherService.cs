@@ -5,15 +5,13 @@ namespace OmmelSamvirke.EmailTemplatePreviewGUI;
 
 public class FileWatcherService : IHostedService, IDisposable
 {
-    private readonly ILoggingHandler _logger;
     private readonly IHubContext<FileChangeHub> _hubContext;
     private FileSystemWatcher? _watcher;
     private string? _currentFilePath;
     private readonly object _lock = new();
 
-    public FileWatcherService(ILoggingHandler logger, IHubContext<FileChangeHub> hubContext)
+    public FileWatcherService(IHubContext<FileChangeHub> hubContext)
     {
-        _logger = logger;
         _hubContext = hubContext;
     }
 
@@ -21,7 +19,7 @@ public class FileWatcherService : IHostedService, IDisposable
     {
         lock (_lock)
         {
-            _logger.LogInformation("FileWatcherService started.");
+            Console.WriteLine("FileWatcherService started.");
         }
 
         return Task.CompletedTask;
@@ -37,7 +35,7 @@ public class FileWatcherService : IHostedService, IDisposable
         {
             if (_currentFilePath == filePath)
             {
-                _logger.LogInformation($"Already watching {filePath}");
+                Console.WriteLine($"Already watching {filePath}");
                 return;
             }
 
@@ -47,7 +45,7 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = false;
                 _watcher.Dispose();
                 _watcher = null;
-                _logger.LogInformation($"Stopped watching {_currentFilePath}");
+                Console.WriteLine($"Stopped watching {_currentFilePath}");
             }
 
             // Set up new watcher
@@ -68,14 +66,14 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = true;
 
                 _currentFilePath = filePath;
-                _logger.LogInformation($"Started watching {filePath}");
+                Console.WriteLine($"Started watching {filePath}");
 
                 // Notify clients about the new file being watched
                 _hubContext.Clients.All.SendAsync("FileSelected", _currentFilePath);
             }
             else
             {
-                _logger.LogWarning($"File {filePath} does not exist.");
+                Console.WriteLine($"File {filePath} does not exist.");
                 _hubContext.Clients.All.SendAsync("FileSelectionFailed", $"File {filePath} does not exist.");
             }
         }
@@ -83,25 +81,25 @@ public class FileWatcherService : IHostedService, IDisposable
 
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
-        _logger.LogInformation($"File {e.FullPath} has been modified.");
+        Console.WriteLine($"File {e.FullPath} has been modified.");
         NotifyClients($"{e.FullPath}");
     }
 
     private void OnRenamed(object sender, RenamedEventArgs e)
     {
-        _logger.LogInformation($"File renamed from {e.OldFullPath} to {e.FullPath}.");
+        Console.WriteLine($"File renamed from {e.OldFullPath} to {e.FullPath}.");
         NotifyClients($"File renamed from {e.OldFullPath} to {e.FullPath}.");
     }
 
     private void OnDeleted(object sender, FileSystemEventArgs e)
     {
-        _logger.LogInformation($"File {e.FullPath} has been deleted.");
+        Console.WriteLine($"File {e.FullPath} has been deleted.");
         NotifyClients($"File {e.FullPath} has been deleted.");
     }
 
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
-        _logger.LogInformation($"File {e.FullPath} has been created.");
+        Console.WriteLine($"File {e.FullPath} has been created.");
         NotifyClients($"File {e.FullPath} has been created.");
     }
 
@@ -119,11 +117,11 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = false;
                 _watcher.Dispose();
                 _watcher = null;
-                _logger.LogInformation($"Stopped watching {_currentFilePath}");
+                Console.WriteLine($"Stopped watching {_currentFilePath}");
             }
         }
 
-        _logger.LogInformation("FileWatcherService stopped.");
+        Console.WriteLine("FileWatcherService stopped.");
         return Task.CompletedTask;
     }
 

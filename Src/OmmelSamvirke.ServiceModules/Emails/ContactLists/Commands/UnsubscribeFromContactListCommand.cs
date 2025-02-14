@@ -52,7 +52,7 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
             if (contactListQueryResult.Value.Count > 1)
             {
                 _logger.LogWarning(
-                    "Multiple contact lists with the same unsubscribe token were found in {nameof(UnsubscribeFromContactListCommand)}. Total count: {contactListQueryResult.Value.Count}"
+                    $"Multiple contact lists with the same unsubscribe token were found in {nameof(UnsubscribeFromContactListCommand)}. Total count: {contactListQueryResult.Value.Count}"
                 );
             }
 
