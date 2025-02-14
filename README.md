@@ -1,5 +1,5 @@
 # Ommel Samvirke - Cooperating local associations
-OmmelSamvirke is a group of local associations in the town Ommel on the Danish island of Ærø. This repository contains the code for the website used by Ommel Samvirke ([ommelsamvirke.com](https://ommelsamvirke.com)).
+OmmelSamvirke is a group of local associations in the town Ommel on the Danish island of Ærø. This repository contains the code for the website used by Ommel Samvirke ([ommelsamvirke.com](https://www.ommelsamvirke.com)).
 
 ## Contents
 - [Introduction](#introduction)
