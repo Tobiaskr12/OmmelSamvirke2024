@@ -27,6 +27,7 @@ public class Program
         ExecutionEnvironment executionEnvironment = builder.Environment.IsDevelopment()
             ? ExecutionEnvironment.Development
             : ExecutionEnvironment.Production;
+
         IConfigurationRoot configuration = 
             builder.Configuration
                    .AddKeyVaultSecrets(executionEnvironment)
