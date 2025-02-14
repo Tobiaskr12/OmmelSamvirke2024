@@ -1,8 +1,10 @@
 using Contracts.ServiceModules.Emails;
 using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Util;
 using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.DependencyInjection;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
+using OmmelSamvirke.SupportModules.Logging.Util;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 
@@ -18,6 +20,7 @@ public static class ModuleSetup
         services.AddSingleton<ITraceRepository, TraceRepository>();
         
         services.AddScoped<ICorrelationContext, CorrelationContext>();
+        services.AddScoped<IShortIdGenerator, ShortIdGenerator>();
         services.AddScoped<ILoggingHandler, CsvLogWriter>();
         services.AddScoped<ITraceHandler, CsvTraceWriter>();
 

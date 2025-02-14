@@ -6,7 +6,7 @@ using Contracts.ServiceModules.Emails.DTOs;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
-using Moq;
+using NSubstitute;
 using OmmelSamvirke.DomainModules.Emails.Entities;
 using OmmelSamvirke.Infrastructure.Emails;
 
@@ -15,44 +15,47 @@ namespace OmmelSamvirke.Infrastructure.Tests.Emails;
 [TestFixture, Category("UnitTests")]
 public class AzureEmailServiceWrapperTests
 {
-    private Mock<IConfiguration> _configurationMock;
-    private Mock<ILoggingHandler> _loggerMock;
-    private Mock<EmailClient>? _emailClientMock;
+    private IConfiguration _configuration;
+    private ILoggingHandler _logger;
+    private EmailClient _emailClient;
 
     private const string ValidConnectionString = "Endpoint=https://example.com/;AccessKey=examplekey";
 
     [SetUp]
     public void SetUp()
     {
-        _loggerMock = new Mock<ILoggingHandler>();
-        _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
-        
-        var acsConnectionStringSectionMock = new Mock<IConfigurationSection>();
-        acsConnectionStringSectionMock.Setup(s => s.Value).Returns(ValidConnectionString);
-        
-        _configurationMock = new Mock<IConfiguration>();
-        _configurationMock
-            .Setup(c => c.GetSection("AcsConnectionString"))
-            .Returns(acsConnectionStringSectionMock.Object);
+        _logger = Substitute.For<ILoggingHandler>();
+
+        // Substitute for EmailClient. (Ensure that the members you want to intercept are virtual.)
+        _emailClient = Substitute.For<EmailClient>(ValidConnectionString);
+
+        var acsConnectionStringSection = Substitute.For<IConfigurationSection>();
+        acsConnectionStringSection.Value.Returns(ValidConnectionString);
+
+        _configuration = Substitute.For<IConfiguration>();
+        _configuration.GetSection("AcsConnectionString").Returns(acsConnectionStringSection);
     }
 
     [Test]
     public async Task SendAsync_EmailClientThrowsException_ReturnsFailureResult()
     {
+        // Arrange
         Email email = CreateValidEmail();
 
-        // Mock EmailClient.SendAsync to throw an exception
-        _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
-        _emailClientMock.Setup(client => client.SendAsync(
-            It.IsAny<WaitUntil>(),
-            It.IsAny<EmailMessage>(),
-            It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("SendAsync failed"));
-        
-        var serviceWrapper = new AzureEmailServiceWrapper(_configurationMock.Object, _loggerMock.Object);
-        InjectEmailClient(serviceWrapper, _emailClientMock.Object);
+        // Simulate SendAsync throwing an exception.
+        _emailClient.SendAsync(
+            Arg.Any<WaitUntil>(),
+            Arg.Any<EmailMessage>(),
+            Arg.Any<CancellationToken>())
+            .Returns<Task<EmailSendOperation>>(x => Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")));
+
+        var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
+        InjectEmailClient(serviceWrapper, _emailClient);
+
+        // Act
         Result<EmailSendingStatus> result = await serviceWrapper.SendAsync(email);
-        
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsFailed);
@@ -63,29 +66,32 @@ public class AzureEmailServiceWrapperTests
     [Test]
     public async Task ConvertEmailToAzureEmailMessage_InvalidAttachment_ReturnsFail()
     {
+        // Arrange
         Email email = CreateValidEmail();
         email.Attachments.Add(new Attachment
         {
             Name = "test.txt",
             ContentType = new ContentType { Name = "text/plain" },
             ContentPath = new Uri("https://www.test.example.com"),
-            BinaryContent = null // Null content is not valid
+            BinaryContent = null // Invalid attachment: null content.
         });
-        
-        _emailClientMock = new Mock<EmailClient>(ValidConnectionString);
-        var emailSendOperationMock = new Mock<EmailSendOperation>();
-        emailSendOperationMock.SetupGet(op => op.HasValue).Returns(false);
 
-        _emailClientMock.Setup(client => client.SendAsync(
-                            It.IsAny<WaitUntil>(),
-                            It.IsAny<EmailMessage>(),
-                            It.IsAny<CancellationToken>()))
-                        .ReturnsAsync(emailSendOperationMock.Object);
+        var emailSendOperation = Substitute.For<EmailSendOperation>();
+        emailSendOperation.HasValue.Returns(false);
 
-        var serviceWrapper = new AzureEmailServiceWrapper(_configurationMock.Object, _loggerMock.Object);
-        InjectEmailClient(serviceWrapper, _emailClientMock.Object);
+        _emailClient.SendAsync(
+            Arg.Any<WaitUntil>(),
+            Arg.Any<EmailMessage>(),
+            Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(emailSendOperation));
+
+        var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
+        InjectEmailClient(serviceWrapper, _emailClient);
+
+        // Act
         Result<EmailSendingStatus> result = await serviceWrapper.SendAsync(email);
-        
+
+        // Assert
         Assert.That(result.IsFailed);
     }
 
@@ -94,11 +100,14 @@ public class AzureEmailServiceWrapperTests
         return new Email
         {
             SenderEmailAddress = "sender@example.com",
-            Recipients = [new Recipient() { EmailAddress = "recipient@example.com" }],
+            Recipients = new List<Recipient>
+            {
+                new Recipient { EmailAddress = "recipient@example.com" }
+            },
             Subject = "Test Email",
             HtmlBody = "<h1>This is a test email</h1>",
             PlainTextBody = "<h1>This is a test email</h1>",
-            Attachments = []
+            Attachments = new List<Attachment>()
         };
     }
 

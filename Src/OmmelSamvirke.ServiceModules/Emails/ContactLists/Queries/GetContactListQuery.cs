@@ -19,18 +19,10 @@ public class GetContactListQueryHandler : IRequestHandler<GetContactListQuery, R
     
     public async Task<Result<ContactList>> Handle(GetContactListQuery request, CancellationToken cancellationToken)
     {
-        try
-        {
-            Result<ContactList> result = await _contactListRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        Result<ContactList> result = await _contactListRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
             
-            return result.IsSuccess ?
-                Result.Ok(result.Value) : 
-                Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
-        }
-        catch (Exception)
-        {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
-        }
+        return result.IsSuccess ?
+            Result.Ok(result.Value) : 
+            Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
     }
 }

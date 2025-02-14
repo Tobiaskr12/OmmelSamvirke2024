@@ -80,74 +80,66 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
     
     public async Task<Result> Handle(SendEmailToContactListCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            // Remove fake email from constructor
-            request.Email.Recipients.Clear();
+        // Remove fake email from constructor
+        request.Email.Recipients.Clear();
             
-            // If in test or dev environment, only allow sending emails to whitelisted addresses
-            EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.ContactList.Contacts);
+        // If in test or dev environment, only allow sending emails to whitelisted addresses
+        EmailSendingUtil.ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(_configuration, request.ContactList.Contacts);
             
-            // Check if email can be sent or if service limits have been exhausted
-            Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
-                request.ContactList.Contacts.Count,
-                _emailSendingRepository,
-                _logger,
-                _externalEmailServiceWrapper,
-                _emailTemplateEngine,
-                cancellationToken);
+        // Check if email can be sent or if service limits have been exhausted
+        Result isRequestWithinServiceLimits = await EmailSendingUtil.ValidateRequestIsWithinServiceLimits(
+            request.ContactList.Contacts.Count,
+            _emailSendingRepository,
+            _logger,
+            _externalEmailServiceWrapper,
+            _emailTemplateEngine,
+            cancellationToken);
                 
-            if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;
+        if (isRequestWithinServiceLimits.IsFailed) return isRequestWithinServiceLimits;
             
-            // Create batches
-            int batchSize = request.BatchSize ?? ServiceLimits.RecipientsPerEmail;
-            var batchCount = (int)Math.Ceiling((double)request.ContactList.Contacts.Count / batchSize);
-            List<Email> emails = [];
+        // Create batches
+        int batchSize = request.BatchSize ?? ServiceLimits.RecipientsPerEmail;
+        var batchCount = (int)Math.Ceiling((double)request.ContactList.Contacts.Count / batchSize);
+        List<Email> emails = [];
             
-            for (var i = 0; i < batchCount; i++)
-            {
-                var email = new Email
-                {
-                    Attachments = request.Email.Attachments,
-                    HtmlBody = request.Email.HtmlBody,
-                    PlainTextBody = request.Email.PlainTextBody,
-                    Subject = request.Email.Subject,
-                    SenderEmailAddress = request.Email.SenderEmailAddress,
-                    Recipients = request.ContactList.Contacts.Skip(i * batchSize).Take(batchSize).ToList()
-                };
-                
-                emails.Add(email);
-            }
-            
-            // Add email(s) to database
-            foreach (Email email in emails)
-            {
-                await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _genericRecipientRepository, cancellationToken);
-                Result<Email> addResult = await _genericEmailRepository.AddAsync(email, cancellationToken);
-                if (addResult.IsFailed)
-                {
-                    Result failedResult = Result.Fail(addResult.Errors);
-                    return failedResult;
-                }
-            }
-            
-            // Send batches
-            foreach (Email email in emails)
-            {
-                Result<EmailSendingStatus> sendResult = await _externalEmailServiceWrapper.SendAsync(email, request.UseBcc, cancellationToken);
-                if (sendResult.IsFailed)
-                {
-                    Result failedResult = Result.Fail(sendResult.Errors);
-                    return failedResult;
-                }
-            }
-            
-            return Result.Ok();
-        } 
-        catch (Exception)
+        for (var i = 0; i < batchCount; i++)
         {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail(ErrorMessages.EmailSending_Exception + errorCode);
+            var email = new Email
+            {
+                Attachments = request.Email.Attachments,
+                HtmlBody = request.Email.HtmlBody,
+                PlainTextBody = request.Email.PlainTextBody,
+                Subject = request.Email.Subject,
+                SenderEmailAddress = request.Email.SenderEmailAddress,
+                Recipients = request.ContactList.Contacts.Skip(i * batchSize).Take(batchSize).ToList()
+            };
+                
+            emails.Add(email);
         }
+            
+        // Add email(s) to database
+        foreach (Email email in emails)
+        {
+            await EmailSendingUtil.FetchAndReplaceExistingRecipients(email, _genericRecipientRepository, cancellationToken);
+            Result<Email> addResult = await _genericEmailRepository.AddAsync(email, cancellationToken);
+            if (addResult.IsFailed)
+            {
+                Result failedResult = Result.Fail(addResult.Errors);
+                return failedResult;
+            }
+        }
+            
+        // Send batches
+        foreach (Email email in emails)
+        {
+            Result<EmailSendingStatus> sendResult = await _externalEmailServiceWrapper.SendAsync(email, request.UseBcc, cancellationToken);
+            if (sendResult.IsFailed)
+            {
+                Result failedResult = Result.Fail(sendResult.Errors);
+                return failedResult;
+            }
+        }
+            
+        return Result.Ok();
     }
 }

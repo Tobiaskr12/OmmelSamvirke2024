@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Contracts.SupportModules.Logging;
 using OmmelSamvirke.SupportModules.Logging.Interfaces;
 
 namespace OmmelSamvirke.SupportModules.Logging;
@@ -17,7 +18,7 @@ public abstract class CsvBufferedWriter<T> : IDisposable
     private readonly ConcurrentQueue<T> _buffer = new();
     private DateTime _lastFlushTime = DateTime.UtcNow;
     private readonly object _flushLock = new();
-    private readonly object _fileLock = new object();
+    private readonly object _fileLock = new();
 
     private readonly Timer _timer;
     protected readonly string Directory;
@@ -27,7 +28,7 @@ public abstract class CsvBufferedWriter<T> : IDisposable
     {
         CorrelationContext = correlationContext;
         Directory = loggingLocationInfo.GetLoggingDirectoryPath();
-        // Set up a timer to flush periodically.
+
         _timer = new Timer(FlushIfNeeded, null, 5000, 5000);
     }
 
@@ -40,7 +41,7 @@ public abstract class CsvBufferedWriter<T> : IDisposable
         {
             _buffer.Enqueue(entry);
 
-            if (_buffer.Count >= MaxBufferSize || DateTime.UtcNow - _lastFlushTime > _maxTimeBetweenFlush)
+            if (_buffer.Count >= MaxBufferSize || (DateTime.UtcNow - _lastFlushTime > _maxTimeBetweenFlush && !_buffer.IsEmpty))
             {
                 FlushBuffer();
             }

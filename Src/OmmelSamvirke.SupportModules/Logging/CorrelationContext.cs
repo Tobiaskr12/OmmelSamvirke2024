@@ -1,10 +1,15 @@
-using OmmelSamvirke.SupportModules.Logging.Interfaces;
-using OmmelSamvirke.SupportModules.Logging.Util;
+using Contracts.SupportModules.Logging;
+using Contracts.SupportModules.Logging.Util;
 
 namespace OmmelSamvirke.SupportModules.Logging;
 
 public class CorrelationContext : ICorrelationContext
 {
-    public string SessionId { get; } = ShortIdGenerator.Generate();
+    public CorrelationContext(IShortIdGenerator shortIdGenerator)
+    {
+        SessionId = shortIdGenerator.Generate();
+    }
+
+    public string SessionId { get; }
     public string OperationId { get; set; } = "N/A";
 }

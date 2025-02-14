@@ -32,22 +32,14 @@ public class CountContactsInContactListQueryHandler : IRequestHandler<CountConta
     
     public async Task<Result<int>> Handle(CountContactsInContactListQuery request, CancellationToken cancellationToken)
     {
-        try
-        {
-            Result<ContactList> result = await _contactListRepository.GetByIdAsync(request.ContactListId, cancellationToken: cancellationToken);
+        Result<ContactList> result = await _contactListRepository.GetByIdAsync(request.ContactListId, cancellationToken: cancellationToken);
 
-            if (result is { IsSuccess: true, Value: not null })
-            {
-                int contactCount = result.Value.Contacts.Count;
-                return Result.Ok(contactCount);
-            }
-
-            return Result.Fail<int>(ErrorMessages.GenericErrorWithRetryPrompt);
-        }
-        catch (Exception)
+        if (result is { IsSuccess: true, Value: not null })
         {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail<int>(ErrorMessages.GenericErrorWithErrorCode + errorCode);
+            int contactCount = result.Value.Contacts.Count;
+            return Result.Ok(contactCount);
         }
+
+        return Result.Fail<int>(ErrorMessages.GenericErrorWithRetryPrompt);
     }
 }

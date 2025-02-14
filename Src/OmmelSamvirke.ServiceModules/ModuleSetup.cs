@@ -17,7 +17,7 @@ public static class ModuleSetup
         serviceCollection.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(typeof(ModuleSetup).Assembly);
-            // config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            config.AddOpenBehavior(typeof(ResponseHandlingBehavior<,>));
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 

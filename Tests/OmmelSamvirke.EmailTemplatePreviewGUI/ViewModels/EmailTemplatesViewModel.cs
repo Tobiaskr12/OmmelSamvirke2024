@@ -116,12 +116,14 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
             .Build();
         
         _hubConnection.On<string>("FileChanged", _ => OnFileChangedOrSelected());
-        _hubConnection.On<string>("FileSelected", _ => OnFileChangedOrSelected());
+        _hubConnection.On<string>("FileSelected", _ => {
+            OnFileChangedOrSelected();
+            InitializeParameters();
+        });
     }
 
     private void OnFileChangedOrSelected()
     {
-        InitializeParameters();
         UpdateContent();
     }
     

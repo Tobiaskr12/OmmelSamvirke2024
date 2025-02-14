@@ -12,6 +12,7 @@
       </EmbeddedResource>
       <EmbeddedResource Update="Errors\ErrorMessages.resx">
         <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
 
@@ -38,5 +39,12 @@
     </ItemGroup>
     <ItemGroup>
       <None Remove="emails\emailtemplateengine\templates\CriticalErrorLog.html" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Errors\ErrorMessages.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ErrorMessages.resx</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

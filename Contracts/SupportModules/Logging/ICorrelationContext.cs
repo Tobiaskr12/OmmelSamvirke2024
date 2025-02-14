@@ -1,4 +1,4 @@
-namespace OmmelSamvirke.SupportModules.Logging.Interfaces;
+namespace Contracts.SupportModules.Logging;
 
 public interface ICorrelationContext
 {

@@ -35,31 +35,23 @@ public class AddContactToContactListCommandHandler : IRequestHandler<AddContactT
     
     public async Task<Result<ContactList>> Handle(AddContactToContactListCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            // Attempt to find an existing recipient with the same email address.
-            Result<List<Recipient>> recipientQueryResult = await _recipientRepository.FindAsync(
-                x => x.EmailAddress == request.Contact.EmailAddress,
-                cancellationToken: cancellationToken
-            );
+        // Attempt to find an existing recipient with the same email address.
+        Result<List<Recipient>> recipientQueryResult = await _recipientRepository.FindAsync(
+            x => x.EmailAddress == request.Contact.EmailAddress,
+            cancellationToken: cancellationToken
+        );
 
-            if (recipientQueryResult.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
-            if (recipientQueryResult.Value?.Count > 0)
-            {
-                return Result.Fail(ErrorMessages.ContactList_AddContact_ContactAlreadyExitsts);
-            }
+        if (recipientQueryResult.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+        if (recipientQueryResult.Value?.Count > 0)
+        {
+            return Result.Fail(ErrorMessages.ContactList_AddContact_ContactAlreadyExitsts);
+        }
             
-            request.ContactList.Contacts.Add(request.Contact);
-            Result<ContactList> updateResult = await _contactListRepository.UpdateAsync(request.ContactList, cancellationToken);
+        request.ContactList.Contacts.Add(request.Contact);
+        Result<ContactList> updateResult = await _contactListRepository.UpdateAsync(request.ContactList, cancellationToken);
 
-            return updateResult.IsSuccess ? 
-                Result.Ok(updateResult.Value) : 
-                Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
-        }
-        catch (Exception)
-        {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
-        }
+        return updateResult.IsSuccess ? 
+            Result.Ok(updateResult.Value) : 
+            Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
     }
 }

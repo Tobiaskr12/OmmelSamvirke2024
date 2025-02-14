@@ -34,39 +34,31 @@ public class CreateContactListCommandHandler : IRequestHandler<CreateContactList
 
     public async Task<Result<ContactList>> Handle(CreateContactListCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            // Create a hash set of email addresses for efficient lookup during duplicate detection
-            HashSet<string> emailSet = request.ContactList.Contacts
-                                              .Select(contact => contact.EmailAddress)
-                                              .ToHashSet();
+        // Create a hash set of email addresses for efficient lookup during duplicate detection
+        HashSet<string> emailSet = request.ContactList.Contacts
+                                            .Select(contact => contact.EmailAddress)
+                                            .ToHashSet();
             
-            Result<List<Recipient>> duplicateRecipientsQuery = await _recipientRepository.FindAsync(
-                x => emailSet.Contains(x.EmailAddress),
-                cancellationToken: cancellationToken
-            );
+        Result<List<Recipient>> duplicateRecipientsQuery = await _recipientRepository.FindAsync(
+            x => emailSet.Contains(x.EmailAddress),
+            cancellationToken: cancellationToken
+        );
             
-            if (duplicateRecipientsQuery.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+        if (duplicateRecipientsQuery.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
 
-            // Mapping email addresses to their index in the contacts list.
-            Dictionary<string, int> indexedContacts = request.ContactList.Contacts
-                                                           .Select((contact, index) => new { contact, index })
-                                                           .ToDictionary(x => x.contact.EmailAddress, x => x.index);
+        // Mapping email addresses to their index in the contacts list.
+        Dictionary<string, int> indexedContacts = request.ContactList.Contacts
+                                                        .Select((contact, index) => new { contact, index })
+                                                        .ToDictionary(x => x.contact.EmailAddress, x => x.index);
             
-            foreach (Recipient duplicate in duplicateRecipientsQuery.Value)
-            {
-                if (indexedContacts.TryGetValue(duplicate.EmailAddress, out int index))
-                {
-                    request.ContactList.Contacts[index] = duplicate;
-                }
-            }
-            
-            return await _contactListRepository.AddAsync(request.ContactList, cancellationToken);
-        }
-        catch (Exception)
+        foreach (Recipient duplicate in duplicateRecipientsQuery.Value)
         {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail(ErrorMessages.GenericErrorWithErrorCode + errorCode);
+            if (indexedContacts.TryGetValue(duplicate.EmailAddress, out int index))
+            {
+                request.ContactList.Contacts[index] = duplicate;
+            }
         }
+            
+        return await _contactListRepository.AddAsync(request.ContactList, cancellationToken);
     }
 }

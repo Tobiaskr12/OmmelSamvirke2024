@@ -34,22 +34,14 @@ public class SearchContactListsByEmailQueryHandler : IRequestHandler<SearchConta
 
     public async Task<Result<List<ContactList>>> Handle(SearchContactListsByEmailQuery request, CancellationToken cancellationToken)
     {
-        try
-        {
-            Result<List<ContactList>> queryResult = await _contactListRepository
-                .FindAsync(
-                    x => x.Contacts.Any(c => c.EmailAddress == request.EmailAddress),
-                    cancellationToken: cancellationToken
-                );
+        Result<List<ContactList>> queryResult = await _contactListRepository
+            .FindAsync(
+                x => x.Contacts.Any(c => c.EmailAddress == request.EmailAddress),
+                cancellationToken: cancellationToken
+            );
             
-            return  queryResult.IsFailed ? 
-                Result.Fail<List<ContactList>>(ErrorMessages.GenericErrorWithRetryPrompt) : 
-                Result.Ok(queryResult.Value);
-        }
-        catch (Exception)
-        {
-            var errorCode = Guid.NewGuid();
-            return Result.Fail<List<ContactList>>(ErrorMessages.GenericErrorWithErrorCode + errorCode);
-        }
+        return  queryResult.IsFailed ? 
+            Result.Fail<List<ContactList>>(ErrorMessages.GenericErrorWithRetryPrompt) : 
+            Result.Ok(queryResult.Value);
     }
 }
