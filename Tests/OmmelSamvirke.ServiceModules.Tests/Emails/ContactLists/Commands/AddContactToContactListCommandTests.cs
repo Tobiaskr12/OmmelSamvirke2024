@@ -91,20 +91,6 @@ public class AddContactToContactListCommandTests
 
         Assert.That(result.IsFailed);
     }
-
-    [Test]
-    public async Task AddContactToContactListCommand_ExceptionThrown_ReturnsFailure()
-    {
-        var command = new AddContactToContactListCommand(_baseValidContactList, _validRecipient);
-
-        _recipientRepository
-            .FindAsync(default!, cancellationToken: default)
-            .ThrowsForAnyArgs(new Exception("Simulated exception"));
-
-        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
-    }
     
     [Test]
     public async Task AddContactToContactListCommand_DuplicateRecipient_ReplacesContact()

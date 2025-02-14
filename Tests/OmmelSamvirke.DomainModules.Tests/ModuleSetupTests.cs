@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using OmmelSamvirke.DomainModules.Emails.Validators;
 
 namespace OmmelSamvirke.DomainModules.Tests;
@@ -19,7 +21,10 @@ public class ModuleSetupTests
     [Test]
     public void InitializeDomainModule_Should_RegisterLocalizationOptions()
     {
+        _services.AddSingleton(Substitute.For<ILoggerFactory>());
+
         using ServiceProvider provider = _services.BuildServiceProvider();
+
         var localizationFactory = provider.GetService<IStringLocalizerFactory>();
         Assert.That(localizationFactory, Is.Not.Null);
     }

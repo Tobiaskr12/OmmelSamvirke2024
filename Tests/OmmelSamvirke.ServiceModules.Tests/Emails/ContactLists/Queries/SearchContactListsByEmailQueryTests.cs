@@ -87,25 +87,6 @@ public class SearchContactListsByEmailQueryTests
         });
     }
 
-    [Test]
-    public async Task Handle_WhenExceptionThrown_ReturnsFailureWithErrorCode()
-    {
-        const string emailAddress = "exception@example.com";
-        var query = new SearchContactListsByEmailQuery(emailAddress);
-
-        _repository
-            .FindAsync(default!, cancellationToken: default)
-            .ReturnsForAnyArgs<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
-
-        Result<List<ContactList>> result = await _handler.Handle(query, _cancellationToken);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed, Is.True);
-            Assert.That(result.Errors.First().Message, Does.StartWith(ErrorMessages.GenericErrorWithErrorCode));
-        });
-    }
-
     private static ContactList CreateTestContactList(int id, string name, string description, List<Recipient> contacts) =>
         new()
         {

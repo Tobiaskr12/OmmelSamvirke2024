@@ -7,6 +7,7 @@ using OmmelSamvirke.SupportModules.SecretsManager;
 using OmmelSamvirke.DataAccess.Base;
 using OmmelSamvirke.DataAccess.Emails.Repositories;
 using OmmelSamvirke.DomainModules.Emails.Entities;
+using OmmelSamvirke.Bootstrapper;
 
 namespace OmmelSamvirke.DataAccess.Tests;
 
@@ -16,12 +17,12 @@ public class ModuleSetupTests
     private IServiceCollection _services;
 
     [SetUp]
-    public async Task Setup()
+    public void Setup()
     {
         _services = new ServiceCollection();
 
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddKeyVaultSecrets(ExecutionEnvironment.Testing);
-        await _services.InitializeDataAccessModule(configurationBuilder.Build());
+        _services.InitializeAllServices(configurationBuilder.Build(), ExecutionEnvironment.Testing);
     }
 
     [Test]

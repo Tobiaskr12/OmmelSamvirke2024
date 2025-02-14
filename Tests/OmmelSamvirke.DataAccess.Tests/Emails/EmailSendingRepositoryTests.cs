@@ -115,9 +115,9 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
         
         Assert.Multiple(() =>
         {
-            Assert.That(usageResult.IsSuccess, Is.False, "Result should fail for negative emails to send.");
-            Assert.That(usageResult.Errors, Is.Not.Empty, "There should be error messages.");
-            Assert.That(usageResult.Errors.First().Message, Is.EqualTo(ErrorMessages.NumberOfEmailsToSend_Negative));
+            Assert.That(usageResult.IsSuccess, Is.False);
+            Assert.That(usageResult.Errors, Is.Not.Empty);
+            Assert.That(usageResult.Errors.First().Message, Does.Contain(ErrorMessages.NumberOfEmailsToSend_Negative));
         });
     }
     

@@ -59,20 +59,6 @@ public class GetContactListQueryTests
         
         Assert.That(result.IsFailed);
     }
-
-    [Test]
-    public async Task GetContactList_ExceptionThrown_ReturnsFailure()
-    {
-        var query = new GetContactListQuery(1);
-
-        _contactListRepository
-            .When(repo => repo.GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>()))
-            .Do(_ => throw new Exception("Simulated exception"));
-
-        Result<ContactList> result = await _handler.Handle(query, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
-    }
 }
 
 [TestFixture, Category("IntegrationTests")]

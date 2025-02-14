@@ -1,8 +1,11 @@
 using Contracts.Infrastructure.Emails;
+using Contracts.SupportModules.Logging;
 using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using OmmelSamvirke.Infrastructure.Emails;
 using OmmelSamvirke.SupportModules.SecretsManager;
 
@@ -27,6 +30,7 @@ public class ModuleSetupTests
     [Test]
     public void InitializeInfrastructureModule_Should_RegisterLocalizationOptions()
     {
+        _services.AddSingleton(Substitute.For<ILoggerFactory>());
         ServiceProvider provider = _services.BuildServiceProvider();
         
         var localizationFactory = provider.GetService<IStringLocalizerFactory>();
@@ -36,6 +40,7 @@ public class ModuleSetupTests
     [Test]
     public void InitializeInfrastructureModule_Should_RegisterExternalEmailServiceWrapper()
     {
+        _services.AddSingleton(Substitute.For<ILoggingHandler>());
         ServiceProvider provider = _services.BuildServiceProvider();
         
         var emailService = provider.GetService<IExternalEmailServiceWrapper>();

@@ -95,15 +95,14 @@ public class SendEmailToContactListCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_AddingEmailToDbFails_ReturnsFail()
+    public async Task SendEmailToContactListCommand_AddingEmailToDbFails_ThrowsExceptionl()
     {
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
         // Simulate database error when adding email
         _genericEmailRepository.AddAsync(Arg.Any<Email>()).ThrowsAsync(_ => throw new Exception("Database error"));
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
+
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
     
     [TestCase(0.0)]
@@ -120,7 +119,8 @@ public class SendEmailToContactListCommandHandlerTests
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(percentageUsed);
         // Ensure PerMinute is not affecting this test
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(0.0);
-        
+        _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
+
         await _handler.Handle(command, CancellationToken.None);
         
         if (percentageUsed >= 80.0)
@@ -153,7 +153,8 @@ public class SendEmailToContactListCommandHandlerTests
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(percentageUsed);
         // Ensure PerHour is not affecting this test
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(0.0);
-        
+        _externalEmailServiceWrapper.SendAsync(Arg.Any<Email>()).Returns(Result.Ok());
+
         await _handler.Handle(command, CancellationToken.None);
         
         if (percentageUsed >= 80.0)
@@ -224,7 +225,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsExceptionAndReturnsFail()
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsException()
     {
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
@@ -232,13 +233,11 @@ public class SendEmailToContactListCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns((string)null!);
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsExceptionAndReturnsFail()
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
     {
         var contactList = new ContactList
         {
@@ -252,9 +251,7 @@ public class SendEmailToContactListCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com;another@example.com");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     private static ContactList CreateContactList(int contactsCount)
@@ -275,7 +272,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsExceptionAndReturnsFail()
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
     {
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
@@ -283,9 +280,7 @@ public class SendEmailToContactListCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     [Test]
@@ -306,7 +301,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipients_ReturnsFail()
+    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipients_ThrowsException()
     {
         var unwhitelistedContactList = new ContactList
         {
@@ -324,8 +319,6 @@ public class SendEmailToContactListCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 }

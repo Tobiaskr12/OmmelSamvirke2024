@@ -88,24 +88,6 @@ public class CountContactsInContactListQueryHandlerTests
             Assert.That(result.Errors.First().Message, Is.EqualTo(ErrorMessages.GenericErrorWithRetryPrompt));
         });
     }
-
-    [Test]
-    public async Task Handle_WhenExceptionThrown_ReturnsFailureWithErrorCode()
-    {
-        var query = new CountContactsInContactListQuery(1);
-
-        _repository
-            .GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns<Task<Result<ContactList>>>(_ => throw new Exception("Simulated exception"));
-        
-        Result<int> result = await _handler.Handle(query, _cancellationToken);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed, Is.True);
-            Assert.That(result.Errors.First().Message, Does.StartWith(ErrorMessages.GenericErrorWithErrorCode));
-        });
-    }
 }
 
 [TestFixture, Category("IntegrationTests")]

@@ -37,6 +37,7 @@ public class UndoUnsubscribeFromContactListCommandTests
     public async Task UndoUnsubscribe_RecordNotFound_ReturnsFailure()
     {
         var command = new UndoUnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid(), Guid.NewGuid());
+        ConfigureContactListFindAsync(Result.Ok(new List<ContactList>() { new() { Description = "Test", Name = "Test" } }));
         ConfigureUnsubscriptionFindAsync(Result.Ok(new List<ContactListUnsubscription>()));
         Result result = await _handler.Handle(command, CancellationToken.None);
         Assert.That(result.IsFailed);
@@ -139,19 +140,6 @@ public class UndoUnsubscribeFromContactListCommandTests
         ConfigureContactListUpdateAsync(contactList, Result.Ok(updatedContactList));
         Result result = await _handler.Handle(command, CancellationToken.None);
         Assert.That(result.IsSuccess);
-    }
-    
-    [Test]
-    public async Task UndoUnsubscribe_ExceptionThrown_ReturnsFailure()
-    {
-        var command = new UndoUnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid(), Guid.NewGuid());
-        _unsubscriptionRepository
-            .FindAsync(default!)
-            .ReturnsForAnyArgs<Task<Result<List<ContactListUnsubscription>>>>(_ => throw new Exception("Simulated exception"));
-    
-        Result result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
     }
 }
 

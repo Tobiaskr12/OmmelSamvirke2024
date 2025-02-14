@@ -1,6 +1,8 @@
 using Contracts.ServiceModules.Emails;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using OmmelSamvirke.DomainModules;
 
 namespace OmmelSamvirke.ServiceModules.Tests;
@@ -22,6 +24,7 @@ public class ModuleSetupTests
     [Test]
     public void InitializeServicesModule_Should_RegisterLocalizationOptions()
     {
+        _services.AddSingleton(Substitute.For<ILoggerFactory>());
         ServiceProvider provider = _services.BuildServiceProvider();
         
         var localizationOptions = provider.GetService<Microsoft.Extensions.Localization.IStringLocalizerFactory>();

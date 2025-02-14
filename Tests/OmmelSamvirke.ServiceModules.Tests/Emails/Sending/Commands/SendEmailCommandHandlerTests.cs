@@ -81,7 +81,7 @@ public class SendEmailCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailCommand_AddingEmailToDbFails_ReturnsFail()
+    public async Task SendEmailCommand_AddingEmailToDbFails_ThrowsException()
     {
         var email = new Email
         {
@@ -96,9 +96,8 @@ public class SendEmailCommandHandlerTests
 
         // Simulate database error when adding email
         _genericEmailRepository.AddAsync(email).ThrowsAsync(_ => throw new Exception("Database error"));
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
+
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
     
     [TestCase(0.0)]
@@ -253,13 +252,11 @@ public class SendEmailCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns((string)null!);
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsExceptionAndReturnsFail()
+    public async Task SendEmailCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
     {
         var email = new Email
         {
@@ -276,13 +273,11 @@ public class SendEmailCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com;another@example.com");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
     
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsExceptionAndReturnsFail()
+    public async Task SendEmailCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
     {
         var email = new Email
         {
@@ -299,13 +294,11 @@ public class SendEmailCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithPartialWhitelistedRecipients_ReturnsFail()
+    public async Task SendEmailCommand_NonProdEnvironmentWithPartialWhitelistedRecipients_ThrowsException()
     {
         var email = new Email
         {
@@ -325,9 +318,7 @@ public class SendEmailCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Dev");
         _configuration.GetSection("EmailWhitelist").Value.Returns("whitelisted@example.com");
 
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
+        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
 
     [Test]

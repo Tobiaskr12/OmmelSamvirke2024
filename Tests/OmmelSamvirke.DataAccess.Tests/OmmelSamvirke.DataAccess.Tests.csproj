@@ -25,9 +25,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Bootstrapper\Bootstrapper.csproj" />
       <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj" />
-      <ProjectReference Include="..\..\Src\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
       <ProjectReference Include="..\TestDatabaseFixtures\TestDatabaseFixtures.csproj" />
     </ItemGroup>
     

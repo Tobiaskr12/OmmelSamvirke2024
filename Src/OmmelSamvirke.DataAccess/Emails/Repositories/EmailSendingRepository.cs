@@ -37,7 +37,7 @@ public class EmailSendingRepository : IEmailSendingRepository
 
             if (numberOfEmailsToSend < 0)
             {
-                throw new Exception("CalculateServiceLimitAfterSendingEmails was called with a negative value");
+                throw new Exception(ErrorMessages.NumberOfEmailsToSend_Negative);
             }
 
             switch (serviceLimitInterval)

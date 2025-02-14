@@ -186,19 +186,6 @@ public class UnsubscribeFromContactListCommandTests
 
         Assert.That(result.IsFailed);
     }
-
-    [Test]
-    public async Task UnsubscribeFromContactList_ExceptionThrown_ReturnsFailure()
-    {
-        var command = new UnsubscribeFromContactListCommand("test@example.com", Guid.NewGuid());
-        _contactListRepository
-            .FindAsync(default!)
-            .ReturnsForAnyArgs<Task<Result<List<ContactList>>>>(_ => throw new Exception("Simulated exception"));
-
-        Result result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
-    }
 }
 
 [TestFixture, Category("IntegrationTests")]

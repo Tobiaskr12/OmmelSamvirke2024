@@ -104,21 +104,6 @@ public class RemoveContactFromContactListCommandTests
 
         Assert.That(result.IsSuccess);
     }
-
-    [Test]
-    public async Task RemoveContactFromContactListCommand_ExceptionThrown_ReturnsFailure()
-    {
-        ContactList contactList = CreateTestContactList();
-        var command = new RemoveContactFromContactListCommand(contactList, "existing@example.com", true);
-
-        _contactListRepository
-            .When(repo => repo.UpdateAsync(Arg.Any<ContactList>(), Arg.Any<CancellationToken>()))
-            .Do(_ => throw new Exception("Simulated exception"));
-
-        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.That(result.IsFailed);
-    }
     
     private static ContactList CreateTestContactList()
     {

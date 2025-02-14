@@ -69,21 +69,4 @@ public class CreateContactListCommandTests
             Assert.That(_baseValidContactList.Contacts.Any(x => x.EmailAddress == duplicateEmail));
         });
     }
-
-    [Test]
-    public async Task CreateContactListCommand_RecipientLookupFails_ReturnsFailure()
-    {
-        var recipient = new Recipient { EmailAddress = "fail@example.com" };
-        _baseValidContactList.Contacts = [recipient];
-        
-        _recipientRepository
-            .FindAsync(default!)
-            .Returns(Result.Fail<List<Recipient>>(ErrorMessages.GenericErrorWithRetryPrompt));
-
-        var command = new CreateContactListCommand(_baseValidContactList);
-        
-        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsFailed);
-    }
 }

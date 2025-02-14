@@ -85,19 +85,4 @@ public class RecipientsValidationQueryTests
             Assert.That(result.Value.InvalidRecipients, Is.EquivalentTo(new List<Recipient> { invalidRecipient }));
         });
     }
-
-    /// <summary>
-    /// This test forces an exception to occur (by passing null) and verifies that the handler returns a failure result.
-    /// </summary>
-    [Test]
-    public async Task RecipientsValidation_ExceptionThrown_ReturnsFailure()
-    {
-        var query = new RecipientsValidationQuery(null!);
-
-        Result<(List<Recipient> ValidRecipients, List<Recipient> InvalidRecipients)> result =
-            await _handler.Handle(query, CancellationToken.None);
-
-
-        Assert.That(result.IsFailed);
-    }
 }
