@@ -1,13 +1,13 @@
 using Contracts.SupportModules.SecretsManager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OmmelSamvirke.DomainModules;
-using OmmelSamvirke.DataAccess;
-using OmmelSamvirke.Infrastructure;
-using OmmelSamvirke.ServiceModules;
-using OmmelSamvirke.SupportModules.Logging;
+using DomainModules;
+using DataAccess;
+using Infrastructure;
+using ServiceModules;
+using SupportModules.Logging;
 
-namespace OmmelSamvirke.Bootstrapper;
+namespace Bootstrapper;
 
 public static class GlobalServiceInitializer
 {

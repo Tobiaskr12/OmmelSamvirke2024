@@ -1,6 +1,6 @@
 ﻿using Contracts.ServiceModules.Emails.DTOs;
 using FluentResults;
-using OmmelSamvirke.DomainModules.Emails.Entities;
+using DomainModules.Emails.Entities;
 
 namespace Contracts.Infrastructure.Emails;
 

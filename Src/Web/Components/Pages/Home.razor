@@ -1,0 +1,20 @@
+﻿@page "/"
+@using Contracts.SupportModules.Logging
+@using SupportModules.Logging.Interfaces
+
+@inject ILoggingHandler Logger
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        Logger.LogInformation("New Log");
+
+        return base.OnInitializedAsync();
+    }
+}

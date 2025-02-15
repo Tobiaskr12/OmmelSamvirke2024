@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using FluentResults;
-using OmmelSamvirke.DomainModules.Common;
+using DomainModules.Common;
 
 namespace Contracts.DataAccess.Base;
 

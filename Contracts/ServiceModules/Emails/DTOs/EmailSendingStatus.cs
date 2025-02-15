@@ -1,5 +1,5 @@
 using Contracts.ServiceModules.Emails.Enums;
-using OmmelSamvirke.DomainModules.Emails.Entities;
+using DomainModules.Emails.Entities;
 
 namespace Contracts.ServiceModules.Emails.DTOs;
 

@@ -12,11 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
-    <ProjectReference Include="..\Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
-    <ProjectReference Include="..\Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj" />
-    <ProjectReference Include="..\Src\OmmelSamvirke.Infrastructure\OmmelSamvirke.Infrastructure.csproj" />
-    <ProjectReference Include="..\Src\OmmelSamvirke.ServiceModules\OmmelSamvirke.ServiceModules.csproj" />
-    <ProjectReference Include="..\Src\OmmelSamvirke.SupportModules\OmmelSamvirke.SupportModules.csproj" />
+    <ProjectReference Include="..\Src\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Src\DomainModules\DomainModules.csproj" />
+    <ProjectReference Include="..\Src\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Src\ServiceModules\ServiceModules.csproj" />
+    <ProjectReference Include="..\Src\SupportModules\SupportModules.csproj" />
   </ItemGroup>
 
 </Project>

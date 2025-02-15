@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Src\OmmelSamvirke.DomainModules\OmmelSamvirke.DomainModules.csproj" />
+    <ProjectReference Include="..\Src\DomainModules\DomainModules.csproj" />
   </ItemGroup>
 
 </Project>

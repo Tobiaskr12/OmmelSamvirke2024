@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using NUnit.Framework;
 using Microsoft.EntityFrameworkCore;
-using OmmelSamvirke.DataAccess.Base;
+using DataAccess.Base;
 
 namespace TestDatabaseFixtures;
 

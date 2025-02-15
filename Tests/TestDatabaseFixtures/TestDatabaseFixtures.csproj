@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Src\OmmelSamvirke.DataAccess\OmmelSamvirke.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Src\DataAccess\DataAccess.csproj" />
     </ItemGroup>
 
 </Project>

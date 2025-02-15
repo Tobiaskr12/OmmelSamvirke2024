@@ -1,0 +1,37 @@
+@using System.ComponentModel
+@using CommunityToolkit.Mvvm.Messaging
+@inject EmailTemplatesViewModel EmailTemplatesViewModel
+
+<MudNavMenu>
+    <MudText Typo="Typo.h6" Style="padding: 16px 12px 8px">Email Templates</MudText>
+    <MudDivider Class="my-2" />
+    @foreach (KeyValuePair<string, List<EmailTemplate>> templateCategory in EmailTemplatesViewModel.EmailTemplates)
+    {
+        <MudNavGroup Title="@templateCategory.Key" Icon="@Icons.Material.Filled.Folder" Expanded="false">
+            @foreach (EmailTemplate template in templateCategory.Value)
+            {
+                <MudNavLink OnClick="() => OnTemplateClicked(template)" Icon="@Icons.Material.Filled.InsertDriveFile">
+                    @template.Name
+                </MudNavLink>
+            }
+        </MudNavGroup>
+    }
+</MudNavMenu>
+
+@code {
+    protected override void OnInitialized()
+    {
+        EmailTemplatesViewModel.PropertyChanged += OnEmailTemplatesChanged;
+    }
+
+    private void OnEmailTemplatesChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnTemplateClicked(EmailTemplate emailTemplate)
+    {
+        WeakReferenceMessenger.Default.Send(new CloseNavBarMessage());
+        await EmailTemplatesViewModel.WatchTemplate(emailTemplate);
+    }
+}
