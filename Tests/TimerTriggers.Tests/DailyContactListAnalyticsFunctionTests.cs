@@ -3,6 +3,7 @@ using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using NSubstitute;
 using DomainModules.Emails.Entities;
+using FluentResults;
 using TestDatabaseFixtures;
 
 namespace TimerTriggers.Tests;
@@ -21,42 +22,8 @@ public class DailyContactListAnalyticsFunctionTests
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _dailyAnalyticsRepository = Substitute.For<IRepository<DailyContactListAnalytics>>();
         _logger = Substitute.For<ILoggingHandler>();
-        _function = new DailyContactListAnalyticsFunction(_logger, _contactListRepository, _dailyAnalyticsRepository);
-    }
-
-    [Test]
-    public void Run_WhenContactListRetrievalFails_ThrowsException()
-    {
-        _contactListRepository
-            .FindAsync(default!)
-            .ReturnsForAnyArgs(MockHelpers.FailedAsyncResult<List<ContactList>>());
-        _dailyAnalyticsRepository
-            .AddAsync(Arg.Any<DailyContactListAnalytics>())
-            .Returns(MockHelpers.SuccessAsyncResult(CreateTestDailyAnalytics("Dummy", DateTime.UtcNow, 0)));
-        
-        Assert.Multiple(() =>
-        {
-            Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
-            _contactListRepository.Received(1).FindAsync(Arg.Any<Expression<Func<ContactList, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>());
-            _dailyAnalyticsRepository.DidNotReceive().AddAsync(Arg.Any<DailyContactListAnalytics>());
-        });
-    }
-
-    [Test]
-    public void Run_WhenSavingAnalyticsFails_ThrowsException()
-    {
-        ContactList contactList = CreateTestContactList("TestList", "Test description", 5);
-        SetupContactListRepository([contactList]);
-        _dailyAnalyticsRepository
-            .AddAsync(Arg.Any<List<DailyContactListAnalytics>>())
-            .Returns(MockHelpers.FailedAsyncResult<List<DailyContactListAnalytics>>());
-        
-        Assert.Multiple(() =>
-        {
-            Assert.ThrowsAsync<Exception>(async () => await _function.Run(null!));
-            _contactListRepository.Received(1).FindAsync(Arg.Any<Expression<Func<ContactList, bool>>>(), Arg.Any<bool>(), Arg.Any<CancellationToken>());
-            _dailyAnalyticsRepository.Received(1).AddAsync(Arg.Any<List<DailyContactListAnalytics>>());
-        });
+        var tracer = Substitute.For<ITraceHandler>();
+        _function = new DailyContactListAnalyticsFunction(_logger, tracer, _contactListRepository, _dailyAnalyticsRepository);
     }
 
     [Test]
@@ -123,4 +90,96 @@ public class DailyContactListAnalyticsFunctionTests
         _contactListRepository
             .FindAsync(default!)
             .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult(contactLists));
+}
+
+[TestFixture, Category("IntegrationTests")]
+public class DailyContactListAnalyticsFunctionIntegrationTests
+{
+    private IntegrationTestingHelper _integrationTestingHelper;
+    private IRepository<ContactList> _contactListRepository;
+    private IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
+    private ILoggingHandler _loggingHandler;
+    private ITraceHandler _traceHandler;
+
+    [OneTimeSetUp]
+    public void OneTimeSetup()
+    {
+        _integrationTestingHelper = new IntegrationTestingHelper();
+        _contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
+        _dailyContactListAnalyticsRepository = _integrationTestingHelper.GetService<IRepository<DailyContactListAnalytics>>();
+        _loggingHandler = _integrationTestingHelper.GetService<ILoggingHandler>();
+        _traceHandler = _integrationTestingHelper.GetService<ITraceHandler>();
+    }
+    
+    [SetUp]
+    public async Task Setup()
+    {
+        DateTime yesterday = DateTime.UtcNow.AddDays(-1).Date;
+
+        // ContactList 1 from yesterday with two contacts.
+        var contactList1 = new ContactList
+        {
+            Name = "List One",
+            DateCreated = yesterday.AddHours(2),
+            Description = "Test list one",
+            Contacts =
+            [
+                new Recipient { EmailAddress = "contact1@example.com" },
+                new Recipient { EmailAddress = "contact2@example.com" }
+            ]
+        };
+
+        // ContactList 2 from yesterday with three contacts.
+        var contactList2 = new ContactList
+        {
+            Name = "List Two",
+            DateCreated = yesterday.AddHours(3),
+            Description = "Test list two",
+            Contacts =
+            [
+                new Recipient { EmailAddress = "contact3@example.com" },
+                new Recipient { EmailAddress = "contact4@example.com" },
+                new Recipient { EmailAddress = "contact5@example.com" }
+            ]
+        };
+
+        // ContactList outside the target range (should not be processed).
+        var contactListOutside = new ContactList
+        {
+            Name = "Old List",
+            DateCreated = DateTime.UtcNow.AddDays(-2),
+            Description = "Old list",
+            Contacts = [new Recipient { EmailAddress = "contact6@example.com" }]
+        };
+
+        await _contactListRepository.AddAsync(contactList1);
+        await _contactListRepository.AddAsync(contactList2);
+        await _contactListRepository.AddAsync(contactListOutside);
+    }
+    
+    [Test]
+    public async Task DailyContactListAnalyticsFunction_Runs_CreatesAnalyticsRecords()
+    {
+        // Arrange
+        var function = new DailyContactListAnalyticsFunction(_loggingHandler, _traceHandler, _contactListRepository, _dailyContactListAnalyticsRepository);
+
+        // Act
+        await function.Run(null!);
+
+        // Assert
+        Result<List<DailyContactListAnalytics>> result = await _dailyContactListAnalyticsRepository.FindAsync(a => a.Date == DateTime.UtcNow.AddDays(-1).Date);
+        List<DailyContactListAnalytics>? analyticsList = result.Value;
+        DailyContactListAnalytics? listOneAnalytics = analyticsList.FirstOrDefault(a => a.ContactListName == "List One");
+        DailyContactListAnalytics? listTwoAnalytics = analyticsList.FirstOrDefault(a => a.ContactListName == "List Two");
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess);
+            Assert.That(analyticsList, Has.Count.EqualTo(2));
+            Assert.That(listOneAnalytics, Is.Not.Null);
+            Assert.That(listTwoAnalytics, Is.Not.Null);
+            Assert.That(listOneAnalytics!.TotalContacts, Is.EqualTo(2));
+            Assert.That(listTwoAnalytics!.TotalContacts, Is.EqualTo(3));
+        });
+    }
 }

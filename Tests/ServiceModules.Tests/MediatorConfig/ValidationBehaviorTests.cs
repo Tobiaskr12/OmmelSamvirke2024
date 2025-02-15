@@ -4,7 +4,7 @@ using MediatR;
 using NSubstitute;
 using ServiceModules.MediatorConfig.PipelineBehaviors;
 
-namespace SupportModules.Tests.MediatorConfig;
+namespace ServiceModules.Tests.MediatorConfig;
 
 [TestFixture, Category("UnitTests")]
 public class ValidationBehaviorTests
@@ -39,8 +39,8 @@ public class ValidationBehaviorTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(exception, Is.Not.Null, "A ValidationException should be thrown.");
-            Assert.That(exception.Errors.Count(), Is.EqualTo(validationFailures.Count), "The ValidationException should contain all validation failures.");
+            Assert.That(exception, Is.Not.Null);
+            Assert.That(exception.Errors.Count(), Is.EqualTo(validationFailures.Count));
         });
     }
 
@@ -56,14 +56,13 @@ public class ValidationBehaviorTests
 
         TestResponse result = await _behavior.Handle(request, Next, CancellationToken.None);
 
-        Assert.That(result, Is.EqualTo(response), "The handler should return the response from the next delegate when validation succeeds.");
+        Assert.That(result, Is.EqualTo(response));
         return;
 
         Task<TestResponse> Next() => Task.FromResult(response);
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
-    public class TestRequest : IRequest<TestResponse> { }
-
-    private class TestResponse { }
+    public class TestRequest : IRequest<TestResponse>;
+    private class TestResponse;
 }

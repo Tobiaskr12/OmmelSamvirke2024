@@ -1,5 +1,4 @@
 using Contracts.Emails.Sending.Commands;
-using Contracts.ServiceModules.Emails;
 using Contracts.ServiceModules.Emails.DTOs;
 using FluentResults;
 using MailKit;
@@ -9,7 +8,7 @@ using MailKit.Security;
 using MimeKit;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
-using ServiceModules.Emails.Sending.Commands;
+using TestDatabaseFixtures;
 
 namespace ServiceModules.Tests.Emails.Sending.Commands.E2E;
 

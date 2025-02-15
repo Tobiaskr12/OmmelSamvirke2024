@@ -31,6 +31,12 @@ public class OmmelSamvirkeDbContext : DbContext
         {
             if (entry.State == EntityState.Added)
             {
+                // Allows manually setting DateCreated for integration testing
+                if (entry.Entity.DateCreated is not null)
+                {   
+                    return base.SaveChangesAsync(cancellationToken);
+                }
+                
                 entry.Entity.DateCreated = DateTime.UtcNow;
                 entry.Entity.DateModified = entry.Entity.DateCreated;
             }

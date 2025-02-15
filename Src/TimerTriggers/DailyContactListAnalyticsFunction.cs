@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using FluentResults;
@@ -9,15 +10,18 @@ namespace TimerTriggers;
 public class DailyContactListAnalyticsFunction
 {
     private readonly ILoggingHandler _logger;
+    private readonly ITraceHandler _tracer;
     private readonly IRepository<ContactList> _contactListRepository;
     private readonly IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
 
     public DailyContactListAnalyticsFunction(
         ILoggingHandler logger,
+        ITraceHandler tracer,
         IRepository<ContactList> contactListRepository,
         IRepository<DailyContactListAnalytics> dailyContactListAnalyticsRepository)
     {
         _logger = logger;
+        _tracer = tracer;
         _contactListRepository = contactListRepository;
         _dailyContactListAnalyticsRepository = dailyContactListAnalyticsRepository;
     }
@@ -25,6 +29,7 @@ public class DailyContactListAnalyticsFunction
     [Function("DailyContactListAnalyticsFunction")]
     public async Task Run([TimerTrigger("0 0 3 * * *")] TimerInfo myTimer)
     {
+        var sw = Stopwatch.StartNew();
         try
         {
             _logger.LogInformation($"ContactListAnalyticsCron Timer trigger executed at: {DateTime.UtcNow}");
@@ -45,6 +50,7 @@ public class DailyContactListAnalyticsFunction
             if (saveResult.IsSuccess)
             {
                 _logger.LogInformation("Successfully completed execution");
+                _tracer.Trace("TimerTrigger", isSuccess: true, sw.ElapsedMilliseconds, "DailyContactListAnalyticsFunction");
             }
             else
             {
@@ -54,7 +60,7 @@ public class DailyContactListAnalyticsFunction
         catch (Exception ex)
         {
             _logger.LogError(ex);
-            throw;
+            _tracer.Trace("TimerTrigger", isSuccess: false, sw.ElapsedMilliseconds, "DailyContactListAnalyticsFunction");
         }
     }
 

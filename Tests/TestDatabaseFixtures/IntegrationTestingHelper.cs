@@ -1,13 +1,13 @@
+using Bootstrapper;
 using Contracts.SupportModules.SecretsManager;
+using DataAccess.Base;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DataAccess.Base;
 using SupportModules.SecretsManager;
-using Bootstrapper;
 
-namespace ServiceModules.Tests;
+namespace TestDatabaseFixtures;
 
 public class IntegrationTestingHelper
 {

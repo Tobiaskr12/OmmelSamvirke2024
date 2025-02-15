@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using FluentResults;
@@ -9,15 +10,18 @@ namespace TimerTriggers;
 public class DailyEmailAnalyticsFunction
 {
     private readonly ILoggingHandler _logger;
+    private readonly ITraceHandler _tracer;
     private readonly IRepository<Email> _emailRepository;
     private readonly IRepository<DailyEmailAnalytics> _dailyEmailAnalyticsRepository;
 
     public DailyEmailAnalyticsFunction(
         ILoggingHandler logger,
+        ITraceHandler tracer,
         IRepository<Email> emailRepository,
         IRepository<DailyEmailAnalytics> dailyEmailAnalyticsRepository)
     {
         _logger = logger;
+        _tracer = tracer;
         _emailRepository = emailRepository;
         _dailyEmailAnalyticsRepository = dailyEmailAnalyticsRepository;
     }
@@ -25,6 +29,7 @@ public class DailyEmailAnalyticsFunction
     [Function("DailyEmailAnalyticsFunction")]
     public async Task Run([TimerTrigger("0 0 3 * * *")] TimerInfo myTimer)
     {
+        var sw = Stopwatch.StartNew();
         try
         {
             _logger.LogInformation($"EmailAnalyticsCron Timer trigger executed at: {DateTime.UtcNow}");
@@ -47,7 +52,7 @@ public class DailyEmailAnalyticsFunction
             if (emailRecipientsResult.IsSuccess)
             {
                 _logger.LogInformation(
-                    "Successfully calculated number of recipients of emails sent yesterday. Recipients: {emailRecipientsResult.Value}"
+                    $"Successfully calculated number of recipients of emails sent yesterday. Recipients: {emailRecipientsResult.Value}"
                 );
             }
             else
@@ -66,6 +71,7 @@ public class DailyEmailAnalyticsFunction
             if (saveResult.IsSuccess)
             {
                 _logger.LogInformation("Successfully completed execution");
+                _tracer.Trace("TimerTrigger", isSuccess: true, sw.ElapsedMilliseconds, "DailyEmailAnalyticsFunction");
             }
             else
             {
@@ -75,7 +81,7 @@ public class DailyEmailAnalyticsFunction
         catch (Exception ex)
         {
             _logger.LogError(ex);
-            throw;
+            _tracer.Trace("TimerTrigger", isSuccess: false, sw.ElapsedMilliseconds, "DailyEmailAnalyticsFunction");
         }
     }
 
