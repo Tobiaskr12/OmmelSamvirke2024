@@ -8,6 +8,7 @@ using Contracts.DataAccess.Base;
 using Contracts.Emails.EmailTemplateEngine;
 using Contracts.Emails.ContactLists.Commands;
 using Contracts.Emails.Sending.Commands;
+using ServiceModules.Emails.EmailTemplateEngine;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
 
@@ -86,7 +87,7 @@ public class UnsubscribeFromContactListCommandHandler : IRequestHandler<Unsubscr
 
             // Generate email receipt using the new UndoToken.
             Result emailTemplateResult = _emailTemplateEngine.GenerateBodiesFromTemplate(
-                "Empty.html", // TODO - Use real template
+                Templates.ContactLists.RequestUnsubscribe,
                 parameters: ("UndoToken", unsubscriptionResult.Value.UndoToken.ToString())
             );
             if (emailTemplateResult.IsFailed)

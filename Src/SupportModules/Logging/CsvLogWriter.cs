@@ -10,6 +10,7 @@ using Contracts.SupportModules.Logging.Models;
 using MediatR;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
+using FluentResults;
 using SupportModules.Logging.Interfaces;
 
 namespace SupportModules.Logging;
@@ -157,7 +158,7 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
     {
         IEmailTemplateEngine emailTemplateEngine = _emailTemplateEngineFactory();
 
-        var generationResult = emailTemplateEngine.GenerateBodiesFromTemplate("CriticalErrorLog.html",
+        Result generationResult = emailTemplateEngine.GenerateBodiesFromTemplate(Templates.General.CriticalError,
         [
             ("Timestamp", DateTime.UtcNow.ToString("HH:mm")),
             ("CustomMessage", customMessage ?? "None"),

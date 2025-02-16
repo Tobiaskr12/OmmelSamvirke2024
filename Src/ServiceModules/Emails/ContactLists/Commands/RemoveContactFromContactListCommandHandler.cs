@@ -9,6 +9,7 @@ using MediatR;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
 using DomainModules.Emails.Validators;
+using ServiceModules.Emails.EmailTemplateEngine;
 using ServiceModules.Errors;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
@@ -61,7 +62,7 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
                 EmailAddress = request.EmailAddress,
             };
 
-            Result result = _emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html"); // TODO - Populate from some kind of template
+            Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(Templates.ContactLists.UserRemovedFromContactList);
             if (result.IsFailed) throw new Exception("Email body generation failed.");
                 
             await _mediator.Send(new SendEmailCommand(new Email
@@ -69,7 +70,7 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
                 SenderEmailAddress = ValidSenderEmailAddresses.Auto,
                 Recipients = [recipient],
                 Attachments = [],
-                Subject = "", // TODO - Populate from some kind of template
+                Subject = _emailTemplateEngine.GetSubject(),
                 HtmlBody = _emailTemplateEngine.GetHtmlBody(), 
                 PlainTextBody = _emailTemplateEngine.GetPlainTextBody()
             }), cancellationToken);

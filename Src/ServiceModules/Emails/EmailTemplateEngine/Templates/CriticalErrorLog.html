@@ -1,16 +1,37 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="da" style="font-family: 'Roboto', Arial, Helvetica, sans-serif">
 <head>
     <title>[Critical] Ommel Samvirke experienced a critical error</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0; font-family: Arial, Helvetica, sans-serif; padding: 16px;">
-    <h3 style="margin: 0">A critical error was logged at {{Timestamp}}UTC</h3><br />
+<body style="margin: 0; 
+      font-family: Arial, Helvetica, sans-serif; 
+      background: #f4f4f4">
 
-    <b>Custom Message:</b> {{CustomMessage}}<br /><br />
-    
-    <b>Exception Type:</b> {{ExceptionType}}<br />
-    <b>Exception Message:</b> {{ExceptionMessage}}<br /><br />
+{{>header}}
+    <div style="max-width: 700px;
+         font-family: 'Roboto', Arial, Helvetica, sans-serif;
+         margin: 0 auto; 
+         border: 1px solid #d6d6d6; 
+         background: white;
+         padding: 20px;">
+        
+        <p style="line-height: 24px; font-size: 16px;">A critical error was logged at {{Timestamp}}UTC</p>
+        <hr />
+        
+        <p style="line-height: 24px; font-size: 16px"><b>Custom Message:</b> {{CustomMessage}}</p>
 
-    <b>Stack Trace:</b> {{StackTrace}}
+        <p style="line-height: 24px; font-size: 16px">
+            <b>Exception Type:</b> {{ExceptionType}}<br />
+            <b>Exception Message:</b> {{ExceptionMessage}}
+        </p>
+        
+        <p style="line-height: 24px; font-size: 16px"><b>Stack Trace:</b> {{StackTrace}}</p>
+        
+        {{>no-reply}}
+    </div>
+    {{>footer}}
 </body>
 </html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="da" style="font-family: 'Roboto', Arial, Helvetica, sans-serif">
+<head>
+    <title>Bekræft at du ønsker at blive afmeldt kontaktlisten "{{ContactListName}}"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; 
+      font-family: Arial, Helvetica, sans-serif; 
+      background: #f4f4f4">
+
+{{>header}}
+<div style="max-width: 700px;
+         font-family: 'Roboto', Arial, Helvetica, sans-serif;
+         margin: 0 auto; 
+         border: 1px solid #d6d6d6; 
+         background: white;
+         padding: 20px;">
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Vi har modtaget en anmodning om at fjerne din tilmelding til kontaktlisten "{{ContactListName}}" på <a href="https://www.ommelsamvirke.com" target="_blank">ommelsamvirke.com</a>.
+        Hvis det ikke er dig der har anmodet om at få fjernet din tilmelding, kan du ignorere denne email.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Hvis du ønsker at fortsætte med at fjerne din tilmelding, bedes du bekræfte ved at trykke på dette link: 
+        <a href="{{UnsubscribeToken}}" target="_blank">{{UnsubscribeToken}}</a>. 
+        Når du trykker på linket vil du automatisk blive fjernet fra kontaktlisten.
+    </p>
+
+    {{>no-reply}}
+</div>
+{{>footer}}
+</body>
+</html>

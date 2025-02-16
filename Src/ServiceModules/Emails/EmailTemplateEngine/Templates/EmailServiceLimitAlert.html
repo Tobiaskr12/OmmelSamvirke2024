@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="da" style="font-family: 'Roboto', Arial, Helvetica, sans-serif">
+<head>
+    <title>[Alert] Ommel Samvirke email service limit has almost been reached</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; 
+      font-family: Arial, Helvetica, sans-serif; 
+      background: #f4f4f4">
+
+    {{>header}}
+    <div style="max-width: 700px;
+         font-family: 'Roboto', Arial, Helvetica, sans-serif;
+         margin: 0 auto; 
+         border: 1px solid #d6d6d6; 
+         background: white;
+         padding: 20px;">
+
+    <p style="line-height: 24px; font-size: 16px;">The email service limit for Ommel Samvirke has almost been reached!</p>
+    <hr />
+
+    <p style="line-height: 24px; font-size: 16px">
+        <b>Interval:</b> {{Interval}}<br />
+        <b>Current Usage:</b> {{Usage}}
+    </p>
+        
+    <p>It's unexpected that this we've almost reached the limit. Inspect the logs to discover what has caused this spike.</p>
+
+    {{>no-reply}}
+</div>
+{{>footer}}
+</body>
+</html>

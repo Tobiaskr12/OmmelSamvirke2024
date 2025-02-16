@@ -116,7 +116,7 @@ public class UnsubscribeFromContactListCommandTests
         ConfigureUpdateAsync(Arg.Any<ContactList>(), Result.Ok(updatedContactList));
 
         // Configure email template engine.
-        _emailTemplateEngine.GenerateBodiesFromTemplate("Empty.html", Arg.Any<(string key, string value)[]>()).Returns(Result.Ok());
+        _emailTemplateEngine.GenerateBodiesFromTemplate(Arg.Any<string>(), Arg.Any<(string key, string value)[]>()).Returns(Result.Ok());
         _emailTemplateEngine.GetSubject().Returns("Unsubscribe Receipt");
         _emailTemplateEngine.GetHtmlBody().Returns("<html>You have been unsubscribed.</html>");
         _emailTemplateEngine.GetPlainTextBody().Returns("You have been unsubscribed.");
