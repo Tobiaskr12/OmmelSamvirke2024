@@ -8,7 +8,6 @@ using Contracts.DataAccess.Base;
 using Contracts.Emails.EmailTemplateEngine;
 using Contracts.Emails.ContactLists.Commands;
 using Contracts.Emails.Sending.Commands;
-using ServiceModules.Emails.EmailTemplateEngine;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
 

@@ -6,7 +6,6 @@ using Contracts.SupportModules.Logging;
 using FluentResults;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
-using ServiceModules.Emails.EmailTemplateEngine;
 
 namespace ServiceModules.Emails.Sending.SideEffects;
 

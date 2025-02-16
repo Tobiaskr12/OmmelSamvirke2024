@@ -9,7 +9,6 @@ using MediatR;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
 using DomainModules.Emails.Validators;
-using ServiceModules.Emails.EmailTemplateEngine;
 using ServiceModules.Errors;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
