@@ -160,15 +160,18 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
     
     private (string key, string value)[] GenerateTestParameters()
     {
-        string rawHtml = ReadFileText(Path.Combine(_fullTemplatesDirectory, _currentTemplate));
-        List<(string key, string value)> parameters = new();
+        string templateFilePath = Path.Combine(_fullTemplatesDirectory, _currentTemplate);
+        string rawHtml = ReadFileText(templateFilePath);
 
+        // Insert partials so that parameters in partial files are included
+        rawHtml = InsertPartials(rawHtml);
+
+        var parameters = new List<(string key, string value)>();
+        
         MatchCollection parameterMatches = ParametersRegex().Matches(rawHtml);
-
         foreach (Match match in parameterMatches)
         {
             string parameterName = match.Groups[1].Value.Trim();
-            
             if (!parameters.Any(p => p.key.Equals(parameterName, StringComparison.OrdinalIgnoreCase)))
             {
                 parameters.Add((key: parameterName, value: $"Parameter {parameters.Count + 1}"));
@@ -176,6 +179,25 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
         }
 
         return parameters.ToArray();
+    }
+
+    private string InsertPartials(string content)
+    {
+        string partialsDirectory = Path.Combine(
+            GetSolutionDirectory(), "Src", "ServiceModules", "Emails", "EmailTemplateEngine", "Partials"
+        );
+        
+        return PartialRegex().Replace(content, match =>
+        {
+            string partialName = match.Groups[1].Value;
+            string safePartialName = partialName.Replace("/", Path.DirectorySeparatorChar.ToString());
+            string partialFilePath = Path.Combine(partialsDirectory, safePartialName + ".html");
+            if (!File.Exists(partialFilePath))
+            {
+                return string.Empty;
+            }
+            return ReadFileText(partialFilePath);
+        });
     }
 
     private string ReadFileText(string filePath)
@@ -291,4 +313,7 @@ public partial class EmailTemplatesViewModel : ObservableObject, IAsyncDisposabl
     /// </summary>
     [GeneratedRegex(@"\{\{\s*(?!>)(.+?)(?=\s*\}\})\s*\}\}")]
     private static partial Regex ParametersRegex();
+    
+    [GeneratedRegex(@"\{\{>\s*(.*?)\s*\}\}")]
+    private static partial Regex PartialRegex();
 }
