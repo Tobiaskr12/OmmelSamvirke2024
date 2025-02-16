@@ -3,6 +3,7 @@ using Contracts.Emails.EmailTemplateEngine;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using HtmlAgilityPack;
+using ServiceModules.Errors;
 
 namespace ServiceModules.Emails.EmailTemplateEngine;
 
@@ -78,7 +79,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
         catch (Exception ex)
         {
             _logger.LogError(ex);
-            return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
+            return Result.Fail(ErrorMessages.FailedToGenerateEmailBodies);
         }
     }
     
@@ -99,7 +100,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
         catch (Exception ex)
         {
             _logger.LogError(ex);
-            return Result.Fail("Failed to generate email bodies"); // TODO - Fix localization
+            return Result.Fail(ErrorMessages.FailedToGenerateEmailBodies);
         }
     }
 

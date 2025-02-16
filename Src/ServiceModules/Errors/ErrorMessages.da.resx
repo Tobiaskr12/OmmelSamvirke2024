@@ -162,4 +162,7 @@
   <data name="GenericValidationError" xml:space="preserve">
     <value>Handlingen er ikke gyldig</value>
   </data>
+  <data name="FailedToGenerateEmailBodies" xml:space="preserve">
+    <value>Der opstod en fejl under dannelse af e-mailen. Prøv igen.</value>
+  </data>
 </root>

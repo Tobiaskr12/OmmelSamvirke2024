@@ -150,6 +150,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl under dannelse af e-mailen. Prøv igen..
+        /// </summary>
+        public static string FailedToGenerateEmailBodies {
+            get {
+                return ResourceManager.GetString("FailedToGenerateEmailBodies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der opstod en fejl. Fejlkode: .
         /// </summary>
         public static string GenericErrorWithErrorCode {
@@ -164,6 +173,15 @@ namespace ServiceModules.Errors {
         public static string GenericErrorWithRetryPrompt {
             get {
                 return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen er ikke gyldig.
+        /// </summary>
+        public static string GenericValidationError {
+            get {
+                return ResourceManager.GetString("GenericValidationError", resourceCulture);
             }
         }
         

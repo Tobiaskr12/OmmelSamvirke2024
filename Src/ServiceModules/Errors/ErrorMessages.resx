@@ -162,4 +162,7 @@
   <data name="GenericValidationError" xml:space="preserve">
     <value>The request is invalid</value>
   </data>
+  <data name="FailedToGenerateEmailBodies" xml:space="preserve">
+    <value>An error occurred while generating the email. Please try again.</value>
+  </data>
 </root>

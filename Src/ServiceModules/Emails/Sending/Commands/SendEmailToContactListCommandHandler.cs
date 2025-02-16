@@ -16,8 +16,6 @@ using ServiceModules.Errors;
 
 namespace ServiceModules.Emails.Sending.Commands;
 
-// TODO - Research how the resilience of this command can be improved
-// Retires, transactions, etc.
 [UsedImplicitly]
 public class SendEmailToContactListCommandValidator : AbstractValidator<SendEmailToContactListCommand>
 {
