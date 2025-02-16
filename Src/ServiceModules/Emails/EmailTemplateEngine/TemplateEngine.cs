@@ -16,6 +16,11 @@ public partial class TemplateEngine : IEmailTemplateEngine
     private string _plainTextBody = string.Empty;
     private string _subject = string.Empty;
 
+    private readonly List<(string key, string value)> _defaultParameters =
+    [
+        ("Year", DateTime.Now.Year.ToString())
+    ];
+
     public TemplateEngine(ILoggingHandler logger)
     {
         _logger = logger;
@@ -61,7 +66,9 @@ public partial class TemplateEngine : IEmailTemplateEngine
             });
 
             // Replace parameters
-            foreach ((string key, string value) param in parameters)
+            List<(string key, string value)> allParameters = parameters.ToList();
+            allParameters.AddRange(_defaultParameters);
+            foreach ((string key, string value) param in allParameters)
             {
                 _htmlBody = _htmlBody.Replace("{{" + param.key + "}}", param.value);
             }

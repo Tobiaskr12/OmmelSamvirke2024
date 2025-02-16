@@ -158,14 +158,13 @@ public class CsvLogWriter : CsvBufferedWriter<LogEntry>, ILoggingHandler
     {
         IEmailTemplateEngine emailTemplateEngine = _emailTemplateEngineFactory();
 
-        Result generationResult = emailTemplateEngine.GenerateBodiesFromTemplate(Templates.General.CriticalError,
-        [
+        Result generationResult = emailTemplateEngine.GenerateBodiesFromTemplate(Templates.General.CriticalError, 
             ("Timestamp", DateTime.UtcNow.ToString("HH:mm")),
             ("CustomMessage", customMessage ?? "None"),
             ("ExceptionType", ex.GetType().Name),
             ("ExceptionMessage", ex.Message),
             ("StackTrace", ex.StackTrace ?? "None")
-        ]);
+        );
 
         if (generationResult.IsSuccess)
         {

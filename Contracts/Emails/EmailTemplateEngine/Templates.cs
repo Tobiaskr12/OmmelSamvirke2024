@@ -4,7 +4,7 @@ public  static class Templates
 {
     public static class General
     {
-        public const string CriticalError = "CriticalError.html";
+        public const string CriticalError = "CriticalErrorLog.html";
         public const string EmailServiceLimitAlert = "EmailServiceLimitAlert.html";
     }
     
