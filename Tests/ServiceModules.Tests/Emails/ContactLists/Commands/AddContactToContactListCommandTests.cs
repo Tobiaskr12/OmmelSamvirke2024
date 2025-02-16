@@ -2,7 +2,6 @@ using Contracts.DataAccess.Base;
 using Contracts.Emails.ContactLists.Commands;
 using FluentResults;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.ContactLists.Commands;
 using ServiceModules.Errors;

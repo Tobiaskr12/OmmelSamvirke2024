@@ -17,7 +17,7 @@ public static class SecretsManager
                 throw new ArgumentOutOfRangeException(
                     nameof(environment),
                     environment,
-                    $"{nameof(environment)} is not a valid execution environment"
+                    $@"{nameof(environment)} is not a valid execution environment"
                 )
         };
 

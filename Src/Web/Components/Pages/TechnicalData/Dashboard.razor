@@ -1,11 +1,7 @@
 @page "/teknisk-data"
 @page "/technical-data"
 
-@using System.Globalization
-@using Microsoft.Extensions.Localization
 @using Web.Components.Localization
-@using Web.Components.Pages;
-@using Web.Components.Pages.TechnicalData.Components
 @using Web.Components.Pages.TechnicalData.Components.Timeline
 @using System.ComponentModel
 @using Web.Components.Pages.TechnicalData.Components.Logs
@@ -14,7 +10,6 @@
 
 @inject DashboardViewModel DashboardViewModel
 @inject TimelineViewModel TimelineViewModel
-@inject IStringLocalizer<Dashboard> Localizer
 
 @implements IDisposable
 
@@ -27,10 +22,10 @@
         <MudGrid>
             <MudItem md="8" sm="12" xs="12">
                 <div 
-                    class="@(BreakpointLessThanSm
+                    class="@(_breakpointLessThanSm
                         ? "d-flex flex-row-reverse"
                         : "d-flex justify-content-start")"
-                     style="@(BreakpointLessThanSm 
+                     style="@(_breakpointLessThanSm 
                         ? "gap: 0px; width: calc(100% - 10px); justify-content: flex-end;"
                         : "gap: 20px; width: 100%")">
                     <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
@@ -60,7 +55,7 @@
                         ValueChanged="value => OnTabsSwitched(value)"
                         SelectionMode="SelectionMode.SingleSelection"
                         Class="d-none d-sm-flex"
-                        Style="@(BreakpointLessThanMd
+                        Style="@(_breakpointLessThanMd
                                 ? "align-self: center; margin-left: auto; height: auto; border-radius: 5px"
                                 : "align-self: center; height: auto; border-radius: 5px")">
                         <MudToggleItem Value="@DashboardTab.Logs" Text="@TechnicalDataLocalization.Logs" />
@@ -95,7 +90,7 @@
         </MudGrid>
     </div>
 
-    @if (DashboardViewModel.Logs.Count() > 0 || DashboardViewModel.Traces.Count() > 0) {
+    @if (DashboardViewModel.Logs.Any() || DashboardViewModel.Traces.Any()) {
         <Timeline />
         <MudDivider Class="mb-8" />
     }
@@ -123,13 +118,13 @@
         DashboardViewModel.CurrentlyActiveTab = dashboardTab;
     }
 
-    private bool BreakpointLessThanMd = false;
-    private bool BreakpointLessThanSm = false;
+    private bool _breakpointLessThanMd;
+    private bool _breakpointLessThanSm;
 
     private void BreakpointChanged(Breakpoint breakpoint)
     {
-        BreakpointLessThanMd = breakpoint < Breakpoint.Md;
-        BreakpointLessThanSm = breakpoint < Breakpoint.Sm;
+        _breakpointLessThanMd = breakpoint < Breakpoint.Md;
+        _breakpointLessThanSm = breakpoint < Breakpoint.Sm;
         StateHasChanged();
     }
 

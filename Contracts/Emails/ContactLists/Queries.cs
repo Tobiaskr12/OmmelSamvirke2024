@@ -2,6 +2,7 @@
 using MediatR;
 using DomainModules.Emails.Entities;
 
+// ReSharper disable once CheckNamespace
 namespace Contracts.Emails.ContactLists.Queries;
 
 public record CountContactsInContactListQuery(int ContactListId) : IRequest<Result<int>>;

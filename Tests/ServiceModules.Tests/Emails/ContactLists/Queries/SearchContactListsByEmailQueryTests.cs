@@ -4,7 +4,6 @@ using Contracts.Emails.ContactLists.Queries;
 using FluentResults;
 using NSubstitute;
 using DomainModules.Emails.Entities;
-using ServiceModules.Emails.ContactLists.Commands;
 using ServiceModules.Emails.ContactLists.Queries;
 using ServiceModules.Errors;
 using TestDatabaseFixtures;

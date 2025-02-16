@@ -226,7 +226,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsException()
+    public void SendEmailToContactListCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsException()
     {
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
@@ -238,7 +238,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
+    public void SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
     {
         var contactList = new ContactList
         {
@@ -273,7 +273,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
+    public void SendEmailToContactListCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
     {
         var command = new SendEmailToContactListCommand(_baseValidEmail, _baseValidContactList, 3);
 
@@ -302,7 +302,7 @@ public class SendEmailToContactListCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipients_ThrowsException()
+    public void SendEmailToContactListCommand_NonProdEnvironmentWithUnwhitelistedRecipients_ThrowsException()
     {
         var unwhitelistedContactList = new ContactList
         {

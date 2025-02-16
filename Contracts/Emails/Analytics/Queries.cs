@@ -4,6 +4,7 @@ using FluentResults;
 using MediatR;
 using DomainModules.Emails.Entities;
 
+// ReSharper disable once CheckNamespace
 namespace Contracts.Emails.Analytics.Queries;
 
 public record DailyContactListAnalyticsQuery(DateTime Date) : IRequest<Result<List<DailyContactListAnalytics>>>;

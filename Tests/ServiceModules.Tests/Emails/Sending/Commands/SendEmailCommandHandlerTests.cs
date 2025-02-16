@@ -4,7 +4,6 @@ using Contracts.DataAccess.Emails.Enums;
 using Contracts.Emails.EmailTemplateEngine;
 using Contracts.Emails.Sending.Commands;
 using Contracts.Infrastructure.Emails;
-using Contracts.ServiceModules.Emails;
 using Contracts.ServiceModules.Emails.DTOs;
 using Contracts.SupportModules.Logging;
 using FluentResults;
@@ -83,7 +82,7 @@ public class SendEmailCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailCommand_AddingEmailToDbFails_ThrowsException()
+    public void SendEmailCommand_AddingEmailToDbFails_ThrowsException()
     {
         var email = new Email
         {
@@ -237,7 +236,7 @@ public class SendEmailCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsExceptionAndReturnsFail()
+    public void SendEmailCommand_NonProdEnvironmentWithMissingWhitelist_ThrowsExceptionAndReturnsFail()
     {
         var email = new Email
         {
@@ -258,7 +257,7 @@ public class SendEmailCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
+    public void SendEmailCommand_NonProdEnvironmentWithUnwhitelistedRecipient_ThrowsException()
     {
         var email = new Email
         {
@@ -279,7 +278,7 @@ public class SendEmailCommandHandlerTests
     }
     
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
+    public void SendEmailCommand_NonProdEnvironmentWithEmptyWhitelist_ThrowsException()
     {
         var email = new Email
         {
@@ -300,7 +299,7 @@ public class SendEmailCommandHandlerTests
     }
 
     [Test]
-    public async Task SendEmailCommand_NonProdEnvironmentWithPartialWhitelistedRecipients_ThrowsException()
+    public void SendEmailCommand_NonProdEnvironmentWithPartialWhitelistedRecipients_ThrowsException()
     {
         var email = new Email
         {

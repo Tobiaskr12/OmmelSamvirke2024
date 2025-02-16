@@ -1,11 +1,11 @@
 ﻿@using System.ComponentModel
 @using ApexCharts
-@using Contracts.SupportModules.Logging.Enums
 @using Align = MudBlazor.Align;
 @using Contracts.SupportModules.Logging.Models
 @using Web.Components.Localization
 @using Web.Components.Pages.TechnicalData.Localization
 @using Web.Components.ViewModels
+@using DashboardViewModel = Web.Components.Pages.TechnicalData.DashboardViewModel
 
 @implements IDisposable
 
@@ -56,10 +56,10 @@
 </MudGrid>
 
 @code {
-    private ApexChart<ResultRate> _chart = null!;
+    private ApexChart<ResultRate>? _chart;
     private ApexChartOptions<ResultRate> _chartOptions = new ApexChartOptions<ResultRate>
         {
-            Colors = new List<string> { "#008FFB", "#FF4560" },
+            Colors = ["#008FFB", "#FF4560"],
             Tooltip = new Tooltip
             {
                 FillSeriesColor = false
@@ -73,23 +73,23 @@
     public List<ResultRate> ResultDistribution { get; set; } = [];
     public class ResultRate
     {
-        public required string Result { get; set;  }
-        public required int Count { get; set; }
+        public required string Result { get; init;  }
+        public required int Count { get; init; }
     }
 
-    public List<TraceAnalysisAggregate> TraceAnalytics { get; set; } = [];
+    private List<TraceAnalysisAggregate> TraceAnalytics { get; set; } = [];
     public class TraceAnalysisAggregate
     {
-        public required string RequestName { get; set; }
-        public required int TotalCalls { get; set; }
-        public required long MedianExecutionTime { get; set; }
-        public required long HighestExecutionTime { get; set; }
-        public required string SuccessRate { get; set; }
+        public required string RequestName { get; init; }
+        public required int TotalCalls { get; init; }
+        public required long MedianExecutionTime { get; init; }
+        public required long HighestExecutionTime { get; init; }
+        public required string SuccessRate { get; init; }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
         await GetData();
         DashboardViewModel.PropertyChanged += OnDashboardViewModelChanged;
@@ -98,27 +98,22 @@
         await SetChartLegendColorsAccordingToTheme();
     }
 
-    public async void OnDashboardViewModelChanged(object? sender, PropertyChangedEventArgs args)
+    private async void OnDashboardViewModelChanged(object? sender, PropertyChangedEventArgs args)
     {
         await GetData();
         await InvokeAsync(StateHasChanged);
     }
 
-    public async void OnThemeViewModelChanged(object? sender, PropertyChangedEventArgs args)
+    private async void OnThemeViewModelChanged(object? sender, PropertyChangedEventArgs args)
     {
         await SetChartLegendColorsAccordingToTheme();
     }
 
     private async Task SetChartLegendColorsAccordingToTheme()
     {
-        if (ThemeViewModel.Theme == AppTheme.Light)
-        {
-            _chartOptions.Legend.Labels.Colors = new ApexCharts.Color("#000000");
-        }
-        else
-        {
-            _chartOptions.Legend.Labels.Colors = new ApexCharts.Color("#FFFFFF");
-        }
+        _chartOptions.Legend.Labels.Colors = ThemeViewModel.Theme == AppTheme.Light 
+            ? new ApexCharts.Color("#000000") 
+            : new ApexCharts.Color("#FFFFFF");
 
         if (_chart is null) return;
 
@@ -144,7 +139,7 @@
                     RequestName = x.Key,
                     TotalCalls = x.Count(),
                     MedianExecutionTime = GetMedianExecutionTime(x),
-                    HighestExecutionTime = x.MaxBy(x => x.ExecutionTimeMs)?.ExecutionTimeMs ?? -1,
+                    HighestExecutionTime = x.MaxBy(entry => entry.ExecutionTimeMs)?.ExecutionTimeMs ?? -1,
                     SuccessRate = CalculateSuccessRate(x)
                 }).ToList();
     }
@@ -186,8 +181,8 @@
 
     private long GetMedianExecutionTime(IGrouping<string, TraceEntry> traces)
     {
-        var sortedByExecutionTime = traces.OrderBy(x => x.ExecutionTimeMs);
-        return sortedByExecutionTime.ElementAt(sortedByExecutionTime.Count() / 2).ExecutionTimeMs;
+        List<TraceEntry> sortedByExecutionTime = traces.OrderBy(x => x.ExecutionTimeMs).ToList();
+        return sortedByExecutionTime.ElementAt(sortedByExecutionTime.Count / 2).ExecutionTimeMs;
     }
 
     private string CalculateSuccessRate(IGrouping<string, TraceEntry> traces)

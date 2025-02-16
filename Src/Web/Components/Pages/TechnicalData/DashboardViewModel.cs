@@ -1,12 +1,12 @@
-﻿using ApexCharts;
+﻿using System.Globalization;
+using ApexCharts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Contracts.SupportModules.Logging;
 using Contracts.SupportModules.Logging.Models;
 using MudBlazor;
 using Web.Components.Pages.TechnicalData.Components.Timeline.Models;
-using System.Globalization;
 
-namespace Web.Components.Pages.TechnicalData.Components;
+namespace Web.Components.Pages.TechnicalData;
 
 public enum DashboardTab
 {
@@ -26,8 +26,8 @@ public partial class DashboardViewModel : ObservableObject
 {
     private readonly ILogRepository _logRepository;
     private readonly ITraceRepository _traceRepository;
-    private DateTime? _selectedDate = null;
-    private string? _selectedMinute = null;
+    private DateTime? _selectedDate;
+    private string? _selectedMinute;
 
     public DashboardViewModel(ILogRepository logRepository, ITraceRepository traceRepository)
     {
@@ -54,19 +54,15 @@ public partial class DashboardViewModel : ObservableObject
         private set => SetProperty(ref _traces, value);
     }
 
-    public IEnumerable<LogEntry> FilteredLogs 
-    { 
-        get => string.IsNullOrWhiteSpace(SearchString) 
+    public IEnumerable<LogEntry> FilteredLogs =>
+        string.IsNullOrWhiteSpace(SearchString) 
             ? Logs 
             : Logs.Where(log => LogsFilterFunc(log, SearchString));
-    }
 
-    public IEnumerable<TraceEntry> FilteredTraces
-    {
-        get => string.IsNullOrWhiteSpace(SearchString)
+    public IEnumerable<TraceEntry> FilteredTraces =>
+        string.IsNullOrWhiteSpace(SearchString)
             ? Traces
             : Traces.Where(trace => TracesFilterFunc(trace, SearchString));
-    }
 
     public void ReloadData(DateRange dateRange)
     {
@@ -77,7 +73,7 @@ public partial class DashboardViewModel : ObservableObject
         ReloadData(start.Value.Date, end.Value.Date.AddDays(1).AddTicks(-1));
     }
 
-    public void ReloadData(DateTime startTime,  DateTime endTime)
+    private void ReloadData(DateTime startTime,  DateTime endTime)
     {
         TimeSpan interval = endTime - startTime;
 
@@ -222,28 +218,30 @@ public partial class DashboardViewModel : ObservableObject
     }
 
     public bool LogsFilterFunc(LogEntry log) => LogsFilterFunc(log, SearchString);
-    private bool LogsFilterFunc(LogEntry log, string searchString)
+    private static bool LogsFilterFunc(LogEntry log, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (log.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture).Contains(searchString, StringComparison.Ordinal)) return true;
         if (log.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (log.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-        if (log.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (log.OperationId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (log.CallerAssemblyName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (log.Exception?.Message.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false) return true;
         if ($"{log.CallerServiceName} | {log.CallerMemberName}:{log.CallerLineNumber}".Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        
         return false;
     }
 
     public bool TracesFilterFunc(TraceEntry trace) => TracesFilterFunc(trace, SearchString);
-    private bool TracesFilterFunc(TraceEntry trace, string searchString)
+    private static bool TracesFilterFunc(TraceEntry trace, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (trace.Timestamp.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture).Contains(searchString, StringComparison.Ordinal)) return true;
         if (trace.SessionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
-        if (trace.OperationId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (trace.OperationId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (trace.RequestName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (trace.OperationType.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        
         return false;
     }
 }

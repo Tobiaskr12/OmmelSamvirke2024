@@ -3,6 +3,7 @@
 @using Web.Components.Localization
 @using Web.Components.Pages.TechnicalData.Localization
 @using System.Globalization
+@using DashboardViewModel = Web.Components.Pages.TechnicalData.DashboardViewModel
 
 @implements IDisposable
 
@@ -36,7 +37,7 @@ else
             <MudTd DataLabel="@TechnicalDataLocalization.Operation">@context.OperationId</MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[] { 5, 15, 25, 50 }" RowsPerPageString="@GlobalLocalization.RowsPerPage" />
+            <MudTablePager PageSizeOptions="new[] { 5, 15, 25, 50 }" RowsPerPageString="@GlobalLocalization.RowsPerPage" />
         </PagerContent>
     </MudTable>
 }

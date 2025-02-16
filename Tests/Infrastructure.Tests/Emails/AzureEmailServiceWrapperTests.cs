@@ -47,7 +47,7 @@ public class AzureEmailServiceWrapperTests
             Arg.Any<WaitUntil>(),
             Arg.Any<EmailMessage>(),
             Arg.Any<CancellationToken>())
-            .Returns<Task<EmailSendOperation>>(x => Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")));
+            .Returns<Task<EmailSendOperation>>(_ => Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")));
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
         InjectEmailClient(serviceWrapper, _emailClient);

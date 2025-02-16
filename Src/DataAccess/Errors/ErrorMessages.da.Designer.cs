@@ -38,7 +38,7 @@ namespace DataAccess.Errors {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OmmelSamvirke.DataAccess.Errors.ErrorMessages.da", typeof(ErrorMessages_da).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DataAccess.Errors.ErrorMessages.da", typeof(ErrorMessages_da).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

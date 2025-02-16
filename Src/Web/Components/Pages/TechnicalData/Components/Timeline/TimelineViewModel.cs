@@ -1,12 +1,10 @@
-﻿using ApexCharts;
+﻿using System.ComponentModel;
+using ApexCharts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Contracts.SupportModules.Logging.Models;
-using Web.Components.Pages.TechnicalData.Components;
-using Web.Components.Pages.TechnicalData.Components.Timeline;
 using Web.Components.Pages.TechnicalData.Components.Timeline.Models;
-using System.ComponentModel;
 
-namespace Web.Components.Pages.TechnicalData;
+namespace Web.Components.Pages.TechnicalData.Components.Timeline;
 
 public partial class TimelineViewModel : ObservableObject
 {

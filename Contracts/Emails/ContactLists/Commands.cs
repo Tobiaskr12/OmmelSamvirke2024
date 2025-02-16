@@ -2,6 +2,7 @@
 using MediatR;
 using DomainModules.Emails.Entities;
 
+// ReSharper disable once CheckNamespace
 namespace Contracts.Emails.ContactLists.Commands;
 
 public record AddContactToContactListCommand(ContactList ContactList, Recipient Contact) : IRequest<Result<ContactList>>;

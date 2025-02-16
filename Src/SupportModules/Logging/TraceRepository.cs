@@ -85,11 +85,9 @@ public class TraceRepository : ITraceRepository
 
             if (fileDate < start.Date || fileDate > end.Date) continue;
 
-            using var parser = new TextFieldParser(file)
-            {
-                TextFieldType = FieldType.Delimited,
-                HasFieldsEnclosedInQuotes = true
-            };
+            using var parser = new TextFieldParser(file);
+            parser.TextFieldType = FieldType.Delimited;
+            parser.HasFieldsEnclosedInQuotes = true;
             parser.SetDelimiters(",");
 
             // Skip the header if not empty

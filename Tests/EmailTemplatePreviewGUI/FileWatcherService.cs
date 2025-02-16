@@ -1,4 +1,3 @@
-using Contracts.SupportModules.Logging;
 using Microsoft.AspNetCore.SignalR;
 
 namespace EmailTemplatePreviewGUI;
@@ -19,7 +18,7 @@ public class FileWatcherService : IHostedService, IDisposable
     {
         lock (_lock)
         {
-            Console.WriteLine("FileWatcherService started.");
+            Console.WriteLine(@"FileWatcherService started.");
         }
 
         return Task.CompletedTask;
@@ -35,7 +34,7 @@ public class FileWatcherService : IHostedService, IDisposable
         {
             if (_currentFilePath == filePath)
             {
-                Console.WriteLine($"Already watching {filePath}");
+                Console.WriteLine($@"Already watching {filePath}");
                 return;
             }
 
@@ -45,7 +44,7 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = false;
                 _watcher.Dispose();
                 _watcher = null;
-                Console.WriteLine($"Stopped watching {_currentFilePath}");
+                Console.WriteLine($@"Stopped watching {_currentFilePath}");
             }
 
             // Set up new watcher
@@ -66,14 +65,14 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = true;
 
                 _currentFilePath = filePath;
-                Console.WriteLine($"Started watching {filePath}");
+                Console.WriteLine($@"Started watching {filePath}");
 
                 // Notify clients about the new file being watched
                 _hubContext.Clients.All.SendAsync("FileSelected", _currentFilePath);
             }
             else
             {
-                Console.WriteLine($"File {filePath} does not exist.");
+                Console.WriteLine($@"File {filePath} does not exist.");
                 _hubContext.Clients.All.SendAsync("FileSelectionFailed", $"File {filePath} does not exist.");
             }
         }
@@ -81,25 +80,25 @@ public class FileWatcherService : IHostedService, IDisposable
 
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
-        Console.WriteLine($"File {e.FullPath} has been modified.");
+        Console.WriteLine($@"File {e.FullPath} has been modified.");
         NotifyClients($"{e.FullPath}");
     }
 
     private void OnRenamed(object sender, RenamedEventArgs e)
     {
-        Console.WriteLine($"File renamed from {e.OldFullPath} to {e.FullPath}.");
+        Console.WriteLine($@"File renamed from {e.OldFullPath} to {e.FullPath}.");
         NotifyClients($"File renamed from {e.OldFullPath} to {e.FullPath}.");
     }
 
     private void OnDeleted(object sender, FileSystemEventArgs e)
     {
-        Console.WriteLine($"File {e.FullPath} has been deleted.");
+        Console.WriteLine($@"File {e.FullPath} has been deleted.");
         NotifyClients($"File {e.FullPath} has been deleted.");
     }
 
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
-        Console.WriteLine($"File {e.FullPath} has been created.");
+        Console.WriteLine($@"File {e.FullPath} has been created.");
         NotifyClients($"File {e.FullPath} has been created.");
     }
 
@@ -117,11 +116,11 @@ public class FileWatcherService : IHostedService, IDisposable
                 _watcher.EnableRaisingEvents = false;
                 _watcher.Dispose();
                 _watcher = null;
-                Console.WriteLine($"Stopped watching {_currentFilePath}");
+                Console.WriteLine($@"Stopped watching {_currentFilePath}");
             }
         }
 
-        Console.WriteLine("FileWatcherService stopped.");
+        Console.WriteLine(@"FileWatcherService stopped.");
         return Task.CompletedTask;
     }
 

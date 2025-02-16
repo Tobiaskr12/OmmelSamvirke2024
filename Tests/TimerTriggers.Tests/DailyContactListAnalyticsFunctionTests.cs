@@ -77,15 +77,6 @@ public class DailyContactListAnalyticsFunctionTests
             IsNewsletter = false
         };
 
-    private static DailyContactListAnalytics CreateTestDailyAnalytics(string name, DateTime date, int totalContacts) =>
-        new()
-        {
-            ContactListName = name,
-            Date = date.Date,
-            TotalContacts = totalContacts,
-            IsNewsletter = false
-        };
-
     private void SetupContactListRepository(List<ContactList> contactLists) =>
         _contactListRepository
             .FindAsync(default!)

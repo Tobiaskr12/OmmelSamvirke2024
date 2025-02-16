@@ -4,7 +4,6 @@ using FluentResults;
 using NSubstitute;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.ContactLists.Commands;
-using ServiceModules.Errors;
 
 namespace ServiceModules.Tests.Emails.ContactLists.Commands;
 

@@ -7,12 +7,13 @@ public static class TimelineGroupingHelper
 {
     public static IEnumerable<BucketedEntry> GroupByTimeInterval<T>(IEnumerable<T> items) where T : TimestampedEntry
     {
-        if (!items.Any()) return [];
+        IEnumerable<T> timestampedEntries = items as T[] ?? items.ToArray();
+        if (!timestampedEntries.Any()) return [];
 
-        var sortedItems = items.OrderBy(i => i.Timestamp).ToList();
-        var firstTimestamp = sortedItems.First().Timestamp;
-        var lastTimestamp = sortedItems.Last().Timestamp;
-        var totalRange = lastTimestamp - firstTimestamp;
+        List<T> sortedItems = timestampedEntries.OrderBy(i => i.Timestamp).ToList();
+        DateTime firstTimestamp = sortedItems.First().Timestamp;
+        DateTime lastTimestamp = sortedItems.Last().Timestamp;
+        TimeSpan totalRange = lastTimestamp - firstTimestamp;
 
         TimeSpan interval;
         if (totalRange.TotalMinutes <= 60)
@@ -44,13 +45,9 @@ public static class TimelineGroupingHelper
         {
             return timestamp.Date;
         }
-        else if (interval.TotalHours >= 1)
-        {
-            return new DateTime(timestamp.Year, timestamp.Month, timestamp.Day, timestamp.Hour, 0, 0);
-        }
-        else
-        {
-            return new DateTime(timestamp.Year, timestamp.Month, timestamp.Day, timestamp.Hour, timestamp.Minute, 0);
-        }
+
+        return interval.TotalHours >= 1 
+            ? new DateTime(timestamp.Year, timestamp.Month, timestamp.Day, timestamp.Hour, 0, 0) 
+            : new DateTime(timestamp.Year, timestamp.Month, timestamp.Day, timestamp.Hour, timestamp.Minute, 0);
     }
 }
