@@ -38,7 +38,7 @@ namespace DomainModules.Errors {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OmmelSamvirke.DomainModules.Errors.ErrorMessages.da", typeof(ErrorMessages_da).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DomainModules.Errors.ErrorMessages.da", typeof(ErrorMessages_da).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -182,6 +182,87 @@ namespace DomainModules.Errors {
         public static string Email_Subject_InvalidLength {
             get {
                 return ResourceManager.GetString("Email_Subject_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beskrivelsen på nyhedsbrevsgruppen skal være mellem 5-500 tegn lang.
+        /// </summary>
+        public static string NewsletterGroup_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("NewsletterGroup_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navnet på nyhedsbrevsgruppen skal være mellem 3-150 tegn langt.
+        /// </summary>
+        public static string NewsletterGroup_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("NewsletterGroup_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oprydningskampagnen skal være mindst 2 måneder lang.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_CampaignDurationMonths_InvalidDuration {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_CampaignDurationMonths_InvalidDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oprydningskampagnen kan ikke have et starttidspunkt der ligger i fortiden.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_CampaignStart_MustNotBeInThePast {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_CampaignStart_MustNotBeInThePast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen kunne ikke oprettes fordi den ikke kan sættes til at udløbe om mere end 7 dage.
+        /// </summary>
+        public static string NewsletterSubscriptionAction_Confirmation_AtMost7DaysInFuture {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriptionAction_Confirmation_AtMost7DaysInFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen kunne ikke oprettes fordi en udløbsdato ikke er defineret.
+        /// </summary>
+        public static string NewsletterSubscriptionAction_Confirmation_NotNull {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriptionAction_Confirmation_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen kunne ikke oprettes fordi den er udløbet.
+        /// </summary>
+        public static string NewsletterSubscriptionAction_ConfirmationTime_NotAfterExpiry {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriptionAction_ConfirmationTime_NotAfterExpiry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen kunne ikke oprettes fordi værdien er udefineret.
+        /// </summary>
+        public static string NewsletterSubscriptionAction_IsConfirmed_NotNull {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriptionAction_IsConfirmed_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen kunne ikke oprettes fordi nøglen for handlingen er tom.
+        /// </summary>
+        public static string NewsletterSubscriptionAction_Token_NotEmpty {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriptionAction_Token_NotEmpty", resourceCulture);
             }
         }
         

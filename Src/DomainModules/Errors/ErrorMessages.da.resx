@@ -63,4 +63,31 @@
     <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
         <value>Emailens vedhæftede filer skal være unikke</value>
     </data>
+    <data name="NewsletterGroup_Name_InvalidLength" xml:space="preserve">
+        <value>Navnet på nyhedsbrevsgruppen skal være mellem 3-150 tegn langt</value>
+    </data>
+    <data name="NewsletterGroup_Description_InvalidLength" xml:space="preserve">
+        <value>Beskrivelsen på nyhedsbrevsgruppen skal være mellem 5-500 tegn lang</value>
+    </data>
+    <data name="NewsletterGroupsCleanupCampaign_CampaignDurationMonths_InvalidDuration" xml:space="preserve">
+        <value>Oprydningskampagnen skal være mindst 2 måneder lang</value>
+    </data>
+    <data name="NewsletterGroupsCleanupCampaign_CampaignStart_MustNotBeInThePast" xml:space="preserve">
+        <value>Oprydningskampagnen kan ikke have et starttidspunkt der ligger i fortiden</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_ConfirmationTime_NotAfterExpiry" xml:space="preserve">
+        <value>Handlingen kunne ikke oprettes fordi den er udløbet</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Confirmation_AtMost7DaysInFuture" xml:space="preserve">
+        <value>Handlingen kunne ikke oprettes fordi den ikke kan sættes til at udløbe om mere end 7 dage</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Confirmation_NotNull" xml:space="preserve">
+        <value>Handlingen kunne ikke oprettes fordi en udløbsdato ikke er defineret</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_IsConfirmed_NotNull" xml:space="preserve">
+        <value>Handlingen kunne ikke oprettes fordi værdien er udefineret</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Token_NotEmpty" xml:space="preserve">
+        <value>Handlingen kunne ikke oprettes fordi nøglen for handlingen er tom</value>
+    </data>
 </root>

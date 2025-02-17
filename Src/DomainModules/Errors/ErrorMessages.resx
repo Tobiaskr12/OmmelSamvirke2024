@@ -63,4 +63,31 @@
     <data name="Email_Attachments_MustBeUnique" xml:space="preserve">
         <value>The email attachments must be unique</value>
     </data>
+    <data name="NewsletterGroup_Name_InvalidLength" xml:space="preserve">
+        <value>The name of the newsletter group must be between 3-150 characters long</value>
+    </data>
+    <data name="NewsletterGroup_Description_InvalidLength" xml:space="preserve">
+        <value>The description of the newsletter group must be between 5-500 characters long</value>
+    </data>
+    <data name="NewsletterGroupsCleanupCampaign_CampaignStart_MustNotBeInThePast" xml:space="preserve">
+        <value>The email cleanup campagin cannot have a start time in the past</value>
+    </data>
+    <data name="NewsletterGroupsCleanupCampaign_CampaignDurationMonths_InvalidDuration" xml:space="preserve">
+        <value>The email cleanup campaign must be at least 2 months long</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Token_NotEmpty" xml:space="preserve">
+        <value>The action could not be created because the token is empty</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Confirmation_AtMost7DaysInFuture" xml:space="preserve">
+        <value>The action could not be created because the expiry is set to more than 7 days</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_IsConfirmed_NotNull" xml:space="preserve">
+        <value>The action could not be created because the initial value is undefined</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_ConfirmationTime_NotAfterExpiry" xml:space="preserve">
+        <value>The action could not be created because it has expired</value>
+    </data>
+    <data name="NewsletterSubscriptionAction_Confirmation_NotNull" xml:space="preserve">
+        <value>The action could not be created because no expiry is defined</value>
+    </data>
 </root>
