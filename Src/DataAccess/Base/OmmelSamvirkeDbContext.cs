@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DomainModules.Common;
 using DomainModules.Emails.Entities;
+using DomainModules.Newsletters.Entities;
 
 namespace DataAccess.Base;
 
 public class OmmelSamvirkeDbContext : DbContext
 {
+    // Emails
     public DbSet<Email> Emails { get; init; }
     public DbSet<Recipient> Recipients { get; init; }
     public DbSet<Attachment> Attachments { get; init; }
@@ -14,6 +16,13 @@ public class OmmelSamvirkeDbContext : DbContext
     public DbSet<DailyEmailAnalytics> DailyEmailAnalytics { get; init; }
     public DbSet<DailyContactListAnalytics> DailyContactListAnalytics { get; init; }
     public DbSet<ContactListUnsubscription> ContactListUnsubscriptions { get; init; }
+    
+    // Newsletter
+    public DbSet<Newsletter> Newsletters { get; init; }
+    public DbSet<NewsletterGroup> NewsletterGroups { get; init; }
+    public DbSet<NewsletterGroupsCleanupCampaign> NewsletterGroupsCleanupCampaigns { get; init; }
+    public DbSet<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; init; }
+    public DbSet<NewsletterUnsubscribeConfirmation> NewsletterUnsubscribeConfirmations { get; init; }
     
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     

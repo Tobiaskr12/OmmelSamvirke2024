@@ -12,29 +12,21 @@ public static class DbContextSetup
         {
             string? connectionString = configurationManager.GetSection("SqlServerConnectionString").Value;
         
-            if (!string.IsNullOrEmpty(connectionString))
-            {
-                services.AddDbContext<OmmelSamvirkeDbContext>(options =>
-                    options.UseSqlServer(connectionString));
-            }
-            else
+            if (string.IsNullOrEmpty(connectionString))
             {
                 throw new Exception("Unable to get database connectionString");
             }
-        
-            // Run any pending migrations on startup
+            
+            services.AddDbContext<OmmelSamvirkeDbContext>(options => options.UseSqlServer(connectionString));
+            
             await using ServiceProvider serviceProvider = services.BuildServiceProvider();
             using IServiceScope scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<OmmelSamvirkeDbContext>();
-            if ((await dbContext.Database.GetPendingMigrationsAsync()).Any())
-            {
-                if (await dbContext.Database.EnsureCreatedAsync())
-                {
-                    await dbContext.Database.MigrateAsync();
-                }
-            }
+            
+            await dbContext.Database.MigrateAsync();
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             Console.WriteLine(ex);
         }
     }
