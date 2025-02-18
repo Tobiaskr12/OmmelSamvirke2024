@@ -1,4 +1,4 @@
-using Contracts.Emails.Sending.Queries;
+using Contracts.ServiceModules.Emails.Sending;
 using FluentResults;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.Sending.Queries;

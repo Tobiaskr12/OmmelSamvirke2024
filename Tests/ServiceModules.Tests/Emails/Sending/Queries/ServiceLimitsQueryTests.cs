@@ -1,5 +1,5 @@
 using Contracts.DataAccess.Emails.Enums;
-using Contracts.Emails.Sending.Queries;
+using Contracts.ServiceModules.Emails.Sending;
 using FluentResults;
 using DomainModules.Emails.Constants;
 using ServiceModules.Emails.Sending.Queries;

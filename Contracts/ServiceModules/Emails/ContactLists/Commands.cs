@@ -1,9 +1,8 @@
-﻿using FluentResults;
+﻿using DomainModules.Emails.Entities;
+using FluentResults;
 using MediatR;
-using DomainModules.Emails.Entities;
 
-// ReSharper disable once CheckNamespace
-namespace Contracts.Emails.ContactLists.Commands;
+namespace Contracts.ServiceModules.Emails.ContactLists;
 
 public record AddContactToContactListCommand(ContactList ContactList, Recipient Contact) : IRequest<Result<ContactList>>;
 

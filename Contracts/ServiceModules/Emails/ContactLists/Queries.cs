@@ -1,9 +1,8 @@
-﻿using FluentResults;
+﻿using DomainModules.Emails.Entities;
+using FluentResults;
 using MediatR;
-using DomainModules.Emails.Entities;
 
-// ReSharper disable once CheckNamespace
-namespace Contracts.Emails.ContactLists.Queries;
+namespace Contracts.ServiceModules.Emails.ContactLists;
 
 public record CountContactsInContactListQuery(int ContactListId) : IRequest<Result<int>>;
 

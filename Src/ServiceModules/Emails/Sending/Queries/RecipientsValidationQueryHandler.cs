@@ -1,4 +1,4 @@
-using Contracts.Emails.Sending.Queries;
+using Contracts.ServiceModules.Emails.Sending;
 using FluentResults;
 using FluentValidation.Results;
 using MediatR;

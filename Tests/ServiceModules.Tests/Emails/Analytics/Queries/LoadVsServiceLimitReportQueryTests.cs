@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using Contracts.DataAccess.Base;
 using Contracts.DataAccess.Emails.Enums;
-using Contracts.Emails.Analytics.Models;
-using Contracts.Emails.Analytics.Queries;
+using Contracts.ServiceModules.Emails.Analytics;
+using Contracts.ServiceModules.Emails.Analytics.Models;
 using FluentResults;
 using NSubstitute;
 using DomainModules.Emails.Entities;

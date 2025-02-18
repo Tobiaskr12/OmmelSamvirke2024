@@ -1,4 +1,4 @@
-using Contracts.Emails.EmailTemplateEngine;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using ServiceModules.Emails.EmailTemplateEngine;

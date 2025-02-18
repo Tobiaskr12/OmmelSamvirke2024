@@ -1,5 +1,5 @@
 using Contracts.DataAccess.Base;
-using Contracts.Emails.Analytics.Queries;
+using Contracts.ServiceModules.Emails.Analytics;
 using FluentResults;
 using NSubstitute;
 using DomainModules.Emails.Entities;

@@ -5,9 +5,9 @@ using DomainModules.Emails.Entities;
 using ServiceModules.Errors;
 using Contracts.SupportModules.Logging;
 using Contracts.DataAccess.Base;
-using Contracts.Emails.EmailTemplateEngine;
-using Contracts.Emails.ContactLists.Commands;
-using Contracts.Emails.Sending.Commands;
+using Contracts.ServiceModules.Emails.ContactLists;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
+using Contracts.ServiceModules.Emails.Sending;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
 

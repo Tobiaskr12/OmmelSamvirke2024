@@ -1,3 +1,3 @@
-﻿namespace Contracts.Emails.Analytics.Models;
+﻿namespace Contracts.ServiceModules.Emails.Analytics.Models;
 
 public record LoadVsServiceLimitReport(List<int> SegmentedCounts, List<int> CumulativeCounts);

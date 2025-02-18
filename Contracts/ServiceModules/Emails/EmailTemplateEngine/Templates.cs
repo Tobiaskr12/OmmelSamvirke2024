@@ -1,4 +1,4 @@
-namespace Contracts.Emails.EmailTemplateEngine;
+namespace Contracts.ServiceModules.Emails.EmailTemplateEngine;
 
 public  static class Templates
 {

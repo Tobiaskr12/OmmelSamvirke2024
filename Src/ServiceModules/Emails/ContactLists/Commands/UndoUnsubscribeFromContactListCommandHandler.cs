@@ -1,5 +1,5 @@
 using Contracts.DataAccess.Base;
-using Contracts.Emails.ContactLists.Commands;
+using Contracts.ServiceModules.Emails.ContactLists;
 using FluentResults;
 using MediatR;
 using DomainModules.Emails.Entities;

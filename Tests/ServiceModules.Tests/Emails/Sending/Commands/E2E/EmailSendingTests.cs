@@ -1,5 +1,5 @@
-using Contracts.Emails.Sending.Commands;
 using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.ServiceModules.Emails.Sending;
 using FluentResults;
 using MailKit;
 using MailKit.Net.Imap;

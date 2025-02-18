@@ -1,10 +1,10 @@
 using Contracts.DataAccess.Base;
 using Contracts.DataAccess.Emails;
 using Contracts.DataAccess.Emails.Enums;
-using Contracts.Emails.EmailTemplateEngine;
-using Contracts.Emails.Sending.Commands;
 using Contracts.Infrastructure.Emails;
 using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
+using Contracts.ServiceModules.Emails.Sending;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Extensions.Configuration;

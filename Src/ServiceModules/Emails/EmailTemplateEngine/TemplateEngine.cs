@@ -1,5 +1,5 @@
 using System.Text;
-using Contracts.Emails.EmailTemplateEngine;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using HtmlAgilityPack;

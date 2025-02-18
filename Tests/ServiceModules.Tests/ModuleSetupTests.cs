@@ -1,4 +1,4 @@
-using Contracts.Emails.Sending.Commands;
+using Contracts.ServiceModules.Emails.Sending;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

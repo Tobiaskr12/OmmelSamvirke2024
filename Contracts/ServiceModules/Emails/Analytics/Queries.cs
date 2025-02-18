@@ -1,11 +1,10 @@
 ﻿using Contracts.DataAccess.Emails.Enums;
-using Contracts.Emails.Analytics.Models;
+using Contracts.ServiceModules.Emails.Analytics.Models;
+using DomainModules.Emails.Entities;
 using FluentResults;
 using MediatR;
-using DomainModules.Emails.Entities;
 
-// ReSharper disable once CheckNamespace
-namespace Contracts.Emails.Analytics.Queries;
+namespace Contracts.ServiceModules.Emails.Analytics;
 
 public record DailyContactListAnalyticsQuery(DateTime Date) : IRequest<Result<List<DailyContactListAnalytics>>>;
 

@@ -1,4 +1,4 @@
-using Contracts.Emails.EmailTemplateEngine;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceModules.Emails.EmailTemplateEngine;

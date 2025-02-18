@@ -1,10 +1,9 @@
 ﻿using Contracts.ServiceModules.Emails.DTOs;
+using DomainModules.Emails.Entities;
 using FluentResults;
 using MediatR;
-using DomainModules.Emails.Entities;
 
-// ReSharper disable once CheckNamespace
-namespace Contracts.Emails.Sending.Commands;
+namespace Contracts.ServiceModules.Emails.Sending;
 
 public record SendEmailCommand(Email Email) : IRequest<Result<EmailSendingStatus>>;
 

@@ -1,6 +1,6 @@
 using FluentResults;
 
-namespace Contracts.Emails.EmailTemplateEngine;
+namespace Contracts.ServiceModules.Emails.EmailTemplateEngine;
 
 public interface IEmailTemplateEngine
 {

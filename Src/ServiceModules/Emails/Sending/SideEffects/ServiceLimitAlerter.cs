@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Contracts.DataAccess.Emails.Enums;
-using Contracts.Emails.EmailTemplateEngine;
 using Contracts.Infrastructure.Emails;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using DomainModules.Emails.Constants;

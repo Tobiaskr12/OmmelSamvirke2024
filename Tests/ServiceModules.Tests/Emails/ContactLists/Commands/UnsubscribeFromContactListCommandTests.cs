@@ -1,9 +1,9 @@
 using Contracts.DataAccess.Base;
-using Contracts.Emails.ContactLists.Commands;
-using Contracts.Emails.EmailTemplateEngine;
-using Contracts.Emails.Sending.Commands;
+using Contracts.ServiceModules.Emails.ContactLists;
 using Contracts.ServiceModules.Emails.DTOs;
+using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.ServiceModules.Emails.Enums;
+using Contracts.ServiceModules.Emails.Sending;
 using Contracts.SupportModules.Logging;
 using FluentResults;
 using MediatR;
