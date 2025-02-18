@@ -47,4 +47,10 @@
         <DependentUpon>ErrorMessages.resx</DependentUpon>
       </Compile>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Newsletters\CleanupCampaigns\" />
+      <Folder Include="Newsletters\GroupManagement\" />
+      <Folder Include="Newsletters\Sending\" />
+      <Folder Include="Newsletters\Subscriptions\" />
+    </ItemGroup>
 </Project>

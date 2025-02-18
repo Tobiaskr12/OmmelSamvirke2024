@@ -2,7 +2,7 @@ using DomainModules.Newsletters.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DataAccess.Newsletters;
+namespace DataAccess.Newsletters.Configuration;
 
 public class NewsletterEntityTypeConfiguration : IEntityTypeConfiguration<Newsletter>
 {
