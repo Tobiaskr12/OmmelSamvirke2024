@@ -4,6 +4,7 @@ using DataAccess.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(OmmelSamvirkeDbContext))]
-    partial class OmmelSamvirkeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250218182802_AddIsCampaignStartedPropertyToNewsletterGroupsCleanupCampaign")]
+    partial class AddIsCampaignStartedPropertyToNewsletterGroupsCleanupCampaign
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,17 +289,10 @@ namespace DataAccess.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("Token")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EmailAddress")
                         .IsUnique();
-
-                    b.HasIndex("Token");
 
                     b.ToTable("Recipients", (string)null);
                 });
@@ -389,9 +385,6 @@ namespace DataAccess.Migrations
 
                     b.Property<bool>("IsCampaignStarted")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastReminderSent")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

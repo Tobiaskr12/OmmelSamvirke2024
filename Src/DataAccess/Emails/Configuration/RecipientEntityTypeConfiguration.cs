@@ -17,5 +17,11 @@ public class RecipientEntityTypeConfiguration : IEntityTypeConfiguration<Recipie
         builder.Property(r => r.EmailAddress)
                .IsRequired()
                .HasMaxLength(256);
+
+        builder.Property(r => r.Token)
+               .IsRequired()
+               .HasDefaultValueSql("NEWID()");
+
+        builder.HasIndex(r => r.Token);
     }
 }

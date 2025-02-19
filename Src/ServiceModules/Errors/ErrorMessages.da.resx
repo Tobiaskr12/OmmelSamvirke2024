@@ -165,4 +165,19 @@
   <data name="FailedToGenerateEmailBodies" xml:space="preserve">
     <value>Der opstod en fejl under dannelse af e-mailen. Prøv igen.</value>
   </data>
+  <data name="NewsletterGroupsCleanupCampaign_NoNewsletterGroups" xml:space="preserve">
+    <value>Oprydningskampagnen kunne ikke startes, da det ikke var muligt at finde nogen nyhedsbrevsgrupper</value>
+  </data>
+  <data name="NewsletterGroupsCleanupCampaign_OverlappingCampaigns" xml:space="preserve">
+    <value>Oprydningskampagnen kunne ikke startes, da den vil overlappe med en allerede oprettet kampagne</value>
+  </data>
+  <data name="NewsletterSubscriberNotFound" xml:space="preserve">
+    <value>Vi kunne ikke finde en nyhedsbrevsmodtager ud fra det link du fulgte. Prøv igen.</value>
+  </data>
+  <data name="NoActiveCleanupCampaign" xml:space="preserve">
+    <value>Der er ikke nogen aktive oprydningskampagner lige nu. Måske er dit link udløbet?</value>
+  </data>
+  <data name="CleanupCampaign_CannotDeleteActiveCampaign" xml:space="preserve">
+    <value>Du kan ikke slette denne oprydningskampagne, da den aktiv</value>
+  </data>
 </root>

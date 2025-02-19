@@ -1,12 +1,13 @@
 using System.Linq.Expressions;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
-using NSubstitute;
 using DomainModules.Emails.Entities;
 using FluentResults;
+using NSubstitute;
 using TestDatabaseFixtures;
+using TimerTriggers.Emails;
 
-namespace TimerTriggers.Tests;
+namespace TimerTriggers.Tests.Emails;
 
 [TestFixture, Category("UnitTests")]
 public class DailyContactListAnalyticsFunctionTests
@@ -105,6 +106,7 @@ public class DailyContactListAnalyticsFunctionIntegrationTests
     [SetUp]
     public async Task Setup()
     {
+        await _integrationTestingHelper.ResetDatabase();
         DateTime yesterday = DateTime.UtcNow.AddDays(-1).Date;
 
         // ContactList 1 from yesterday with two contacts.

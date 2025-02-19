@@ -65,7 +65,7 @@ public interface IRepository<T> where T : BaseEntity
     /// A Result of <see cref="List{T}"/> containing the matching entities.
     /// </returns>
     Task<Result<List<T>>> FindAsync(
-        Expression<Func<T, bool>> predicate,
+        Expression<Func<T, bool>>? predicate,
         bool readOnly = true,
         CancellationToken cancellationToken = default);
 

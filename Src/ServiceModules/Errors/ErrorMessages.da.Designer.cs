@@ -60,6 +60,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du kan ikke slette denne oprydningskampagne, da den aktiv.
+        /// </summary>
+        public static string CleanupCampaign_CannotDeleteActiveCampaign {
+            get {
+                return ResourceManager.GetString("CleanupCampaign_CannotDeleteActiveCampaign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kontakten findes ikke i kontaktlisten.
         /// </summary>
         public static string ContactDoesNotExistInContactList {
@@ -182,6 +191,42 @@ namespace ServiceModules.Errors {
         public static string GenericValidationError {
             get {
                 return ResourceManager.GetString("GenericValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oprydningskampagnen kunne ikke startes, da det ikke var muligt at finde nogen nyhedsbrevsgrupper.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_NoNewsletterGroups {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_NoNewsletterGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oprydningskampagnen kunne ikke startes, da den vil overlappe med en allerede oprettet kampagne.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_OverlappingCampaigns {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_OverlappingCampaigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vi kunne ikke finde en nyhedsbrevsmodtager ud fra det link du fulgte. Prøv igen..
+        /// </summary>
+        public static string NewsletterSubscriberNotFound {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der er ikke nogen aktive oprydningskampagner lige nu. Måske er dit link udløbet?.
+        /// </summary>
+        public static string NoActiveCleanupCampaign {
+            get {
+                return ResourceManager.GetString("NoActiveCleanupCampaign", resourceCulture);
             }
         }
         

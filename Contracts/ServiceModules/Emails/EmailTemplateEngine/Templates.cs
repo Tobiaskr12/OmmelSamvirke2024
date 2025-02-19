@@ -12,6 +12,11 @@ public  static class Templates
     {
         public const string RequestUnsubscribe = "ContactLists/RequestUnsubscribe.html";
         public const string UserRemovedFromContactList = "ContactLists/UserRemovedFromContactList.html";
-        
+    }
+
+    public static class Newsletters
+    {
+        public const string CleanupCampaign = "Newsletters/CleanupCampaign.html";
+        public const string CleanupNotice = "Newsletters/CleanupNotice.html";
     }
 }

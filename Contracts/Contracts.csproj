@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ServiceModules\Newsletters\" />
+    <Folder Include="ServiceModules\Newsletters\GroupManagement\" />
+    <Folder Include="ServiceModules\Newsletters\Sending\" />
+    <Folder Include="ServiceModules\Newsletters\Subscriptions\" />
   </ItemGroup>
 
 </Project>

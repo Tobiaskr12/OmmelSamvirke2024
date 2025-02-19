@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="da" style="font-family: 'Roboto', Arial, Helvetica, sans-serif">
+<head>
+    <title>Ønsker du stadig at modtage nyhedsbreve fra Ommel Samvirke?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f4f4">
+
+{{>header}}
+
+<div style="max-width: 700px; font-family: 'Roboto', Arial, Helvetica, sans-serif; margin: 0 auto; border: 1px solid #d6d6d6; background: white; padding: 20px;">
+    <p style="line-height: 24px; font-size: 16px; margin-bottom: 40px;">
+        Ommel Samvirke er i gang med at vedligeholde vores mailingliste for nyhedsbreve for at sikre, at vi udelukkende 
+        sender nyhedsbreve til interesserede modtagere. Derfor beder vi dig om at bekræfte, at du fortsat ønsker at modtage 
+        dine tilmeldte nyhedsbreve.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        <strong>Hvad skal du gøre?</strong><br>
+        Hvis du ønsker at fortsætte med at modtage vores nyhedsbreve, skal du klikke på knappen "Bekræft min tilmelding"
+        nedenfor. Vi vil sende denne påmindelse én gang om måneden i de næste {{MonthsDuration}} måneder. Hvis vi ikke
+        modtager en bekræftelse fra dig inden for denne periode, vil din e-mail-adresse automatisk blive fjernet fra
+        vores system.
+    </p>
+
+    <p style="text-align: center; margin: 30px 0 40px;">
+        <a href="{{ConfirmationLink}}" target="_blank" style="background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; font-size: 16px; border-radius: 5px;">
+            Bekræft min tilmelding
+        </a>
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        <strong>Ønsker du ikke længere at modtage nyhedsbreve?</strong><br>
+        Hvis du ikke længere ønsker at modtage vores nyhedsbreve, kan du enten blot se bort fra denne e-mail – så modtager
+        du fortsat påmindelser i den kommende periode – <em>eller</em> du kan afmelde dig én eller flere nyhedsbreve ved at klikke på knappen
+        nedenfor. Vælger du at afmelde via knappen, vil du ikke modtage flere e-mails af denne type.
+    </p>
+
+    <p style="text-align: center; margin: 30px 0 40px;">
+        <a href="{{UnsubscribeLink}}" target="_blank" style="background-color: #2C3E50; color: white; padding: 10px 20px; text-decoration: none; font-size: 16px; border-radius: 5px;">
+            Afmeld én eller flere nyhedsbreve
+        </a>
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Med venlig hilsen,<br>
+        Ommel Samvirke
+    </p>
+
+    {{>no-reply}}
+</div>
+
+{{>footer}}
+
+</body>
+</html>

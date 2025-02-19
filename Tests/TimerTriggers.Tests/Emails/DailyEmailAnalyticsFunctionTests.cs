@@ -1,12 +1,13 @@
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
-using FluentResults;
-using NSubstitute;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
+using FluentResults;
+using NSubstitute;
 using TestDatabaseFixtures;
+using TimerTriggers.Emails;
 
-namespace TimerTriggers.Tests;
+namespace TimerTriggers.Tests.Emails;
 
 [TestFixture, Category("UnitTests")]
 public class DailyEmailAnalyticsFunctionTests
@@ -111,6 +112,7 @@ public class DailyEmailAnalyticsFunctionIntegrationTests
     [SetUp]
     public async Task Setup()
     {
+        await _integrationTestingHelper.ResetDatabase();
         DateTime yesterday = DateTime.UtcNow.AddDays(-1).Date;
 
         // Email 1: one recipient from yesterday.

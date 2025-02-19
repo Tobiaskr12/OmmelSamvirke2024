@@ -60,6 +60,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot delete an active cleanup campaign.
+        /// </summary>
+        public static string CleanupCampaign_CannotDeleteActiveCampaign {
+            get {
+                return ResourceManager.GetString("CleanupCampaign_CannotDeleteActiveCampaign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The contact does not exist in the contact list.
         /// </summary>
         public static string ContactDoesNotExistInContactList {
@@ -182,6 +191,42 @@ namespace ServiceModules.Errors {
         public static string GenericValidationError {
             get {
                 return ResourceManager.GetString("GenericValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The cleanup campaign could not be started. No newsletter groups were found.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_NoNewsletterGroups {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_NoNewsletterGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The cleanup campaign could not be started, as it would overlap with an existing cleanup campaign.
+        /// </summary>
+        public static string NewsletterGroupsCleanupCampaign_OverlappingCampaigns {
+            get {
+                return ResourceManager.GetString("NewsletterGroupsCleanupCampaign_OverlappingCampaigns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We could not find a newsletter subscriber via the link you followed. Please try again.
+        /// </summary>
+        public static string NewsletterSubscriberNotFound {
+            get {
+                return ResourceManager.GetString("NewsletterSubscriberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no active newletter cleanup campaigns at the moment. Maybe your link has expired..
+        /// </summary>
+        public static string NoActiveCleanupCampaign {
+            get {
+                return ResourceManager.GetString("NoActiveCleanupCampaign", resourceCulture);
             }
         }
         

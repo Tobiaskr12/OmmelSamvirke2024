@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
+using DomainModules.Emails.Entities;
 using FluentResults;
 using Microsoft.Azure.Functions.Worker;
-using DomainModules.Emails.Entities;
 
-namespace TimerTriggers;
+namespace TimerTriggers.Emails;
 
 public class DailyContactListAnalyticsFunction
 {

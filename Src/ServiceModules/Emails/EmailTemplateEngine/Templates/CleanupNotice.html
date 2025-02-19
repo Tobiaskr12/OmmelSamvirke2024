@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="da" style="font-family: 'Roboto', Arial, Helvetica, sans-serif">
+<head>
+    <title>Du er nu afmeldt fra alle nyhedsbreve fra Ommel Samvirke</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f4f4">
+
+{{>header}}
+
+<div style="max-width: 700px; font-family: 'Roboto', Arial, Helvetica, sans-serif; margin: 0 auto; border: 1px solid #d6d6d6; background: white; padding: 20px;">
+    <p style="line-height: 24px; font-size: 16px;">
+        Du er blevet afmeldt alle nyhedsbreve fra Ommel Samvirke. 
+        Dette sker for at sikre, at vores kommunikation udelukkende når ud til de modtagere, der fortsat ønsker at modtage den.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Vi har i en periode udsendt e-mails til alle modtagere af vores nyhedsbreve for at bede dem bekræfte at de stadig ønsker at modtage nyhedsbrevene.
+        Da vi ikke har modtaget en bekræftelse fra dig, har vi afmeldt dig fra alle nyhedsbreve.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        <strong>Nyhedsbreve du er blevet afmeldt fra:</strong><br>
+        {{UnsubscribedNewsletters}}.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Skulle du på et senere tidspunkt ønske at modtage vores nyhedsbreve igen, er du altid velkommen til at tilmelde dig via vores hjemmeside.
+    </p>
+
+    <p style="line-height: 24px; font-size: 16px;">
+        Med venlig hilsen,<br>
+        Ommel Samvirke
+    </p>
+
+    {{>no-reply}}
+</div>
+
+{{>footer}}
+
+</body>
+</html>

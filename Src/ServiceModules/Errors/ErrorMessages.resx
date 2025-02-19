@@ -165,4 +165,19 @@
   <data name="FailedToGenerateEmailBodies" xml:space="preserve">
     <value>An error occurred while generating the email. Please try again.</value>
   </data>
+  <data name="NewsletterGroupsCleanupCampaign_OverlappingCampaigns" xml:space="preserve">
+    <value>The cleanup campaign could not be started, as it would overlap with an existing cleanup campaign</value>
+  </data>
+  <data name="NewsletterGroupsCleanupCampaign_NoNewsletterGroups" xml:space="preserve">
+    <value>The cleanup campaign could not be started. No newsletter groups were found</value>
+  </data>
+  <data name="NewsletterSubscriberNotFound" xml:space="preserve">
+    <value>We could not find a newsletter subscriber via the link you followed. Please try again</value>
+  </data>
+  <data name="NoActiveCleanupCampaign" xml:space="preserve">
+    <value>There are no active newletter cleanup campaigns at the moment. Maybe your link has expired.</value>
+  </data>
+  <data name="CleanupCampaign_CannotDeleteActiveCampaign" xml:space="preserve">
+    <value>You cannot delete an active cleanup campaign</value>
+  </data>
 </root>

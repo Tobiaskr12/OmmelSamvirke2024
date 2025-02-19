@@ -81,7 +81,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
     }
 
     public async Task<Result<List<T>>> FindAsync(
-        Expression<Func<T, bool>> predicate,
+        Expression<Func<T, bool>>? predicate,
         bool readOnly = true,
         CancellationToken cancellationToken = default)
     {
