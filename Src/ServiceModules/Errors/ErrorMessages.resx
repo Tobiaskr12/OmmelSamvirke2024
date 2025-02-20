@@ -180,4 +180,10 @@
   <data name="CleanupCampaign_CannotDeleteActiveCampaign" xml:space="preserve">
     <value>You cannot delete an active cleanup campaign</value>
   </data>
+  <data name="NewsletterConfirmationTokenExpired" xml:space="preserve">
+    <value>The link has expired. Please sign up for the newsletter again.</value>
+  </data>
+  <data name="NewsletterConfirmationTokenAlreadyConfirmed" xml:space="preserve">
+    <value>You have already confirmed your subscription to the newsletter</value>
+  </data>
 </root>

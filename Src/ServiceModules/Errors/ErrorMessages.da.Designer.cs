@@ -195,6 +195,24 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du har allerede bekræftet din tilmelding til ét eller flere nyhedsbreve via dette link.
+        /// </summary>
+        public static string NewsletterConfirmationTokenAlreadyConfirmed {
+            get {
+                return ResourceManager.GetString("NewsletterConfirmationTokenAlreadyConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linket er udløbet. Tilmeld dig venligst nyhedsbrevet igen..
+        /// </summary>
+        public static string NewsletterConfirmationTokenExpired {
+            get {
+                return ResourceManager.GetString("NewsletterConfirmationTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oprydningskampagnen kunne ikke startes, da det ikke var muligt at finde nogen nyhedsbrevsgrupper.
         /// </summary>
         public static string NewsletterGroupsCleanupCampaign_NoNewsletterGroups {

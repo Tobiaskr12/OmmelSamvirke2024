@@ -180,4 +180,10 @@
   <data name="CleanupCampaign_CannotDeleteActiveCampaign" xml:space="preserve">
     <value>Du kan ikke slette denne oprydningskampagne, da den aktiv</value>
   </data>
+  <data name="NewsletterConfirmationTokenExpired" xml:space="preserve">
+    <value>Linket er udløbet. Tilmeld dig venligst nyhedsbrevet igen.</value>
+  </data>
+  <data name="NewsletterConfirmationTokenAlreadyConfirmed" xml:space="preserve">
+    <value>Du har allerede bekræftet din tilmelding til ét eller flere nyhedsbreve via dette link</value>
+  </data>
 </root>

@@ -195,6 +195,24 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have already confirmed your subscription to the newsletter.
+        /// </summary>
+        public static string NewsletterConfirmationTokenAlreadyConfirmed {
+            get {
+                return ResourceManager.GetString("NewsletterConfirmationTokenAlreadyConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The link has expired. Please sign up for the newsletter again..
+        /// </summary>
+        public static string NewsletterConfirmationTokenExpired {
+            get {
+                return ResourceManager.GetString("NewsletterConfirmationTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The cleanup campaign could not be started. No newsletter groups were found.
         /// </summary>
         public static string NewsletterGroupsCleanupCampaign_NoNewsletterGroups {

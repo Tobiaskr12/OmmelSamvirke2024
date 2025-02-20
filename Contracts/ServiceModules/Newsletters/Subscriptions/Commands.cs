@@ -14,3 +14,13 @@ public class SubscribeToNewslettersCommand : IRequest<Result>
         NewsletterGroupIds = newsletterGroupIds;
     }
 }
+
+public class ConfirmNewsletterSubscriptionCommand : IRequest<Result>
+{
+    public Guid Token { get; }
+
+    public ConfirmNewsletterSubscriptionCommand(Guid token)
+    {
+        Token = token;
+    }
+}
