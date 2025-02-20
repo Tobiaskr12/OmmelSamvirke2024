@@ -30,7 +30,7 @@
       <ProjectReference Include="..\..\Bootstrapper\Bootstrapper.csproj" />
       <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Src\ServiceModules\ServiceModules.csproj" />
-      <ProjectReference Include="..\TestDatabaseFixtures\TestDatabaseFixtures.csproj" />
+      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,7 +44,7 @@
 
     <ItemGroup>
       <Folder Include="Newsletters\GroupManagement\" />
-      <Folder Include="Newsletters\Sending\" />
+      <Folder Include="Newsletters\Sending\Queries\" />
       <Folder Include="Newsletters\Subscriptions\" />
     </ItemGroup>
 

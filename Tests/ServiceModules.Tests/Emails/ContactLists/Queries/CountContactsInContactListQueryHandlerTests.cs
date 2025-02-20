@@ -5,7 +5,7 @@ using NSubstitute;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.ContactLists.Queries;
 using ServiceModules.Errors;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace ServiceModules.Tests.Emails.ContactLists.Queries;
 

@@ -5,7 +5,7 @@ using NSubstitute;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.Analytics.Queries;
 using ServiceModules.Errors;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace ServiceModules.Tests.Emails.Analytics.Queries;
 

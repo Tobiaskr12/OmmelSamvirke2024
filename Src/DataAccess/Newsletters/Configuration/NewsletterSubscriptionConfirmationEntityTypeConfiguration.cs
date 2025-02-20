@@ -23,5 +23,14 @@ public class NewsletterSubscriptionConfirmationEntityTypeConfiguration : IEntity
         builder.Property(nsc => nsc.ConfirmationTime);
 
         builder.HasIndex(nsc => nsc.ConfirmationExpiry);
+        
+        builder.HasOne(nsc => nsc.Recipient)
+               .WithMany(r => r.NewsletterSubscriptionConfirmations)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(nsc => nsc.NewsletterGroups)
+               .WithMany(ng => ng.NewsletterSubscriptionConfirmations)
+               .UsingEntity(j => j.ToTable("NewsletterSubscriptionConfirmationNewsletterGroups"));
     }
 }

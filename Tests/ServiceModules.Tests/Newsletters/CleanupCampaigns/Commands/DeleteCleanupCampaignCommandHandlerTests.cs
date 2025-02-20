@@ -5,7 +5,7 @@ using FluentResults;
 using NSubstitute;
 using ServiceModules.Errors;
 using ServiceModules.Newsletters.CleanupCampaigns.Commands;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace ServiceModules.Tests.Newsletters.CleanupCampaigns.Commands;
 

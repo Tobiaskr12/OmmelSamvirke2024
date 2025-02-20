@@ -7,7 +7,7 @@ using DataAccess.Emails.Repositories;
 using DataAccess.Errors;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace DataAccess.Tests.Emails;
 

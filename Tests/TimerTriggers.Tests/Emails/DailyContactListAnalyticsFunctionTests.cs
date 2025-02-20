@@ -4,7 +4,7 @@ using Contracts.SupportModules.Logging;
 using DomainModules.Emails.Entities;
 using FluentResults;
 using NSubstitute;
-using TestDatabaseFixtures;
+using TestHelpers;
 using TimerTriggers.Emails;
 
 namespace TimerTriggers.Tests.Emails;

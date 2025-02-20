@@ -2,7 +2,7 @@ using Contracts.SupportModules.Logging;
 using NSubstitute;
 using DataAccess.Base;
 using DomainModules.Emails.Entities;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace DataAccess.Tests.Common;
 

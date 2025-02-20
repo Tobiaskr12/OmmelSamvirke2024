@@ -27,7 +27,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Src\TimerTriggers\TimerTriggers.csproj" />
-      <ProjectReference Include="..\TestDatabaseFixtures\TestDatabaseFixtures.csproj" />
+      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using DomainModules.Newsletters.Entities;
 using FluentResults;
 using NSubstitute;
 using ServiceModules.Newsletters.CleanupCampaigns.Queries;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace ServiceModules.Tests.Newsletters.CleanupCampaigns.Queries;
 

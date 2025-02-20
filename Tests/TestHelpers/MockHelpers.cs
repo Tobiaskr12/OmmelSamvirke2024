@@ -1,6 +1,6 @@
 using FluentResults;
 
-namespace TestDatabaseFixtures;
+namespace TestHelpers;
 
 public static class MockHelpers
 {

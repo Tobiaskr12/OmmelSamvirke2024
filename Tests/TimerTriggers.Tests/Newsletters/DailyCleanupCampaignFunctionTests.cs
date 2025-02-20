@@ -11,7 +11,7 @@ using FluentResults;
 using MediatR;
 using NSubstitute;
 using TimerTriggers.Newsletters;
-using TestDatabaseFixtures;
+using TestHelpers;
 
 namespace TimerTriggers.Tests.Newsletters;
 

@@ -50,6 +50,6 @@
     <ItemGroup>
       <Folder Include="Newsletters\GroupManagement\" />
       <Folder Include="Newsletters\Sending\" />
-      <Folder Include="Newsletters\Subscriptions\" />
+      <Folder Include="Newsletters\Subscriptions\Queries\" />
     </ItemGroup>
 </Project>

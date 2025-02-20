@@ -18,5 +18,6 @@ public  static class Templates
     {
         public const string CleanupCampaign = "Newsletters/CleanupCampaign.html";
         public const string CleanupNotice = "Newsletters/CleanupNotice.html";
+        public const string ConfirmNewsletterSubscription = "Newsletters/ConfirmNewsletterSubscription.html";
     }
 }
