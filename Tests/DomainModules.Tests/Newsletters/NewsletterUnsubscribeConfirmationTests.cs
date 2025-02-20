@@ -1,3 +1,4 @@
+using DomainModules.Emails.Entities;
 using DomainModules.Errors;
 using DomainModules.Newsletters.Entities;
 using DomainModules.Newsletters.Validators;
@@ -19,7 +20,8 @@ public class NewsletterUnsubscribeConfirmationTests
         {
             ConfirmationExpiry = DateTime.UtcNow.AddDays(7),
             IsConfirmed = false,
-            ConfirmationTime = null
+            ConfirmationTime = null,
+            Recipient = new Recipient { EmailAddress = "testt@example.com" }
         };
     }
 

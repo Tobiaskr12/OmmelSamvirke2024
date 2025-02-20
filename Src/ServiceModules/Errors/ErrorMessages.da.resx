@@ -186,4 +186,22 @@
   <data name="NewsletterConfirmationTokenAlreadyConfirmed" xml:space="preserve">
     <value>Du har allerede bekræftet din tilmelding til ét eller flere nyhedsbreve via dette link</value>
   </data>
+  <data name="NewsletterRecipientNotSubscribedToAnything" xml:space="preserve">
+    <value>Du er ikke tilmeldt nogen nyhedsbreve</value>
+  </data>
+  <data name="RecipientNotFound" xml:space="preserve">
+    <value>Systemet kunne ikke finde en nyhedsbrevsmodtager med den angivne e-mailadresse</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenInvalid" xml:space="preserve">
+    <value>Handlingen er ikke gyldig. Prøv at åbne siden fra linket i e-mailen og prøv igen</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenExpired" xml:space="preserve">
+    <value>Linket i e-mailen er udløbet. Prøv at afmelde dig nyhedsbrevet igen, via hjemmesiden</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenAlreadyUsed" xml:space="preserve">
+    <value>Du er allerede afmeldt</value>
+  </data>
+  <data name="NewletterUnsubscribedNoResultAfterFilteringActiveRequests" xml:space="preserve">
+    <value>Du har allerede anmodet om at blive afmeldt nyhedsbreve i denne uge. Du skal bruge det link vi har sendt til din e-mailadresse</value>
+  </data>
 </root>

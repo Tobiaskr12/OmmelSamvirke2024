@@ -195,6 +195,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du har allerede anmodet om at blive afmeldt nyhedsbreve i denne uge. Du skal bruge det link vi har sendt til din e-mailadresse.
+        /// </summary>
+        public static string NewletterUnsubscribedNoResultAfterFilteringActiveRequests {
+            get {
+                return ResourceManager.GetString("NewletterUnsubscribedNoResultAfterFilteringActiveRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Du har allerede bekræftet din tilmelding til ét eller flere nyhedsbreve via dette link.
         /// </summary>
         public static string NewsletterConfirmationTokenAlreadyConfirmed {
@@ -231,6 +240,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du er ikke tilmeldt nogen nyhedsbreve.
+        /// </summary>
+        public static string NewsletterRecipientNotSubscribedToAnything {
+            get {
+                return ResourceManager.GetString("NewsletterRecipientNotSubscribedToAnything", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vi kunne ikke finde en nyhedsbrevsmodtager ud fra det link du fulgte. Prøv igen..
         /// </summary>
         public static string NewsletterSubscriberNotFound {
@@ -240,11 +258,47 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du er allerede afmeldt.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenAlreadyUsed {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linket i e-mailen er udløbet. Prøv at afmelde dig nyhedsbrevet igen, via hjemmesiden.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenExpired {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handlingen er ikke gyldig. Prøv at åbne siden fra linket i e-mailen og prøv igen.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenInvalid {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der er ikke nogen aktive oprydningskampagner lige nu. Måske er dit link udløbet?.
         /// </summary>
         public static string NoActiveCleanupCampaign {
             get {
                 return ResourceManager.GetString("NoActiveCleanupCampaign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Systemet kunne ikke finde en nyhedsbrevsmodtager med den angivne e-mailadresse.
+        /// </summary>
+        public static string RecipientNotFound {
+            get {
+                return ResourceManager.GetString("RecipientNotFound", resourceCulture);
             }
         }
         

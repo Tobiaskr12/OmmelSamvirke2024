@@ -7,7 +7,7 @@ using NSubstitute;
 using ServiceModules.Newsletters.Subscriptions.Commands;
 using TestHelpers;
 
-namespace ServiceModules.Tests.Newsletters.Sending.Commands;
+namespace ServiceModules.Tests.Newsletters.Subscriptions.Commands;
 
 [TestFixture, Category("UnitTests")]
 public class ConfirmNewsletterSubscriptionCommandHandlerTests

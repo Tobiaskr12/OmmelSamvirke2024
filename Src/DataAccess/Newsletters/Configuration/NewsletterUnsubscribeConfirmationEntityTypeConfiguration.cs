@@ -23,5 +23,14 @@ public class NewsletterUnsubscribeConfirmationEntityTypeConfiguration : IEntityT
         builder.Property(nuc => nuc.ConfirmationTime);
 
         builder.HasIndex(nuc => nuc.ConfirmationExpiry);
+        
+        builder.HasOne(nsc => nsc.Recipient)
+               .WithMany(r => r.NewsletterUnsubscribeConfirmations)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(nsc => nsc.NewsletterGroups)
+               .WithMany(ng => ng.NewsletterUnsubscribeConfirmations)
+               .UsingEntity(j => j.ToTable("NewsletterUnsubscribeConfirmationNewsletterGroups"));
     }
 }

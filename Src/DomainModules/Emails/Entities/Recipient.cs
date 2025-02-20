@@ -9,4 +9,5 @@ public class Recipient : BaseEntity
     public Guid Token { get; init; } = Guid.NewGuid();
     
     public List<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; set; } = [];
+    public List<NewsletterUnsubscribeConfirmation> NewsletterUnsubscribeConfirmations { get; set; } = [];
 }

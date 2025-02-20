@@ -195,6 +195,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve already tried to unsubscribe within the past week. Please use the link in the email we have sent to you.
+        /// </summary>
+        public static string NewletterUnsubscribedNoResultAfterFilteringActiveRequests {
+            get {
+                return ResourceManager.GetString("NewletterUnsubscribedNoResultAfterFilteringActiveRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have already confirmed your subscription to the newsletter.
         /// </summary>
         public static string NewsletterConfirmationTokenAlreadyConfirmed {
@@ -231,6 +240,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not subscribed to any newsletters.
+        /// </summary>
+        public static string NewsletterRecipientNotSubscribedToAnything {
+            get {
+                return ResourceManager.GetString("NewsletterRecipientNotSubscribedToAnything", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We could not find a newsletter subscriber via the link you followed. Please try again.
         /// </summary>
         public static string NewsletterSubscriberNotFound {
@@ -240,11 +258,47 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have already unsubscribed.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenAlreadyUsed {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenAlreadyUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The link you followed to get here has expired. Please create a new request if you want to unsubscribe from a newsletter.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenExpired {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request is not valid. Please reopen the page from the link in the email and try again.
+        /// </summary>
+        public static string NewsletterUnsubscribeTokenInvalid {
+            get {
+                return ResourceManager.GetString("NewsletterUnsubscribeTokenInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are no active newletter cleanup campaigns at the moment. Maybe your link has expired..
         /// </summary>
         public static string NoActiveCleanupCampaign {
             get {
                 return ResourceManager.GetString("NoActiveCleanupCampaign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We could not find someone with that email address in our system.
+        /// </summary>
+        public static string RecipientNotFound {
+            get {
+                return ResourceManager.GetString("RecipientNotFound", resourceCulture);
             }
         }
         

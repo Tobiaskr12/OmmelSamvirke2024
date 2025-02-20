@@ -186,4 +186,22 @@
   <data name="NewsletterConfirmationTokenAlreadyConfirmed" xml:space="preserve">
     <value>You have already confirmed your subscription to the newsletter</value>
   </data>
+  <data name="RecipientNotFound" xml:space="preserve">
+    <value>We could not find someone with that email address in our system</value>
+  </data>
+  <data name="NewsletterRecipientNotSubscribedToAnything" xml:space="preserve">
+    <value>You are not subscribed to any newsletters</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenInvalid" xml:space="preserve">
+    <value>The request is not valid. Please reopen the page from the link in the email and try again</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenExpired" xml:space="preserve">
+    <value>The link you followed to get here has expired. Please create a new request if you want to unsubscribe from a newsletter</value>
+  </data>
+  <data name="NewsletterUnsubscribeTokenAlreadyUsed" xml:space="preserve">
+    <value>You have already unsubscribed</value>
+  </data>
+  <data name="NewletterUnsubscribedNoResultAfterFilteringActiveRequests" xml:space="preserve">
+    <value>You've already tried to unsubscribe within the past week. Please use the link in the email we have sent to you</value>
+  </data>
 </root>

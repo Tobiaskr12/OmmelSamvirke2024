@@ -24,3 +24,7 @@ public class ConfirmNewsletterSubscriptionCommand : IRequest<Result>
         Token = token;
     }
 }
+
+public record UnsubscribeFromNewslettersCommand(string EmailAddress, List<int> NewsletterGroupIds) : IRequest<Result>;
+
+public record ConfirmUnsubscribeFromNewslettersCommand(Guid Token) : IRequest<Result>;

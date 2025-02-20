@@ -10,4 +10,5 @@ public class NewsletterGroup : BaseEntity
     public required ContactList ContactList { get; set; }
     
     public List<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; set; } = [];
+    public List<NewsletterUnsubscribeConfirmation> NewsletterUnsubscribeConfirmations { get; set; } = [];
 }
