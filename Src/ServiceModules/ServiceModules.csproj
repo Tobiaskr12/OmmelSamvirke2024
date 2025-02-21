@@ -48,7 +48,6 @@
       </Compile>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Newsletters\GroupManagement\Queries\" />
       <Folder Include="Newsletters\Sending\" />
       <Folder Include="Newsletters\Subscriptions\Queries\" />
     </ItemGroup>
