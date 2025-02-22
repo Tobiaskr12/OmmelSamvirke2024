@@ -94,7 +94,6 @@ public class DailyContactListAnalyticsFunctionTests
 [TestFixture, Category("IntegrationTests")]
 public class DailyContactListAnalyticsFunctionIntegrationTests
 {
-    private IntegrationTestingHelper _integrationTestingHelper;
     private IRepository<ContactList> _contactListRepository;
     private IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
     private IRepository<NewsletterGroup> _newsletterGroupsRepository;
@@ -104,18 +103,17 @@ public class DailyContactListAnalyticsFunctionIntegrationTests
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _integrationTestingHelper = new IntegrationTestingHelper();
-        _contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
-        _dailyContactListAnalyticsRepository = _integrationTestingHelper.GetService<IRepository<DailyContactListAnalytics>>();
+        _contactListRepository = GlobalTestSetup.GetService<IRepository<ContactList>>();
+        _dailyContactListAnalyticsRepository = GlobalTestSetup.GetService<IRepository<DailyContactListAnalytics>>();
         _newsletterGroupsRepository = Substitute.For<IRepository<NewsletterGroup>>();
-        _loggingHandler = _integrationTestingHelper.GetService<ILoggingHandler>();
-        _traceHandler = _integrationTestingHelper.GetService<ITraceHandler>();
+        _loggingHandler = GlobalTestSetup.GetService<ILoggingHandler>();
+        _traceHandler = GlobalTestSetup.GetService<ITraceHandler>();
     }
     
     [SetUp]
     public async Task Setup()
     {
-        await _integrationTestingHelper.ResetDatabase();
+        await GlobalTestSetup.ResetDatabase();
         DateTime yesterday = DateTime.UtcNow.AddDays(-1).Date;
 
         // ContactList 1 from yesterday with two contacts.

@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using NUnit.Framework;
-using Microsoft.EntityFrameworkCore;
 using DataAccess.Base;
+using Microsoft.EntityFrameworkCore;
 
-namespace TestHelpers;
+namespace DataAccess.Tests;
 
 public abstract class TestDatabaseFixture
 {

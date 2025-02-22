@@ -444,24 +444,13 @@ public class SubscribeToNewslettersCommandHandlerTests
 }
 
 [TestFixture, Category("IntegrationTests")]
-public class SubscribeToNewslettersCommandHandlerE2ETests
+public class SubscribeToNewslettersCommandHandlerE2ETests : ServiceTestBase
 {
-    private IntegrationTestingHelper _integrationHelper = null!;
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _integrationHelper = new IntegrationTestingHelper();
-    }
-
     [Test]
     public async Task HappyPath_SubscribeSendsConfirmationEmail()
     {
-        // Arrange
-        await _integrationHelper.ResetDatabase();
-
         // Seed a newsletter group (with an empty contact list) into the database.
-        var newsletterGroupRepository = _integrationHelper.GetService<IRepository<NewsletterGroup>>();
+        var newsletterGroupRepository = GetService<IRepository<NewsletterGroup>>();
         var contactList = new ContactList
         {
             Name = "Test Contact List",
@@ -479,17 +468,17 @@ public class SubscribeToNewslettersCommandHandlerE2ETests
         Assert.That(addGroupResult.IsSuccess, "Failed to seed newsletter group.");
 
         // Create the subscribe command using the test email and the seeded newsletter group's id.
-        var subscribeCommand = new SubscribeToNewslettersCommand(_integrationHelper.TestEmailClientOne.EmailAddress, [addGroupResult.Value.Id]);
+        var subscribeCommand = new SubscribeToNewslettersCommand(GlobalTestSetup.TestEmailClientOne.EmailAddress, [addGroupResult.Value.Id]);
 
         // Act: Send the subscribe command.
-        Result commandResult = await _integrationHelper.Mediator.Send(subscribeCommand, CancellationToken.None);
+        Result commandResult = await GlobalTestSetup.Mediator.Send(subscribeCommand, CancellationToken.None);
         Assert.That(commandResult.IsSuccess);
 
         // Wait to allow the email to be sent.
         await Task.Delay(TimeSpan.FromSeconds(5));
 
         // Assert
-        MimeMessage? receivedEmail = await _integrationHelper.GetLatestEmailAsync(_integrationHelper.TestEmailClientOne, subjectIdentifier: "Bekræft din tilmelding til Ommel Samvirkes nyhedsbrev");
+        MimeMessage? receivedEmail = await GetLatestEmailAsync(GlobalTestSetup.TestEmailClientOne, subjectIdentifier: "Bekræft din tilmelding til Ommel Samvirkes nyhedsbrev");
         
         Assert.Multiple(() =>
         {

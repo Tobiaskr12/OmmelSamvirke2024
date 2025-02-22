@@ -91,7 +91,7 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 
             Task<int> countQuery = query.CountAsync(cancellationToken); 
             Task<List<T>> entitiesQuery = query
-                .OrderByDescending(x => x.Id)
+                .OrderByDescending(x => x.DateCreated)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken: cancellationToken);

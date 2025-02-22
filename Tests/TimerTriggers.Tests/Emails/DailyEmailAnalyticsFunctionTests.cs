@@ -93,7 +93,6 @@ public class DailyEmailAnalyticsFunctionTests
 [TestFixture, Category("IntegrationTests")]
 public class DailyEmailAnalyticsFunctionIntegrationTests
 {
-    private IntegrationTestingHelper _integrationTestingHelper;
     private IRepository<Email> _emailRepository;
     private IRepository<DailyEmailAnalytics> _dailyEmailAnalyticsRepository;
     private ILoggingHandler _loggingHandler;
@@ -102,17 +101,16 @@ public class DailyEmailAnalyticsFunctionIntegrationTests
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
-        _integrationTestingHelper = new IntegrationTestingHelper();
-        _emailRepository = _integrationTestingHelper.GetService<IRepository<Email>>();
-        _dailyEmailAnalyticsRepository = _integrationTestingHelper.GetService<IRepository<DailyEmailAnalytics>>();
-        _loggingHandler = _integrationTestingHelper.GetService<ILoggingHandler>();
-        _traceHandler = _integrationTestingHelper.GetService<ITraceHandler>();
+        _emailRepository = GlobalTestSetup.GetService<IRepository<Email>>();
+        _dailyEmailAnalyticsRepository = GlobalTestSetup.GetService<IRepository<DailyEmailAnalytics>>();
+        _loggingHandler = GlobalTestSetup.GetService<ILoggingHandler>();
+        _traceHandler = GlobalTestSetup.GetService<ITraceHandler>();
     }
     
     [SetUp]
     public async Task Setup()
     {
-        await _integrationTestingHelper.ResetDatabase();
+        await GlobalTestSetup.ResetDatabase();
         DateTime yesterday = DateTime.UtcNow.AddDays(-1).Date;
 
         // Email 1: one recipient from yesterday.
@@ -170,7 +168,7 @@ public class DailyEmailAnalyticsFunctionIntegrationTests
         await function.Run(null!);
 
         // Assert
-        var dailyAnalyticsRepo = _integrationTestingHelper.GetService<IRepository<DailyEmailAnalytics>>();
+        var dailyAnalyticsRepo = GlobalTestSetup.GetService<IRepository<DailyEmailAnalytics>>();
         Result<List<DailyEmailAnalytics>> result = await dailyAnalyticsRepo.FindAsync(a => a.Date == DateTime.UtcNow.AddDays(-1).Date);
         List<DailyEmailAnalytics>? analyticsList = result.Value;
         DailyEmailAnalytics analytics = analyticsList.First();

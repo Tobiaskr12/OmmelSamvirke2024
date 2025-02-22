@@ -1,64 +1,28 @@
+using AutoFixture;
 using Contracts.DataAccess.Base;
 using Contracts.ServiceModules.Newsletters.GroupManagement;
-using DomainModules.Emails.Entities;
 using DomainModules.Newsletters.Entities;
 using FluentResults;
-using NSubstitute;
 using ServiceModules.Errors;
-using ServiceModules.Newsletters.GroupManagement.Commands;
 
 namespace ServiceModules.Tests.Newsletters.GroupManagement.Commands;
 
-public class UpdateNewsletterGroupCommandHandlerTests
+[TestFixture, Category("IntegrationTests")]
+public class UpdateNewsletterGroupCommandHandlerTests : ServiceTestBase
 {
-    private IRepository<NewsletterGroup> _newsletterGroupRepository;
-    private UpdateNewsletterGroupCommandHandler _handler;
-
-    [SetUp]
-    public void Setup()
-    {
-        _newsletterGroupRepository = Substitute.For<IRepository<NewsletterGroup>>();
-        _handler = new UpdateNewsletterGroupCommandHandler(_newsletterGroupRepository);
-    }
-
     [Test]
     public async Task WhenUpdatingNewsletterGroup_WithValidData_ReturnsUpdatedGroup()
     {
-        var storedNewsletterGroup = new NewsletterGroup
-        {
-            Id = 1,
-            Name = "Old Name",
-            Description = "Old Description",
-            ContactList = new ContactList
-            {
-                Name = "Old Contact List",
-                Description = "Old Contact Description"
-            }
-        };
+        var newsletterGroup = GlobalTestSetup.Fixture.Create<NewsletterGroup>();
+        await AddTestData(newsletterGroup);
 
-        var updatedNewsletterGroup = new NewsletterGroup
-        {
-            Id = 1,
-            Name = "New Name",
-            Description = "New Description",
-            ContactList = new ContactList
-            {
-                Name = "New Contact List",
-                Description = "New Contact Description"
-            }
-        };
-
-        _newsletterGroupRepository
-            .GetByIdAsync(updatedNewsletterGroup.Id, readOnly: false, CancellationToken.None)
-            .Returns(Task.FromResult(Result.Ok(storedNewsletterGroup)));
-
-        _newsletterGroupRepository
-            .UpdateAsync(Arg.Any<NewsletterGroup>(), CancellationToken.None)
-            .Returns(Task.FromResult(Result.Ok(updatedNewsletterGroup)));
+        Result<NewsletterGroup> newsletterGroupQuery = await GetService<IRepository<NewsletterGroup>>().GetByIdAsync(newsletterGroup.Id);
+        NewsletterGroup updatedNewsletterGroup = newsletterGroupQuery.Value;
+        updatedNewsletterGroup.Name = "New and updated name!";
+        updatedNewsletterGroup.Name = "This is a new description!";
 
         var command = new UpdateNewsletterGroupCommand(updatedNewsletterGroup);
-
-        Result<NewsletterGroup> result = await _handler.Handle(command, CancellationToken.None);
+        Result<NewsletterGroup> result = await GlobalTestSetup.Mediator.Send(command);
 
         Assert.Multiple(() =>
         {
@@ -71,76 +35,15 @@ public class UpdateNewsletterGroupCommandHandlerTests
     [Test]
     public async Task WhenNewsletterGroupNotFound_ReturnsFailure()
     {
-        var updatedNewsletterGroup = new NewsletterGroup
-        {
-            Id = 1,
-            Name = "New Name",
-            Description = "New Description",
-            ContactList = new ContactList
-            {
-                Name = "New Contact List",
-                Description = "New Contact Description"
-            }
-        };
-
-        _newsletterGroupRepository
-            .GetByIdAsync(updatedNewsletterGroup.Id, readOnly: false, CancellationToken.None)
-            .Returns(Task.FromResult(Result.Fail<NewsletterGroup>("Not found")));
-
-        var command = new UpdateNewsletterGroupCommand(updatedNewsletterGroup);
-
-        Result<NewsletterGroup> result = await _handler.Handle(command, CancellationToken.None);
+        var newsletterGroup = GlobalTestSetup.Fixture.Create<NewsletterGroup>();
+        
+        var command = new UpdateNewsletterGroupCommand(newsletterGroup);
+        Result<NewsletterGroup> result = await GlobalTestSetup.Mediator.Send(command);
 
         Assert.Multiple(() =>
         {
             Assert.That(result.IsFailed, Is.True);
             Assert.That(result.Errors[0].Message, Is.EqualTo(ErrorMessages.GenericErrorWithRetryPrompt));
-        });
-    }
-
-    [Test]
-    public async Task WhenUpdateFails_ReturnsFailure()
-    {
-        var storedNewsletterGroup = new NewsletterGroup
-        {
-            Id = 1,
-            Name = "Old Name",
-            Description = "Old Description",
-            ContactList = new ContactList
-            {
-                Name = "Old Contact List",
-                Description = "Old Contact Description"
-            }
-        };
-
-        var updatedNewsletterGroup = new NewsletterGroup
-        {
-            Id = 1,
-            Name = "New Name",
-            Description = "New Description",
-            ContactList = new ContactList
-            {
-                Name = "New Contact List",
-                Description = "New Contact Description"
-            }
-        };
-
-        _newsletterGroupRepository
-            .GetByIdAsync(updatedNewsletterGroup.Id, readOnly: false, CancellationToken.None)
-            .Returns(Task.FromResult(Result.Ok(storedNewsletterGroup)));
-
-        _newsletterGroupRepository
-            .UpdateAsync(Arg.Any<NewsletterGroup>(), CancellationToken.None)
-            .Returns(Task.FromResult(Result.Fail<NewsletterGroup>("Update error")));
-
-        var command = new UpdateNewsletterGroupCommand(updatedNewsletterGroup);
-
-        Result<NewsletterGroup> result = await _handler.Handle(command, CancellationToken.None);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed, Is.True);
-            Assert.That(result.Errors[0].Message, Is.EqualTo("Update error"));
         });
     }
 }

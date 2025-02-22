@@ -35,8 +35,8 @@ public class CreateContactListCommandHandler : IRequestHandler<CreateContactList
     {
         // Create a hash set of email addresses for efficient lookup during duplicate detection
         HashSet<string> emailSet = request.ContactList.Contacts
-                                            .Select(contact => contact.EmailAddress)
-                                            .ToHashSet();
+            .Select(contact => contact.EmailAddress)
+            .ToHashSet();
             
         Result<List<Recipient>> duplicateRecipientsQuery = await _recipientRepository.FindAsync(
             x => emailSet.Contains(x.EmailAddress),
@@ -48,8 +48,8 @@ public class CreateContactListCommandHandler : IRequestHandler<CreateContactList
 
         // Mapping email addresses to their index in the contacts list.
         Dictionary<string, int> indexedContacts = request.ContactList.Contacts
-                                                        .Select((contact, index) => new { contact, index })
-                                                        .ToDictionary(x => x.contact.EmailAddress, x => x.index);
+            .Select((contact, index) => new { contact, index })
+            .ToDictionary(x => x.contact.EmailAddress, x => x.index);
             
         foreach (Recipient duplicate in duplicateRecipientsQuery.Value)
         {

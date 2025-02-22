@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoFixture" Version="4.18.1" />
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
         <PackageReference Include="FluentResults" Version="3.16.0" />
         <PackageReference Include="MailKit" Version="4.8.0" />

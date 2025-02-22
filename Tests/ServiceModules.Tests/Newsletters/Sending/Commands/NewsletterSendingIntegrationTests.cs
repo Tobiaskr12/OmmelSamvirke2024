@@ -5,31 +5,21 @@ using DomainModules.Emails.Entities;
 using DomainModules.Newsletters.Entities;
 using FluentResults;
 using MimeKit;
-using TestHelpers;
 
 namespace ServiceModules.Tests.Newsletters.Sending.Commands;
 
 [TestFixture, Category("IntegrationTests")]
-public class NewsletterSendingIntegrationTests
+public class NewsletterSendingIntegrationTests : ServiceTestBase
 {
-    private IntegrationTestingHelper _integrationTestingHelper;
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _integrationTestingHelper = new IntegrationTestingHelper();
-    }
-    
     [Test]
     public async Task GivenValidNewsletterIsSentToTwoClients_WhenCheckingEmailClients_TheNewsletterIsDelivered()
     {
         // Arrange
-        await _integrationTestingHelper.ResetDatabase();
         var messageGuid = Guid.NewGuid();
         
         // Create recipients from both test email clients
-        var recipientOne = new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientOne.EmailAddress };
-        var recipientTwo = new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientTwo.EmailAddress };
+        var recipientOne = new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress };
+        var recipientTwo = new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress };
         
         // Create a contact list containing both recipients
         var contactList = new ContactList
@@ -59,12 +49,12 @@ public class NewsletterSendingIntegrationTests
         };
         
         // Act
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendNewsletterCommand([newsletterGroup], email));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendNewsletterCommand([newsletterGroup], email));
         Assert.That(result.IsSuccess);
         
         // Retrieve the emails from both test email clients using the messageGuid as a subject identifier
-        MimeMessage? receivedMessageOne = await _integrationTestingHelper.GetLatestEmailAsync(_integrationTestingHelper.TestEmailClientOne, messageGuid.ToString());
-        MimeMessage? receivedMessageTwo = await _integrationTestingHelper.GetLatestEmailAsync(_integrationTestingHelper.TestEmailClientTwo, messageGuid.ToString());
+        MimeMessage? receivedMessageOne = await GetLatestEmailAsync(GlobalTestSetup.TestEmailClientOne, messageGuid.ToString());
+        MimeMessage? receivedMessageTwo = await GetLatestEmailAsync(GlobalTestSetup.TestEmailClientTwo, messageGuid.ToString());
         
         // Assert that both clients have received the newsletter email
         Assert.Multiple(() =>

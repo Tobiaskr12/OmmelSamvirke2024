@@ -1,43 +1,20 @@
-using Contracts.DataAccess.Base;
+using AutoFixture;
 using Contracts.ServiceModules.Emails.ContactLists;
 using FluentResults;
-using NSubstitute;
 using DomainModules.Emails.Entities;
-using ServiceModules.Emails.ContactLists.Commands;
 
 namespace ServiceModules.Tests.Emails.ContactLists.Commands;
 
-[TestFixture, Category("UnitTests")]
-public class CreateContactListCommandTests
+[TestFixture, Category("IntegrationTests")]
+public class CreateContactListCommandTests : ServiceTestBase
 {
-    private IRepository<ContactList> _repository;
-    private IRepository<Recipient> _recipientRepository;
-    private CreateContactListCommandHandler _handler;
-
-    private readonly ContactList _baseValidContactList = new()
-    {
-        Name = "Test ContactList",
-        Description = "This is a test contact list",
-    };
-
-    [SetUp]
-    public void Setup()
-    {
-        _repository = Substitute.For<IRepository<ContactList>>();
-        _recipientRepository = Substitute.For<IRepository<Recipient>>();
-        
-        _handler = new CreateContactListCommandHandler(_repository, _recipientRepository);
-    }
-
     [Test]
     public async Task CreateContactListCommand_ValidInput_ReturnsSuccess()
     {
-        var command = new CreateContactListCommand(_baseValidContactList);
-        // Simulate a successful lookup returning no duplicates
-        _recipientRepository.FindAsync(default!).ReturnsForAnyArgs(Result.Ok(new List<Recipient>()));
-        _repository.AddAsync(_baseValidContactList, Arg.Any<CancellationToken>()).Returns(_baseValidContactList);
+        var contactList = GlobalTestSetup.Fixture.Create<ContactList>();
         
-        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
+        var command = new CreateContactListCommand(contactList);
+        Result<ContactList> result = await GlobalTestSetup.Mediator.Send(command);
         
         Assert.That(result.IsSuccess);
     }
@@ -45,28 +22,22 @@ public class CreateContactListCommandTests
     [Test]
     public async Task CreateContactListCommand_DuplicateRecipients_ReplacesContactsAndReturnsSuccess()
     {
-        const string duplicateEmail = "duplicate@example.com";
-        var duplicateRecipientOne = new Recipient { EmailAddress = duplicateEmail };
-        var uniqueRecipient = new Recipient { EmailAddress = "unique@example.com" };
-        _baseValidContactList.Contacts = [duplicateRecipientOne, uniqueRecipient];
-
-        // Simulate the repository returning a duplicate recipient
-        var duplicateRecipientTwo = new Recipient { EmailAddress = duplicateEmail };
-        _recipientRepository
-            .FindAsync(default!)
-            .ReturnsForAnyArgs(Result.Ok(new List<Recipient> { duplicateRecipientTwo }));
-        _repository
-            .AddAsync(_baseValidContactList, Arg.Any<CancellationToken>())
-            .Returns(_baseValidContactList);
-
-        var command = new CreateContactListCommand(_baseValidContactList);
+        var contactList = GlobalTestSetup.Fixture.Create<ContactList>();
+        var duplicateRecipientOne = GlobalTestSetup.Fixture.Create<Recipient>();
+        var duplicateRecipientTwo = GlobalTestSetup.Fixture.Create<Recipient>();
+        var uniqueRecipient = GlobalTestSetup.Fixture.Create<Recipient>();
         
-        Result<ContactList> result = await _handler.Handle(command, CancellationToken.None);
+        duplicateRecipientOne.EmailAddress = duplicateRecipientTwo.EmailAddress;
+        contactList.Contacts = [duplicateRecipientOne, uniqueRecipient];
+        await AddTestData(duplicateRecipientOne);
+
+        var command = new CreateContactListCommand(contactList);
+        Result<ContactList> result = await GlobalTestSetup.Mediator.Send(command);
 
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess);
-            Assert.That(_baseValidContactList.Contacts.Any(x => x.EmailAddress == duplicateEmail));
+            Assert.That(result.Value.Contacts.Count(x => x.EmailAddress == duplicateRecipientOne.EmailAddress), Is.EqualTo(1));
         });
     }
 }

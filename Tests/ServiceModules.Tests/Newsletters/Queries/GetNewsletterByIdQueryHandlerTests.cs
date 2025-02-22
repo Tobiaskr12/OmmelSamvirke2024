@@ -1,102 +1,49 @@
-using Contracts.DataAccess.Base;
+using AutoFixture;
 using Contracts.ServiceModules.Newsletters;
 using DomainModules.Emails.Entities;
 using FluentResults;
-using NSubstitute;
-using ServiceModules.Newsletters.Queries;
 
 namespace ServiceModules.Tests.Newsletters.Queries;
 
-[TestFixture, Category("UnitTests")]
-public class GetNewsletterByIdQueryHandlerTests
+[TestFixture, Category("IntegrationTests")]
+public class GetNewsletterByIdQueryHandlerTests : ServiceTestBase
 {
-    private IRepository<Email> _emailRepository;
-    private GetNewsletterByIdQueryHandler _handler;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _emailRepository = Substitute.For<IRepository<Email>>();
-        _handler = new GetNewsletterByIdQueryHandler(_emailRepository);
-    }
-
     [Test]
     public async Task Handle_WhenEmailExistsAndIsNewsletter_ReturnsEmail()
     {
-        // Arrange
-        var email = new Email
-        {
-            Id = 1,
-            SenderEmailAddress = "sender@example.com",
-            Subject = "Newsletter Subject",
-            HtmlBody = "<p>Content</p>",
-            PlainTextBody = "Content",
-            Recipients = [],
-            Attachments = [],
-            IsNewsletter = true,
-            DateCreated = DateTime.UtcNow
-        };
+        var email = GlobalTestSetup.Fixture.Create<Email>();
+        email.IsNewsletter = true;
+        await AddTestData(email);
+        
+        var query = new GetNewsletterByIdQuery(email.Id);
+        Result<Email> result = await GlobalTestSetup.Mediator.Send(query);
 
-        _emailRepository
-            .GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Ok(email)));
-
-        var query = new GetNewsletterByIdQuery(1);
-
-        // Act
-        Result<Email> result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value.Id, Is.EqualTo(1));
+            Assert.That(result.Value.Id, Is.EqualTo(email.Id));
         });
     }
 
     [Test]
     public async Task Handle_WhenEmailNotFound_ReturnsFailure()
     {
-        // Arrange
-        _emailRepository
-            .GetByIdAsync(Arg.Any<int>(), cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Fail<Email>("Not found")));
-
         var query = new GetNewsletterByIdQuery(1);
-
-        // Act
-        Result<Email> result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
+        Result<Email> result = await GlobalTestSetup.Mediator.Send(query);
+        
         Assert.That(result.IsFailed, Is.True);
     }
 
     [Test]
     public async Task Handle_WhenEmailExistsButNotNewsletter_ReturnsFailure()
     {
-        // Arrange
-        var email = new Email
-        {
-            Id = 1,
-            SenderEmailAddress = "sender@example.com",
-            Subject = "Regular Email Subject",
-            HtmlBody = "<p>Content</p>",
-            PlainTextBody = "Content",
-            Recipients = [],
-            Attachments = [],
-            IsNewsletter = false,
-            DateCreated = DateTime.UtcNow
-        };
+        var email = GlobalTestSetup.Fixture.Create<Email>();
+        email.IsNewsletter = false;
+        await AddTestData(email);
 
-        _emailRepository.GetByIdAsync(1, cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(Result.Ok(email)));
-
-        var query = new GetNewsletterByIdQuery(1);
-
-        // Act
-        Result<Email> result = await _handler.Handle(query, CancellationToken.None);
-
-        // Assert
+        var query = new GetNewsletterByIdQuery(email.Id);
+        Result<Email> result = await GlobalTestSetup.Mediator.Send(query);
+        
         Assert.That(result.IsFailed, Is.True);
     }
 }

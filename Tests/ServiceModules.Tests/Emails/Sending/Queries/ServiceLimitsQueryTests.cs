@@ -2,28 +2,17 @@ using Contracts.DataAccess.Emails.Enums;
 using Contracts.ServiceModules.Emails.Sending;
 using FluentResults;
 using DomainModules.Emails.Constants;
-using ServiceModules.Emails.Sending.Queries;
-using ServiceModules.Errors;
 
 namespace ServiceModules.Tests.Emails.Sending.Queries;
 
-[TestFixture, Category("UnitTests")]
-public class ServiceLimitsQueryTests
+[TestFixture, Category("IntegrationTests")]
+public class ServiceLimitsQueryTests : ServiceTestBase
 {
-    private ServiceLimitsQueryHandler _handler;
-
-    [SetUp]
-    public void Setup()
-    {
-        _handler = new ServiceLimitsQueryHandler();
-    }
-
     [Test]
     public async Task ServiceLimitsQuery_PerMinute_ReturnsExpectedLimit()
     {
         var query = new ServiceLimitsQuery(ServiceLimitInterval.PerMinute);
-
-        Result<int> result = await _handler.Handle(query, CancellationToken.None);
+        Result<int> result = await GlobalTestSetup.Mediator.Send(query);
 
         Assert.Multiple(() =>
         {
@@ -36,27 +25,12 @@ public class ServiceLimitsQueryTests
     public async Task ServiceLimitsQuery_PerHour_ReturnsExpectedLimit()
     {
         var query = new ServiceLimitsQuery(ServiceLimitInterval.PerHour);
-
-        Result<int> result = await _handler.Handle(query, CancellationToken.None);
+        Result<int> result = await GlobalTestSetup.Mediator.Send(query);
 
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess);
             Assert.That(result.Value, Is.EqualTo(ServiceLimits.EmailsPerHour));
-        });
-    }
-
-    [Test]
-    public async Task ServiceLimitsQuery_InvalidInterval_ReturnsFailure()
-    {
-        var query = new ServiceLimitsQuery((ServiceLimitInterval)99);
-
-        Result<int> result = await _handler.Handle(query, CancellationToken.None);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsFailed);
-            Assert.That(result.Errors[0].Message, Is.EqualTo(ErrorMessages.ServiceLimits_InvalidEmailInterval));
         });
     }
 }

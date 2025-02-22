@@ -4,15 +4,13 @@ using FluentResults;
 using MimeKit;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
-using TestHelpers;
 
 namespace ServiceModules.Tests.Emails.Sending.Commands.E2E;
 
 [TestFixture, Category("IntegrationTests")]
-public class EmailSendingTests
+public class EmailSendingTests : ServiceTestBase
 {
     private const string BaseTestDocumentsPath = "./Emails/Sending/Commands/E2E/TestDocuments/";
-    private IntegrationTestingHelper _integrationTestingHelper;
     
     private static IEnumerable<string> SenderEmailAddressesSource =>
     [
@@ -21,25 +19,13 @@ public class EmailSendingTests
         ValidSenderEmailAddresses.Auth,
         ValidSenderEmailAddresses.Newsletter
     ];
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _integrationTestingHelper = new IntegrationTestingHelper();
-    }
-
-    [SetUp]
-    public async Task SetUo()
-    {
-        await _integrationTestingHelper.ResetDatabase();
-    }
     
     [TestCaseSource(nameof(SenderEmailAddressesSource))]
     public async Task GivenValidEmailIsSent_WhenCheckingEmailClient_TheEmailIsDelivered(string senderEmailAddress)
     {
         var messageGuid = Guid.NewGuid();
-        Email email = await CreateAndSendEmail(senderEmailAddress, "Test Email", _integrationTestingHelper.TestEmailClientOne.EmailAddress, messageGuid);
-        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientOne, messageGuid);
+        Email email = await CreateAndSendEmail(senderEmailAddress, "Test Email", GlobalTestSetup.TestEmailClientOne.EmailAddress, messageGuid);
+        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
 
         AssertEmailReceived(receivedMessage, email);
     }
@@ -50,14 +36,14 @@ public class EmailSendingTests
         var messageGuid = Guid.NewGuid();
         List<Recipient> recipients = 
         [
-            new() { EmailAddress = _integrationTestingHelper.TestEmailClientOne.EmailAddress },
-            new() { EmailAddress = _integrationTestingHelper.TestEmailClientTwo.EmailAddress }
+            new() { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress },
+            new() { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
         ];
         
         Email email = await CreateAndSendEmail(ValidSenderEmailAddresses.Admins, "Test Email", recipients, messageGuid);
 
-        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientOne, messageGuid);
-        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientTwo, messageGuid);
+        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
+        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
 
         AssertEmailReceived(testClientOneMessage, email);
         AssertEmailReceived(testClientTwoMessage, email);
@@ -71,11 +57,11 @@ public class EmailSendingTests
         Email email = await CreateAndSendEmailWithAttachments(
             ValidSenderEmailAddresses.Admins,
             "Test Email with Attachments", 
-            _integrationTestingHelper.TestEmailClientOne.EmailAddress, 
+            GlobalTestSetup.TestEmailClientOne.EmailAddress, 
             messageGuid, 
             attachmentPaths);
 
-        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientOne, messageGuid);
+        MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
         AssertEmailReceived(receivedMessage, email);
 
         Assert.Multiple(() =>
@@ -109,7 +95,7 @@ public class EmailSendingTests
             Contacts = []
         };
 
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailToContactListCommand(email, contactList));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailToContactListCommand(email, contactList));
         
         Assert.That(result.IsFailed);
     }
@@ -125,15 +111,15 @@ public class EmailSendingTests
             Description = "Test Description",
             Contacts =
             [
-                new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientOne.EmailAddress },
-                new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientTwo.EmailAddress }
+                new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress },
+                new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
             ]
         };
         
          Email email = await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: false, attachmentPaths);
 
-         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientOne, messageGuid);
-         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientTwo, messageGuid);
+         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
+         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
          
          Assert.Multiple(() =>
          {
@@ -156,15 +142,15 @@ public class EmailSendingTests
             Description = "Test Description",
             Contacts =
             [
-                new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientOne.EmailAddress },
-                new Recipient { EmailAddress = _integrationTestingHelper.TestEmailClientTwo.EmailAddress }
+                new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress },
+                new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
             ]
         };
         
         await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: true, attachmentPaths);
 
-        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientOne, messageGuid);
-        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(_integrationTestingHelper.TestEmailClientTwo, messageGuid);
+        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
+        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
         
         Assert.Multiple(() =>
         {
@@ -193,7 +179,7 @@ public class EmailSendingTests
             Attachments = []
         };
 
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         
         Assert.That(result.IsFailed);
     }
@@ -211,7 +197,7 @@ public class EmailSendingTests
             Attachments = []
         };
         
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
@@ -228,7 +214,7 @@ public class EmailSendingTests
             Attachments = []
         };
 
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         
         return email;
@@ -253,7 +239,7 @@ public class EmailSendingTests
             Attachments = attachments
         };
         
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailCommand(email));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
@@ -278,7 +264,7 @@ public class EmailSendingTests
             Attachments = attachments
         };
         
-        Result<EmailSendingStatus> result = await _integrationTestingHelper.Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
+        Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
         if (result.IsFailed) throw new Exception("Sending failed");
 
         return email;
@@ -299,9 +285,9 @@ public class EmailSendingTests
         };
     }
     
-    private async Task<MimeMessage?> ExtractLatestReceivedMessageFromInbox(IntegrationTestingHelper.TestEmailClient testEmailClient, Guid messageGuid)
+    private async Task<MimeMessage?> ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClient testEmailClient, Guid messageGuid)
     {
-        MimeMessage? receivedMessageResult = await _integrationTestingHelper.GetLatestEmailAsync(testEmailClient, subjectIdentifier: messageGuid.ToString());
+        MimeMessage? receivedMessageResult = await GetLatestEmailAsync(testEmailClient, subjectIdentifier: messageGuid.ToString());
         if (receivedMessageResult == null)
         {
             Assert.Fail();

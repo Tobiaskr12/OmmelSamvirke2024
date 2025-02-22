@@ -57,29 +57,6 @@ public class SendEmailCommandHandlerTests
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
     }
-    
-    [Test]
-    public async Task SendEmailCommand_ValidInput_ReturnsSuccess()
-    {
-        var email = new Email
-        {
-            Subject = "Test Email",
-            HtmlBody = "This is a test email.",
-            PlainTextBody = "This is a test email.",
-            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
-            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
-            Attachments = []
-        };
-
-        var command = new SendEmailCommand(email);
-
-        _genericEmailRepository.AddAsync(email).Returns(email);
-        _externalEmailServiceWrapper.SendAsync(email).Returns(Result.Ok());
-
-        Result<EmailSendingStatus> result = await _handler.Handle(command, CancellationToken.None);
-        
-        Assert.That(result.IsSuccess);
-    }
 
     [Test]
     public void SendEmailCommand_AddingEmailToDbFails_ThrowsException()

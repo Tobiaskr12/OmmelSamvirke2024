@@ -6,4 +6,4 @@ using MediatR;
 namespace Contracts.ServiceModules.Newsletters;
 
 public record GetNewsletterByIdQuery(int Id)  : IRequest<Result<Email>>;
-public record GetPaginatedEmailsQuery(int Page = 1, int PageSize = 20) : IRequest<Result<PaginatedResult<Email>>>;
+public record GetPaginatedNewslettersQuery(int Page = 1, int PageSize = 20) : IRequest<Result<PaginatedResult<Email>>>;

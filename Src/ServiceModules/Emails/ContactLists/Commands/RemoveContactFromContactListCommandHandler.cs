@@ -61,7 +61,9 @@ public class RemoveContactFromContactListCommandHandler : IRequestHandler<Remove
                 EmailAddress = request.EmailAddress,
             };
 
-            Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(Templates.ContactLists.UserRemovedFromContactList);
+            Result result = _emailTemplateEngine.GenerateBodiesFromTemplate(Templates.ContactLists.UserRemovedFromContactList,
+                ("ContactListName", request.ContactList.Name)
+            );
             if (result.IsFailed) throw new Exception("Email body generation failed.");
                 
             await _mediator.Send(new SendEmailCommand(new Email

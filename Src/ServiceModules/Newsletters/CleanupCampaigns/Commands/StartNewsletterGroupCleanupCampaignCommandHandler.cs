@@ -24,13 +24,16 @@ public class StartNewsletterGroupCleanupCampaignCommandHandler
 {
     private readonly IRepository<NewsletterGroupsCleanupCampaign> _cleanupCampaignRepository;
     private readonly IRepository<NewsletterGroup> _newsletterGroupRepository;
+    private readonly IRepository<ContactList> _contactListRepository;
 
     public StartNewsletterGroupCleanupCampaignCommandHandler(
         IRepository<NewsletterGroupsCleanupCampaign> cleanupCampaignRepository,
-        IRepository<NewsletterGroup> newsletterGroupRepository)
+        IRepository<NewsletterGroup> newsletterGroupRepository,
+        IRepository<ContactList> contactListRepository)
     {
         _cleanupCampaignRepository = cleanupCampaignRepository;
         _newsletterGroupRepository = newsletterGroupRepository;
+        _contactListRepository = contactListRepository;
     }
 
     public async Task<Result<NewsletterGroupsCleanupCampaign>> Handle(
@@ -57,12 +60,23 @@ public class StartNewsletterGroupCleanupCampaignCommandHandler
         List<NewsletterGroup>? newsletterGroups = newsletterGroupsResult.Value;
         if (newsletterGroups.Count == 0) return Result.Fail(ErrorMessages.NewsletterGroupsCleanupCampaign_NoNewsletterGroups);
 
+        // Retrieve relevant contact lists
+        IEnumerable<int> contactListIds = newsletterGroups.Select(x => x.ContactList.Id);
+        Result<List<ContactList>> contactListsQuery =
+            await _contactListRepository.FindAsync(
+                x => contactListIds.Contains(x.Id),
+                readOnly: false,
+                cancellationToken: cancellationToken
+            );
+
+        if (contactListsQuery.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
+        
         // Extract distinct newsletter subscribers.
-        List<Recipient> distinctNewsletterSubscribers = newsletterGroups
-                                                            .Select(g => g.ContactList)
-                                                            .SelectMany(cl => cl.Contacts)
-                                                            .DistinctBy(r => r.EmailAddress)
-                                                            .ToList();
+        List<Recipient> distinctNewsletterSubscribers = 
+            contactListsQuery.Value
+                .SelectMany(g => g.Contacts)
+                .DistinctBy(r => r.EmailAddress)
+                .ToList();
 
         // Populate the uncleaned recipients list excluding any already cleaned.
         request.CleanupCampaign.UncleanedRecipients.Clear();

@@ -267,29 +267,18 @@ public class UnsubscribeFromNewslettersCommandHandlerTests
 
 
 [TestFixture, Category("IntegrationTests")]
-public class UnsubscribeFromNewslettersCommandHandlerE2ETests
+public class UnsubscribeFromNewslettersCommandHandlerE2ETests : ServiceTestBase
 {
-    private IntegrationTestingHelper _integrationHelper = null!;
-
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _integrationHelper = new IntegrationTestingHelper();
-    }
-
     [Test]
     public async Task HappyPath_UnsubscribeSendsConfirmationEmail()
     {
-        // Arrange
-        await _integrationHelper.ResetDatabase();
-
         // Seed a newsletter group (with a contact list containing our test email)
-        var newsletterGroupRepository = _integrationHelper.GetService<IRepository<NewsletterGroup>>();
+        var newsletterGroupRepository = GetService<IRepository<NewsletterGroup>>();
         var contactList = new ContactList
         {
             Name = "Test Contact List",
             Description = "A test contact list.",
-            Contacts = [ new Recipient { EmailAddress = _integrationHelper.TestEmailClientOne.EmailAddress } ]
+            Contacts = [ new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress } ]
         };
         var newsletterGroup = new NewsletterGroup
         {
@@ -303,18 +292,18 @@ public class UnsubscribeFromNewslettersCommandHandlerE2ETests
 
         // Act: Send the unsubscribe command
         var unsubscribeCommand = new UnsubscribeFromNewslettersCommand(
-            _integrationHelper.TestEmailClientOne.EmailAddress, 
+            GlobalTestSetup.TestEmailClientOne.EmailAddress, 
             [ addGroupResult.Value.Id ]);
 
-        Result commandResult = await _integrationHelper.Mediator.Send(unsubscribeCommand, CancellationToken.None);
+        Result commandResult = await GlobalTestSetup.Mediator.Send(unsubscribeCommand, CancellationToken.None);
         Assert.That(commandResult.IsSuccess);
 
         // Wait to allow the email to be sent
         await Task.Delay(TimeSpan.FromSeconds(5));
 
         // Assert: Check that the unsubscribe confirmation email was received
-        MimeMessage? receivedEmail = await _integrationHelper.GetLatestEmailAsync(
-            _integrationHelper.TestEmailClientOne, 
+        MimeMessage? receivedEmail = await GetLatestEmailAsync(
+            GlobalTestSetup.TestEmailClientOne, 
             subjectIdentifier: "Bekræft din afmelding fra Ommel Samvirke"
         );
 
