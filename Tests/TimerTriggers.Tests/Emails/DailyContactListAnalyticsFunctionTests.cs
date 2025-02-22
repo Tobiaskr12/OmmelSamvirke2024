@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using DomainModules.Emails.Entities;
+using DomainModules.Newsletters.Entities;
 using FluentResults;
 using NSubstitute;
 using TestHelpers;
@@ -14,6 +15,7 @@ public class DailyContactListAnalyticsFunctionTests
 {
     private IRepository<ContactList> _contactListRepository;
     private IRepository<DailyContactListAnalytics> _dailyAnalyticsRepository;
+    private IRepository<NewsletterGroup> _newsletterGroupsRepository;
     private ILoggingHandler _logger;
     private DailyContactListAnalyticsFunction _function;
 
@@ -22,9 +24,10 @@ public class DailyContactListAnalyticsFunctionTests
     {
         _contactListRepository = Substitute.For<IRepository<ContactList>>();
         _dailyAnalyticsRepository = Substitute.For<IRepository<DailyContactListAnalytics>>();
+        _newsletterGroupsRepository = Substitute.For<IRepository<NewsletterGroup>>();
         _logger = Substitute.For<ILoggingHandler>();
         var tracer = Substitute.For<ITraceHandler>();
-        _function = new DailyContactListAnalyticsFunction(_logger, tracer, _contactListRepository, _dailyAnalyticsRepository);
+        _function = new DailyContactListAnalyticsFunction(_logger, tracer, _contactListRepository, _newsletterGroupsRepository, _dailyAnalyticsRepository);
     }
 
     [Test]
@@ -41,6 +44,10 @@ public class DailyContactListAnalyticsFunctionTests
         _dailyAnalyticsRepository
             .AddAsync(Arg.Any<List<DailyContactListAnalytics>>())
             .Returns(MockHelpers.SuccessAsyncResult(expectedAnalytics));
+
+        _newsletterGroupsRepository
+            .GetAllAsync()
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult<List<NewsletterGroup>>([]));
 
         Assert.Multiple(() =>
         {
@@ -90,6 +97,7 @@ public class DailyContactListAnalyticsFunctionIntegrationTests
     private IntegrationTestingHelper _integrationTestingHelper;
     private IRepository<ContactList> _contactListRepository;
     private IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
+    private IRepository<NewsletterGroup> _newsletterGroupsRepository;
     private ILoggingHandler _loggingHandler;
     private ITraceHandler _traceHandler;
 
@@ -99,6 +107,7 @@ public class DailyContactListAnalyticsFunctionIntegrationTests
         _integrationTestingHelper = new IntegrationTestingHelper();
         _contactListRepository = _integrationTestingHelper.GetService<IRepository<ContactList>>();
         _dailyContactListAnalyticsRepository = _integrationTestingHelper.GetService<IRepository<DailyContactListAnalytics>>();
+        _newsletterGroupsRepository = Substitute.For<IRepository<NewsletterGroup>>();
         _loggingHandler = _integrationTestingHelper.GetService<ILoggingHandler>();
         _traceHandler = _integrationTestingHelper.GetService<ITraceHandler>();
     }
@@ -148,13 +157,17 @@ public class DailyContactListAnalyticsFunctionIntegrationTests
         await _contactListRepository.AddAsync(contactList1);
         await _contactListRepository.AddAsync(contactList2);
         await _contactListRepository.AddAsync(contactListOutside);
+        
+        _newsletterGroupsRepository
+            .GetAllAsync()
+            .ReturnsForAnyArgs(MockHelpers.SuccessAsyncResult<List<NewsletterGroup>>([]));
     }
     
     [Test]
     public async Task DailyContactListAnalyticsFunction_Runs_CreatesAnalyticsRecords()
     {
         // Arrange
-        var function = new DailyContactListAnalyticsFunction(_loggingHandler, _traceHandler, _contactListRepository, _dailyContactListAnalyticsRepository);
+        var function = new DailyContactListAnalyticsFunction(_loggingHandler, _traceHandler, _contactListRepository, _newsletterGroupsRepository, _dailyContactListAnalyticsRepository);
 
         // Act
         await function.Run(null!);

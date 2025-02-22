@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using DomainModules.Emails.Entities;
+using DomainModules.Newsletters.Entities;
 using FluentResults;
 using Microsoft.Azure.Functions.Worker;
 
@@ -12,17 +13,20 @@ public class DailyContactListAnalyticsFunction
     private readonly ILoggingHandler _logger;
     private readonly ITraceHandler _tracer;
     private readonly IRepository<ContactList> _contactListRepository;
+    private readonly IRepository<NewsletterGroup> _newsletterGroupRepository;
     private readonly IRepository<DailyContactListAnalytics> _dailyContactListAnalyticsRepository;
 
     public DailyContactListAnalyticsFunction(
         ILoggingHandler logger,
         ITraceHandler tracer,
         IRepository<ContactList> contactListRepository,
+        IRepository<NewsletterGroup> newsletterGroupRepository,
         IRepository<DailyContactListAnalytics> dailyContactListAnalyticsRepository)
     {
         _logger = logger;
         _tracer = tracer;
         _contactListRepository = contactListRepository;
+        _newsletterGroupRepository = newsletterGroupRepository;
         _dailyContactListAnalyticsRepository = dailyContactListAnalyticsRepository;
     }
 
@@ -80,15 +84,25 @@ public class DailyContactListAnalyticsFunction
             {
                 return Result.Fail<List<DailyContactListAnalytics>>(queryResult.Errors);
             }
+            
+            // Get all newsletter groups
+            Result<List<NewsletterGroup>> newsletterGroupsQuery = await _newsletterGroupRepository.GetAllAsync();
+            if (newsletterGroupsQuery.IsFailed)
+            {
+                return Result.Fail<List<DailyContactListAnalytics>>(newsletterGroupsQuery.Errors);
+            }
 
+            List<NewsletterGroup>? newsletterGroups = newsletterGroupsQuery.Value;
+            
             foreach (ContactList contactList in queryResult.Value)
             {
+                bool isNewsletter = newsletterGroups.Any(x => x.ContactList.Id == contactList.Id);
                 contactListSubscribers.Add(new DailyContactListAnalytics
                 {
                     Date = yesterday.Date,
                     ContactListName = contactList.Name,
                     TotalContacts = contactList.Contacts.Count,
-                    IsNewsletter = false // TODO - update this when the newsletter module has been implemented
+                    IsNewsletter = isNewsletter
                 });
             }
 
