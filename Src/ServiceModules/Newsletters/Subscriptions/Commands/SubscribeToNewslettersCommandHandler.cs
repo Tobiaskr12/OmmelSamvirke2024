@@ -36,38 +36,41 @@ public class SubscribeToNewslettersCommandHandler : IRequestHandler<SubscribeToN
     public async Task<Result> Handle(SubscribeToNewslettersCommand request, CancellationToken cancellationToken)
     {
         // Retrieve all newsletter groups.
-        Result<List<NewsletterGroup>> groupsResult = await _newsletterGroupRepository.GetAllAsync(cancellationToken: cancellationToken);
-        if (groupsResult.IsFailed)
-            return Result.Fail("Failed to retrieve newsletter groups.");
+        Result<List<NewsletterGroup>> groupsResult = await _newsletterGroupRepository.GetAllAsync(readOnly: false, cancellationToken: cancellationToken);
+        if (groupsResult.IsFailed) return Result.Fail("Failed to retrieve newsletter groups.");
 
         List<NewsletterGroup>? allGroups = groupsResult.Value;
         List<NewsletterGroup> requestedGroups = allGroups.Where(ng => request.NewsletterGroupIds.Contains(ng.Id)).ToList();
-        if (requestedGroups.Count == 0)
-            return Result.Fail("No valid newsletter groups found.");
+        if (requestedGroups.Count == 0) return Result.Fail("No valid newsletter groups found.");
 
         // Get existing recipient, if any.
         Recipient recipient;
         Result<List<Recipient>> existingRecipientResult = await _recipientRepository.FindAsync(
-            x => x.EmailAddress.Equals(request.EmailAddress, StringComparison.OrdinalIgnoreCase),
+            x => x.EmailAddress == request.EmailAddress,
             cancellationToken: cancellationToken);
-        if (existingRecipientResult.IsSuccess && existingRecipientResult.Value.Any())
+
+        if (existingRecipientResult.IsSuccess && existingRecipientResult.Value.Count != 0)
+        {
             recipient = existingRecipientResult.Value.First();
+        }
         else
+        {
             recipient = new Recipient { EmailAddress = request.EmailAddress };
+        }
 
         // Filter out newsletter groups where the recipient is already subscribed.
-        requestedGroups = requestedGroups.Where(group => 
-                                             !group.ContactList.Contacts.Any(r => r.EmailAddress.Equals(recipient.EmailAddress, StringComparison.OrdinalIgnoreCase)))
-                                         .ToList();
-        if (requestedGroups.Count == 0)
-            return Result.Fail("User is already subscribed to all selected newsletters.");
+        requestedGroups = requestedGroups.Where(group => group.ContactList.Contacts.All(r => r.EmailAddress != recipient.EmailAddress)).ToList();
+        
+        if (requestedGroups.Count == 0) return Result.Fail("User is already subscribed to all selected newsletters.");
 
         // Check for existing pending confirmations.
         Result<List<NewsletterSubscriptionConfirmation>> existingPending = await _subscriptionRepository.FindAsync(
             x => !x.IsConfirmed &&
                  x.ConfirmationExpiry > DateTime.UtcNow &&
-                 x.Recipient.EmailAddress.Equals(recipient.EmailAddress, StringComparison.OrdinalIgnoreCase),
+                 x.Recipient.EmailAddress == request.EmailAddress,
+            readOnly: false,
             cancellationToken: cancellationToken);
+        
         if (existingPending.IsSuccess && existingPending.Value.Count(x => x is { IsConfirmed: false } && x.ConfirmationExpiry > DateTime.UtcNow) > 5)
             return Result.Fail("Too many pending subscription requests for this email.");
 
@@ -79,8 +82,7 @@ public class SubscribeToNewslettersCommandHandler : IRequestHandler<SubscribeToN
         };
 
         Result<NewsletterSubscriptionConfirmation> addResult = await _subscriptionRepository.AddAsync(confirmation, cancellationToken);
-        if (addResult.IsFailed)
-            return Result.Fail("Failed to create subscription request.");
+        if (addResult.IsFailed) return Result.Fail("Failed to create subscription request.");
 
         // Generate confirmation email.
         string confirmationLink = $"https://www.ommelsamvirke.com/confirm-subscription?token={confirmation.ConfirmationToken}";

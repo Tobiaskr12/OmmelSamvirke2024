@@ -51,8 +51,8 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
 
         // One-to-Many with Attachments
         builder.HasMany(e => e.Attachments)
-               .WithOne(a => a.Email)
-               .HasForeignKey(a => a.EmailId)
+               .WithOne()
+               .HasForeignKey("EmailId")
                .OnDelete(DeleteBehavior.Cascade);
     }
 }

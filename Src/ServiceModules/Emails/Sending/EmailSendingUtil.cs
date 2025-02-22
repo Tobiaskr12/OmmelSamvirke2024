@@ -84,31 +84,57 @@ public static class EmailSendingUtil
     /// Find existing recipients in the database and replace the provided recipients with the found entities
     /// to avoid saving duplicated recipients
     /// </summary>
-    public static async Task<Result> FetchAndReplaceExistingRecipients(Email email, IRepository<Recipient> repository, CancellationToken cancellationToken)
+    public static async Task<Result> FetchAndReplaceExistingRecipients(
+        Email email,
+        IRepository<Recipient> recipientRepository,
+        CancellationToken cancellationToken)
     {
-        List<string> recipientEmails = email.Recipients.Select(r => r.EmailAddress).ToList();
-        Result<List<Recipient>> existingRecipientsResult = await repository.FindAsync(
-            r => recipientEmails.Contains(r.EmailAddress),
-            cancellationToken: cancellationToken);
-            
-        if (existingRecipientsResult.IsFailed)
+        // If there are no recipients, nothing to do.
+        if (email.Recipients.Count == 0)
         {
-            return Result.Fail(existingRecipientsResult.Errors);
+            return Result.Ok();
         }
-            
-        List<Recipient>? existingRecipients = existingRecipientsResult.Value;
-            
-        for (var i = 0; i < email.Recipients.Count; i++)
-        {
-            Recipient newRecipient = email.Recipients[i];
-            Recipient? existingRecipient = existingRecipients.FirstOrDefault(r => r.EmailAddress == newRecipient.EmailAddress);
 
-            if (existingRecipient is not null)
+        // Normalize email addresses from the email's recipients.
+        var normalizedEmails = email.Recipients
+                                    .Select(r => r.EmailAddress.Trim().ToUpperInvariant())
+                                    .Distinct()
+                                    .ToList();
+
+        // Fetch all recipients from the repository whose normalized email is in our list.
+        Result<List<Recipient>> findResult = await recipientRepository.FindAsync(
+            r => normalizedEmails.Contains(r.EmailAddress),
+            readOnly: false,
+            cancellationToken: cancellationToken);
+
+        if (findResult.IsFailed)
+        {
+            return Result.Fail(findResult.Errors);
+        }
+
+        // Build a lookup dictionary from the fetched recipients.
+        var lookup = findResult.Value
+                               .ToDictionary(
+                                   r => r.EmailAddress.Trim().ToUpperInvariant(),
+                                   r => r,
+                                   StringComparer.OrdinalIgnoreCase);
+
+        // Replace each recipient in the email with the one from the lookup, if it exists.
+        for (int i = 0; i < email.Recipients.Count; i++)
+        {
+            string norm = email.Recipients[i].EmailAddress.Trim().ToUpperInvariant();
+            if (lookup.TryGetValue(norm, out Recipient existing))
             {
-                email.Recipients[i] = existingRecipient;
+                email.Recipients[i] = existing;
             }
         }
-        
+
+        // Deduplicate the recipients (in case the same email appeared more than once).
+        email.Recipients = email.Recipients
+                                .GroupBy(r => r.EmailAddress.Trim().ToUpperInvariant())
+                                .Select(g => g.First())
+                                .ToList();
+
         return Result.Ok();
     }
 

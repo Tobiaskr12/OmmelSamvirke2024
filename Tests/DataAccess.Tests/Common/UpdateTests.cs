@@ -107,7 +107,7 @@ public class UpdateTests : GenericRepositoryTestsBase
         List<Email> emailsToUpdate =
         [
             email1,
-            new Email
+            new()
             {
                 Id = 99, // Nonexistent ID
                 SenderEmailAddress = "invalid@example.com",

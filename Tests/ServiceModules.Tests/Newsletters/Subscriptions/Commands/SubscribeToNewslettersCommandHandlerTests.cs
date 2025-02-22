@@ -483,7 +483,7 @@ public class SubscribeToNewslettersCommandHandlerE2ETests
 
         // Act: Send the subscribe command.
         Result commandResult = await _integrationHelper.Mediator.Send(subscribeCommand, CancellationToken.None);
-        Assert.That(commandResult.IsSuccess, "Subscribe command failed.");
+        Assert.That(commandResult.IsSuccess);
 
         // Wait to allow the email to be sent.
         await Task.Delay(TimeSpan.FromSeconds(5));

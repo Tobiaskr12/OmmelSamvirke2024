@@ -221,13 +221,9 @@ public class EmailSendingUtilTests
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(email.Recipients.Count, Is.EqualTo(3));
-            
-            // Both duplicates should be replaced with the same existing recipient instance
-            Assert.That(email.Recipients[0], Is.SameAs(existingRecipients[0]));
-            Assert.That(email.Recipients[1], Is.SameAs(existingRecipients[0]));
-            Assert.That(email.Recipients[2].Id, Is.EqualTo(0));
-            Assert.That(email.Recipients[2].EmailAddress, Is.EqualTo("unique@example.com"));
+            Assert.That(email.Recipients, Has.Count.EqualTo(2));
+            Assert.That(email.Recipients[0].EmailAddress, Is.EqualTo("duplicate@example.com"));
+            Assert.That(email.Recipients[1].EmailAddress, Is.EqualTo("unique@example.com"));
         });
     }
 

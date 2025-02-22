@@ -41,7 +41,6 @@ public static class SeedData
                 ContentPath = new Uri("https://example.com/attachment1"),
                 ContentType = new ContentType("application/pdf"),
                 BinaryContent = [0x00, 0x01],
-                EmailId = 1
             },
 
             new Attachment
@@ -51,7 +50,6 @@ public static class SeedData
                 ContentPath = new Uri("https://example.com/attachment2"),
                 ContentType = new ContentType("image/png"),
                 BinaryContent = [0x02, 0x03],
-                EmailId = 1
             }
         ];
         await dbContext.Set<Attachment>().AddRangeAsync(Email1Attachments);
@@ -64,8 +62,7 @@ public static class SeedData
                 Name = "Attachment3",
                 ContentPath = new Uri("https://example.com/attachment3"),
                 ContentType = new ContentType("application/pdf"),
-                BinaryContent = [0x04, 0x05],
-                EmailId = 2
+                BinaryContent = [0x04, 0x05]
             },
 
             new Attachment
@@ -74,8 +71,7 @@ public static class SeedData
                 Name = "Attachment4",
                 ContentPath = new Uri("https://example.com/attachment4"),
                 ContentType = new ContentType("image/png"),
-                BinaryContent = [0x06, 0x07],
-                EmailId = 2
+                BinaryContent = [0x06, 0x07]
             }
         ];
         await dbContext.Set<Attachment>().AddRangeAsync(Email2Attachments);

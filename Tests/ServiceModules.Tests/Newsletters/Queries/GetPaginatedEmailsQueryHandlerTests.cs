@@ -1,54 +1,52 @@
+using Contracts.DataAccess;
 using Contracts.DataAccess.Base;
-using Contracts.ServiceModules;
 using Contracts.ServiceModules.Newsletters;
 using DomainModules.Emails.Entities;
 using FluentResults;
-using NSubstitute;
 using ServiceModules.Newsletters.Queries;
 using TestHelpers;
 
 namespace ServiceModules.Tests.Newsletters.Queries;
 
-[TestFixture, Category("UnitTests")]
+[TestFixture, Category("IntegrationTest")]
 public class GetPaginatedEmailsQueryHandlerTests
 {
+    private IntegrationTestingHelper _integrationTesting;
     private IRepository<Email> _emailRepository;
     private GetPaginatedEmailsQueryHandler _handler;
     private List<Email> _emails;
 
     [SetUp]
-    public void SetUp()
+    public async Task SetUp()
     {
-        _emailRepository = Substitute.For<IRepository<Email>>();
+        _integrationTesting = new IntegrationTestingHelper();
+        await _integrationTesting.ResetDatabase();
+
+        _emailRepository = _integrationTesting.GetService<IRepository<Email>>();
         _handler = new GetPaginatedEmailsQueryHandler(_emailRepository);
 
-        // Create a list of 50 emails with varying DateCreated values
+        // Create a list of 50 emails
         _emails = [];
         for (int i = 1; i <= 50; i++)
         {
             _emails.Add(new Email
             {
-                Id = i,
                 SenderEmailAddress = $"sender{i}@example.com",
                 Subject = "Newsletter Subject",
                 HtmlBody = "<p>Content</p>",
                 PlainTextBody = "Content",
                 Recipients = [],
                 Attachments = [],
-                IsNewsletter = i % 2 == 0,
-                DateCreated = DateTime.UtcNow.AddDays(-i)
+                IsNewsletter = i % 2 == 0
             });
         }
+
+        await _emailRepository.AddAsync(_emails);
     }
 
     [Test]
     public async Task Handle_DefaultPagination_ReturnsPageSize20_OrderedByDateCreatedDesc()
     {
-        // Arrange
-        _emailRepository
-            .GetAllAsync(cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(MockHelpers.SuccessAsyncResult(_emails));
-
         var query = new GetPaginatedEmailsQuery();
 
         // Act

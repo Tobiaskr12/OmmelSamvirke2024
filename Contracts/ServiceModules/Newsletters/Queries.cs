@@ -1,3 +1,4 @@
+using Contracts.DataAccess;
 using DomainModules.Emails.Entities;
 using FluentResults;
 using MediatR;

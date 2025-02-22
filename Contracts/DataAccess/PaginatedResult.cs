@@ -1,4 +1,4 @@
-namespace Contracts.ServiceModules;
+namespace Contracts.DataAccess;
 
 public class PaginatedResult<T>
 {

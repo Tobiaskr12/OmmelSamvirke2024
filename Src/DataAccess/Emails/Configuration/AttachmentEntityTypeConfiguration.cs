@@ -32,11 +32,5 @@ public class AttachmentEntityTypeConfiguration : IEntityTypeConfiguration<Attach
         
         builder.Ignore(a => a.BinaryContent); // Ignore binary content as it will be stored in cloud storage
         builder.Ignore(a => a.ContentSize); // Ignore Computed Property
-
-        // Many-to-One with Email
-        builder.HasOne(a => a.Email)
-               .WithMany(e => e.Attachments)
-               .HasForeignKey(a => a.EmailId)
-               .OnDelete(DeleteBehavior.Cascade);
     }
 }

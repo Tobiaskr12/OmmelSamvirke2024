@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Contracts.DataAccess;
 using Contracts.DataAccess.Base;
 using Contracts.SupportModules.Logging;
 using FluentResults;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DataAccess.Errors;
 using DomainModules.Common;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess.Base;
 
@@ -80,6 +82,35 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
     }
 
+    public async Task<Result<PaginatedResult<T>>> GetPaginatedAsync(int page = 1, int pageSize = 20, bool readOnly = true, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("GetPaginatedAsync called.");
+        try
+        {
+            IQueryable<T> query = BuildQuery(readOnly: readOnly);
+
+            Task<int> countQuery = query.CountAsync(cancellationToken); 
+            Task<List<T>> entitiesQuery = query
+                .OrderByDescending(x => x.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken: cancellationToken);
+
+            await Task.WhenAll(countQuery, entitiesQuery);
+
+            return Result.Ok(new PaginatedResult<T>
+            {
+                Items = entitiesQuery.Result,
+                TotalCount = countQuery.Result
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting paginated entities.");
+            return Result.Fail<PaginatedResult<T>>(new DatabaseError($"An error occurred: {ex.Message}"));
+        }
+    }
+
     public async Task<Result<List<T>>> FindAsync(
         Expression<Func<T, bool>>? predicate,
         bool readOnly = true,
@@ -105,6 +136,8 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         _logger.LogInformation("AddAsync called for entity.");
         try
         {
+            SetNavigationPropertiesAsUnchanged(entity);
+
             EntityEntry<T> entry = await _dbSet.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -122,6 +155,11 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         _logger.LogInformation("AddAsync called for entities.");
         try
         {
+            foreach (T entity in entities)
+            {
+                SetNavigationPropertiesAsUnchanged(entity);
+            }
+        
             await _dbSet.AddRangeAsync(entities, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -157,10 +195,30 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         _logger.LogInformation($"UpdateAsync called for entities with IDs {entityIds}.");
         try
         {
-            _dbSet.UpdateRange(entities);
-            await _context.SaveChangesAsync(cancellationToken);
+            List<int> existingIds = await _dbSet
+                .Where(e => entityIds.Contains(e.Id))
+                .Select(e => e.Id)
+                .ToListAsync(cancellationToken);
+            
+            List<T> validEntities = entities.Where(e => existingIds.Contains(e.Id)).ToList();
+            List<T> invalidEntities = entities.Where(e => !existingIds.Contains(e.Id)).ToList();
 
-            return Result.Ok(entities);
+            var errors = new List<Error>();
+
+            if (invalidEntities.Count != 0)
+            {
+                errors.Add(new NotFoundError($"Entities with IDs {string.Join(", ", invalidEntities.Select(e => e.Id))} not found."));
+            }
+
+            if (validEntities.Count != 0)
+            {
+                _dbSet.UpdateRange(validEntities);
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            return errors.Count != 0 
+                ? Result.Fail<List<T>>(errors) 
+                : Result.Ok(validEntities);
         }
         catch (Exception ex)
         {
@@ -252,14 +310,61 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
 
         if (readOnly)
         {
-            query.AsNoTrackingWithIdentityResolution();
+            query = query.AsNoTrackingWithIdentityResolution();
         }
 
         if (predicate != null)
         {
             query = query.Where(predicate);
         }
+        
+        // Dynamically include all navigation properties.
+        IEntityType? entityType = _context.Model.FindEntityType(typeof(T));
+        IEnumerable<INavigation> navigationProperties = entityType?.GetNavigations() ?? [];
+        IEnumerable<ISkipNavigation> skipNavigations = entityType?.GetSkipNavigations() ?? []; // Many-to-many relationships
+        
+        foreach (INavigation navigation in navigationProperties)
+        {
+            query = query.Include(navigation.Name);
+        }
+        
+        foreach (ISkipNavigation skipNavigation in skipNavigations)
+        {
+            query = query.Include(skipNavigation.Name);
+        }
 
         return query;
+    }
+    
+    private void SetNavigationPropertiesAsUnchanged(T entity)
+    {
+        EntityEntry<T> entry = _context.Entry(entity);
+        
+        foreach (NavigationEntry navigation in entry.Navigations)
+        {
+            if (navigation.CurrentValue is IEnumerable<object> collection)
+            {
+                foreach (object child in collection)
+                {
+                    EntityEntry childEntry = _context.Entry(child);
+                    if (childEntry.State == EntityState.Added)
+                    {
+                        childEntry.State = EntityState.Unchanged;
+                    }
+                }
+            }
+            else
+            {
+                object? navEntity = navigation.CurrentValue;
+                if (navEntity != null)
+                {
+                    EntityEntry navEntry = _context.Entry(navEntity);
+                    if (navEntry.State == EntityState.Added)
+                    {
+                        navEntry.State = EntityState.Unchanged;
+                    }
+                }
+            }
+        }
     }
 }

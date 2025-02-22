@@ -27,6 +27,12 @@ public class EmailSendingTests
     {
         _integrationTestingHelper = new IntegrationTestingHelper();
     }
+
+    [SetUp]
+    public async Task SetUo()
+    {
+        await _integrationTestingHelper.ResetDatabase();
+    }
     
     [TestCaseSource(nameof(SenderEmailAddressesSource))]
     public async Task GivenValidEmailIsSent_WhenCheckingEmailClient_TheEmailIsDelivered(string senderEmailAddress)

@@ -27,12 +27,12 @@ public class SearchContactListsByEmailQueryTests
     public async Task Handle_WhenContactListsExist_ReturnsContactLists()
     {
         const string emailAddress = "test@example.com";
-        ContactList contactList1 = CreateTestContactList(1, "List One", "Description One", 
+        ContactList contactList1 = CreateTestContactList("List One", "Description One", 
         [
             CreateTestRecipient(emailAddress),
             CreateTestRecipient("other1@example.com")
         ]);
-        ContactList contactList2 = CreateTestContactList(2, "List Two", "Description Two", 
+        ContactList contactList2 = CreateTestContactList("List Two", "Description Two", 
         [
             CreateTestRecipient(emailAddress),
             CreateTestRecipient("other2@example.com")
@@ -87,10 +87,9 @@ public class SearchContactListsByEmailQueryTests
         });
     }
 
-    private static ContactList CreateTestContactList(int id, string name, string description, List<Recipient> contacts) =>
+    private static ContactList CreateTestContactList(string name, string description, List<Recipient> contacts) =>
         new()
         {
-            Id = id,
             Name = name,
             Description = description,
             Contacts = contacts
@@ -122,6 +121,8 @@ public class SearchContactListsByEmailIntegrationTests
     private async Task SeedTestData(string emailAddress)
     {
         await _integrationTestingHelper.ResetDatabase();
+
+        var recipient = new Recipient { EmailAddress = emailAddress };
         
         var contactList1 = new ContactList
         {
@@ -129,7 +130,7 @@ public class SearchContactListsByEmailIntegrationTests
             Description = "First integration test contact list",
             Contacts =
             [
-                new Recipient { EmailAddress = emailAddress },
+                recipient,
                 new Recipient { EmailAddress = "other1@example.com" }
             ]
         };
@@ -140,7 +141,7 @@ public class SearchContactListsByEmailIntegrationTests
             Description = "Second integration test contact list",
             Contacts =
             [
-                new Recipient { EmailAddress = emailAddress },
+                recipient,
                 new Recipient { EmailAddress = "other2@example.com" }
             ]
         };

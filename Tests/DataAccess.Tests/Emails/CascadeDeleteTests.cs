@@ -45,7 +45,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
             Assert.That(initialEmailRecipientCount, Is.EqualTo(2));
         });
         
-        Result<Email> emailResult = await _emailRepository.GetByIdAsync(1);
+        Result<Email> emailResult = await _emailRepository.GetByIdAsync(1, readOnly: false);
         Email? email = emailResult.Value;
 
         Result deleteResult = await _emailRepository.DeleteAsync(email);
@@ -95,8 +95,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
                 Name = "Attachment1",
                 ContentPath = new Uri("https://example.com/attachment1"),
                 ContentType = new ContentType("application/pdf"),
-                BinaryContent = [0x00, 0x01],
-                EmailId = 1
+                BinaryContent = [0x00, 0x01]
             },
             new()
             {
@@ -104,8 +103,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
                 Name = "Attachment2",
                 ContentPath = new Uri("https://example.com/attachment2"),
                 ContentType = new ContentType("image/png"),
-                BinaryContent = [0x02, 0x03],
-                EmailId = 1
+                BinaryContent = [0x02, 0x03]
             }
         };
         await Context.Set<Attachment>().AddRangeAsync(attachments);

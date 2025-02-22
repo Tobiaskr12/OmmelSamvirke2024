@@ -40,6 +40,7 @@ public class CreateContactListCommandHandler : IRequestHandler<CreateContactList
             
         Result<List<Recipient>> duplicateRecipientsQuery = await _recipientRepository.FindAsync(
             x => emailSet.Contains(x.EmailAddress),
+            readOnly: false,
             cancellationToken: cancellationToken
         );
             

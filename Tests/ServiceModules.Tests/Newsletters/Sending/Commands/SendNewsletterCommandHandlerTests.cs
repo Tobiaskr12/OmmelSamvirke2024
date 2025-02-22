@@ -57,6 +57,23 @@ public class SendNewsletterCommandHandlerTests
             _emailSendingRepository,
             _emailTemplateEngine
         );
+            
+        // For tests that use non-zero IDs, return the correct recipient instances.
+        var recipientLookup = new Dictionary<int, Recipient>
+        {
+            { 100, new Recipient { Id = 100, EmailAddress = "recipientone@example.com" } },
+            { 101, new Recipient { Id = 101, EmailAddress = "recipienttwo@example.com" } }
+        };
+
+        _genericRecipientRepository
+            .GetByIdAsync(default)
+            .ReturnsForAnyArgs(callInfo =>
+            {
+                int id = callInfo.Arg<int>();
+                return Task.FromResult(recipientLookup.TryGetValue(id, out Recipient? value)
+                    ? Result.Ok(value)
+                    : Result.Ok<Recipient>(null!));
+            });
     }
 
     [Test]
