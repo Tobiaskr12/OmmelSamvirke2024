@@ -15,8 +15,4 @@
     <ProjectReference Include="..\Src\DomainModules\DomainModules.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ServiceModules\Newsletters\Sending\" />
-  </ItemGroup>
-
 </Project>

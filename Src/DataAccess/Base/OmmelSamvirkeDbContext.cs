@@ -18,7 +18,6 @@ public class OmmelSamvirkeDbContext : DbContext
     public DbSet<ContactListUnsubscription> ContactListUnsubscriptions { get; init; }
     
     // Newsletter
-    public DbSet<Newsletter> Newsletters { get; init; }
     public DbSet<NewsletterGroup> NewsletterGroups { get; init; }
     public DbSet<NewsletterGroupsCleanupCampaign> NewsletterGroupsCleanupCampaigns { get; init; }
     public DbSet<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; init; }

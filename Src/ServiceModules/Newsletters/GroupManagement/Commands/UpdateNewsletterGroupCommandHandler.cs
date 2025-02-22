@@ -1,6 +1,5 @@
 using Contracts.DataAccess.Base;
 using Contracts.ServiceModules.Newsletters.GroupManagement;
-using DomainModules.Errors;
 using DomainModules.Newsletters.Entities;
 using FluentResults;
 using FluentValidation;

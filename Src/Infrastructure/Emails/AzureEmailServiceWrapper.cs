@@ -42,18 +42,31 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
             return Result.Fail(ErrorMessages.AzureEmailSendingFailed);
         }
     }
-    
-    public static SendingStatus ConvertAzureStatusToSendingStatus(EmailSendStatus status)
+
+    public async Task<Result> SendBatchesAsync(Email email, int batchSize, bool useBcc = false, CancellationToken cancellationToken = default)
     {
-        return status.ToString() switch
+        try
         {
-            "NotStarted" => SendingStatus.NotStarted,
-            "Running" => SendingStatus.Running,
-            "Succeeded" => SendingStatus.Succeeded,
-            "Failed" => SendingStatus.Failed,
-            "Canceled" => SendingStatus.Canceled,
-            _ => SendingStatus.Unknown
-        };
+            IEnumerable<Recipient[]> batches = email.Recipients.Chunk(batchSize);
+
+            foreach (Recipient[] batch in batches)
+            {
+                email.Recipients = batch.ToList();
+                Result<EmailSendingStatus> sendResult = await SendAsync(email, useBcc, cancellationToken);
+
+                if (sendResult.IsFailed)
+                {
+                    _logger.LogError(new Exception($"Sending of email batch failed. Total batches: {batch.Length}"));
+                }
+            }
+
+            return Result.Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not send email via Azure");
+            return Result.Fail(ErrorMessages.AzureEmailSendingFailed);
+        }
     }
     
     private static EmailMessage ConvertEmailToAzureEmailMessage(Email email, bool useBcc)

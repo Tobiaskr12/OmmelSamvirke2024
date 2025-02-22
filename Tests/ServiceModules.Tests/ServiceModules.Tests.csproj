@@ -44,7 +44,7 @@
 
     <ItemGroup>
       <Folder Include="Newsletters\GroupManagement\Queries\" />
-      <Folder Include="Newsletters\Sending\" />
+      <Folder Include="Newsletters\Sending\Queries\" />
     </ItemGroup>
 
 </Project>
