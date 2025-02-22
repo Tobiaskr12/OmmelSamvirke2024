@@ -27,6 +27,9 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
         builder.Property(e => e.PlainTextBody)
                .IsRequired();
 
+        builder.Property(e => e.IsNewsletter)
+               .IsRequired();
+
         // Many-to-Many with Recipients
         builder.HasMany(e => e.Recipients)
                .WithMany()

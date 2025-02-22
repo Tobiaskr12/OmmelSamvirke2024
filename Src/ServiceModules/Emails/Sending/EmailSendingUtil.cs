@@ -70,11 +70,12 @@ public static class EmailSendingUtil
         if (minuteLimitResult.Value < 100.00 && hourlyLimitResult.Value < 100.00) return Result.Ok();
         
         // Else, Log error and return failure 
-        logger.LogError(null,
+        logger.LogError(new Exception(
             $"Tried sending one or more emails, but doing so would exceed at least one service limit." +
             $"\nEmails to send: {numberOfEmailsToSend}" +
             $"\nMinute-limit used: {minuteLimitResult.Value.ToString("0.00") + "%"}" +
-            $"\nHour-limit used: {hourlyLimitResult.Value.ToString("0.00") + "%"}");
+            $"\nHour-limit used: {hourlyLimitResult.Value.ToString("0.00") + "%"}")
+        );
 
         return Result.Fail(ErrorMessages.EmailSending_ServiceLimitError);
     }

@@ -10,4 +10,6 @@ public class Email : BaseEntity
     public required string PlainTextBody { get; set; }
     public required List<Recipient> Recipients { get; set; } = [];
     public required List<Attachment> Attachments { get; set; } = [];
+
+    public bool IsNewsletter { get; set; } = false;
 }
