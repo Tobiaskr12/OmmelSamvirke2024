@@ -132,6 +132,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E-mailen du prøver at tilgå er ikke et nyhedsbrev.
+        /// </summary>
+        public static string EmailIsNotANewsletter {
+            get {
+                return ResourceManager.GetString("EmailIsNotANewsletter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Der opstod en fejl under afsendelse af emailen. Fejlkode: .
         /// </summary>
         public static string EmailSending_Exception {
@@ -182,6 +191,15 @@ namespace ServiceModules.Errors {
         public static string GenericErrorWithRetryPrompt {
             get {
                 return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl. Vi fandt ikke det du leder efter.
+        /// </summary>
+        public static string GenericNotFound {
+            get {
+                return ResourceManager.GetString("GenericNotFound", resourceCulture);
             }
         }
         

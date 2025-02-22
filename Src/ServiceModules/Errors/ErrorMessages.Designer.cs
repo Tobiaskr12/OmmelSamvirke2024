@@ -132,6 +132,15 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email you&apos;re trying to view is not a newsletter.
+        /// </summary>
+        public static string EmailIsNotANewsletter {
+            get {
+                return ResourceManager.GetString("EmailIsNotANewsletter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while attempting to send the email. Error code: .
         /// </summary>
         public static string EmailSending_Exception {
@@ -182,6 +191,15 @@ namespace ServiceModules.Errors {
         public static string GenericErrorWithRetryPrompt {
             get {
                 return ResourceManager.GetString("GenericErrorWithRetryPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred. Your query had no results.
+        /// </summary>
+        public static string GenericNotFound {
+            get {
+                return ResourceManager.GetString("GenericNotFound", resourceCulture);
             }
         }
         

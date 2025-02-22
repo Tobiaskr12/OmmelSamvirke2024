@@ -204,4 +204,10 @@
   <data name="NewletterUnsubscribedNoResultAfterFilteringActiveRequests" xml:space="preserve">
     <value>You've already tried to unsubscribe within the past week. Please use the link in the email we have sent to you</value>
   </data>
+  <data name="GenericNotFound" xml:space="preserve">
+    <value>An error occurred. Your query had no results</value>
+  </data>
+  <data name="EmailIsNotANewsletter" xml:space="preserve">
+    <value>The email you're trying to view is not a newsletter</value>
+  </data>
 </root>
