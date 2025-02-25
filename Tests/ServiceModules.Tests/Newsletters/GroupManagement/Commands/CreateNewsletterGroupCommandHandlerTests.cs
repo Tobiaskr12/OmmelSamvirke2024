@@ -5,7 +5,7 @@ using FluentResults;
 
 namespace ServiceModules.Tests.Newsletters.GroupManagement.Commands;
 
-[TestFixture, Category("UnitTests")]
+[TestFixture, Category("IntegrationTests")]
 public class CreateNewsletterGroupCommandHandlerTests : ServiceTestBase
 {
     [Test]

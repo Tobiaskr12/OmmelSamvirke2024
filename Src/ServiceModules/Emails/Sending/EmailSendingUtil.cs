@@ -89,51 +89,43 @@ public static class EmailSendingUtil
         IRepository<Recipient> recipientRepository,
         CancellationToken cancellationToken)
     {
-        // If there are no recipients, nothing to do.
-        if (email.Recipients.Count == 0)
-        {
-            return Result.Ok();
-        }
+        if (email.Recipients.Count == 0) return Result.Ok();
 
-        // Normalize email addresses from the email's recipients.
-        var normalizedEmails = email.Recipients
-                                    .Select(r => r.EmailAddress.Trim().ToUpperInvariant())
-                                    .Distinct()
-                                    .ToList();
+        // Normalize email addresses from the email's recipients
+        List<string> normalizedEmails = 
+            email.Recipients
+                .Select(r => r.EmailAddress.Trim().ToUpperInvariant())
+                .Distinct()
+                .ToList();
 
-        // Fetch all recipients from the repository whose normalized email is in our list.
+        // Fetch all recipients from the repository whose normalized email is in the list
         Result<List<Recipient>> findResult = await recipientRepository.FindAsync(
             r => normalizedEmails.Contains(r.EmailAddress),
             readOnly: false,
             cancellationToken: cancellationToken);
 
-        if (findResult.IsFailed)
-        {
-            return Result.Fail(findResult.Errors);
-        }
+        if (findResult.IsFailed) return Result.Fail(findResult.Errors);
+        
+        Dictionary<string, Recipient> lookupDictionary = 
+            findResult.Value
+                .ToDictionary(r => r.EmailAddress.Trim().ToUpperInvariant(), r => r, StringComparer.OrdinalIgnoreCase);
 
-        // Build a lookup dictionary from the fetched recipients.
-        var lookup = findResult.Value
-                               .ToDictionary(
-                                   r => r.EmailAddress.Trim().ToUpperInvariant(),
-                                   r => r,
-                                   StringComparer.OrdinalIgnoreCase);
-
-        // Replace each recipient in the email with the one from the lookup, if it exists.
+        // Replace each recipient in the email with the one from the lookup dictionary, if it exists
         for (int i = 0; i < email.Recipients.Count; i++)
         {
-            string norm = email.Recipients[i].EmailAddress.Trim().ToUpperInvariant();
-            if (lookup.TryGetValue(norm, out Recipient existing))
+            string normalizedEmail = email.Recipients[i].EmailAddress.Trim().ToUpperInvariant();
+            if (lookupDictionary.TryGetValue(normalizedEmail, out Recipient? existingRecipient))
             {
-                email.Recipients[i] = existing;
+                email.Recipients[i] = existingRecipient;
             }
         }
 
-        // Deduplicate the recipients (in case the same email appeared more than once).
-        email.Recipients = email.Recipients
-                                .GroupBy(r => r.EmailAddress.Trim().ToUpperInvariant())
-                                .Select(g => g.First())
-                                .ToList();
+        // Deduplicate the recipients (in case the same email appeared more than once)
+        email.Recipients = 
+            email.Recipients
+                .GroupBy(r => r.EmailAddress.Trim().ToUpperInvariant())
+                .Select(g => g.First())
+                .ToList();
 
         return Result.Ok();
     }
@@ -141,7 +133,7 @@ public static class EmailSendingUtil
     /// <summary>
     /// This method checks if the email recipients are whitelisted in non-prod environments.
     /// This is to ensure that no emails are sent to non-allowed email addresses during development and testing.
-    /// If the application is not configured correctly or if a disallowed recipient is detected, an exception is thrown.
+    /// If the application is not configured correctly or if a disallowed recipient is detected, throw an exception.
     /// </summary>
     public static void ThrowExceptionIfRecipientsAreNotWhitelistedInNonProdEnv(IConfigurationRoot configuration, List<Recipient> recipients)
     {

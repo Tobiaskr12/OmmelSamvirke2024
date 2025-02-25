@@ -17,14 +17,16 @@ public class GetNewsletterGroupsForRecipientQueryHandler : IRequestHandler<GetNe
 
     public async Task<Result<List<NewsletterGroup>>> Handle(GetNewsletterGroupsForRecipientQuery request, CancellationToken cancellationToken)
     {
-        Result<List<NewsletterGroup>> allGroupsResult = await _newsletterGroupRepository.GetAllAsync(cancellationToken: cancellationToken);
+        Result<List<NewsletterGroup>> allGroupsResult = 
+            await _newsletterGroupRepository.GetAllAsync(cancellationToken: cancellationToken, readOnly: false);
+        
         if (allGroupsResult.IsFailed)
             return Result.Fail<List<NewsletterGroup>>(ErrorMessages.GenericErrorWithRetryPrompt);
-
-        string upperCaseEmail = request.EmailAddress.ToUpper();
-        List<NewsletterGroup> filteredGroups = allGroupsResult.Value
-                                                              .Where(g => g.ContactList.Contacts.Any(r => r.EmailAddress.ToUpper() == upperCaseEmail))
-                                                              .ToList();
+        
+        List<NewsletterGroup> filteredGroups = 
+            allGroupsResult.Value
+                .Where(g => g.ContactList.Contacts.Any(r => r.EmailAddress.Equals(request.EmailAddress, StringComparison.CurrentCultureIgnoreCase)))
+                .ToList();
 
         return Result.Ok(filteredGroups);
     }

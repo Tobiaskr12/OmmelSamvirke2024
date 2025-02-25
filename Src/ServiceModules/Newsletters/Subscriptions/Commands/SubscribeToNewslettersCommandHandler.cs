@@ -47,6 +47,7 @@ public class SubscribeToNewslettersCommandHandler : IRequestHandler<SubscribeToN
         Recipient recipient;
         Result<List<Recipient>> existingRecipientResult = await _recipientRepository.FindAsync(
             x => x.EmailAddress == request.EmailAddress,
+            readOnly: false,
             cancellationToken: cancellationToken);
 
         if (existingRecipientResult.IsSuccess && existingRecipientResult.Value.Count != 0)
@@ -71,7 +72,7 @@ public class SubscribeToNewslettersCommandHandler : IRequestHandler<SubscribeToN
             readOnly: false,
             cancellationToken: cancellationToken);
         
-        if (existingPending.IsSuccess && existingPending.Value.Count(x => x is { IsConfirmed: false } && x.ConfirmationExpiry > DateTime.UtcNow) > 5)
+        if (existingPending.IsSuccess && existingPending.Value.Count >= 5)
             return Result.Fail("Too many pending subscription requests for this email.");
 
         // Create a new subscription confirmation with associated newsletter groups.

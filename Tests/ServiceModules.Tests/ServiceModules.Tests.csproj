@@ -31,7 +31,6 @@
       <ProjectReference Include="..\..\Bootstrapper\Bootstrapper.csproj" />
       <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Src\ServiceModules\ServiceModules.csproj" />
-      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>

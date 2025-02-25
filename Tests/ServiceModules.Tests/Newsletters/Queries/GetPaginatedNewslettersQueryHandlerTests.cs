@@ -6,7 +6,7 @@ using FluentResults;
 
 namespace ServiceModules.Tests.Newsletters.Queries;
 
-[TestFixture, Category("IntegrationTest")]
+[TestFixture, Category("IntegrationTests")]
 public class GetPaginatedNewslettersQueryHandlerTests : ServiceTestBase
 {
     [Test]

@@ -7,7 +7,6 @@ using DataAccess.Base;
 using DataAccess.Errors;
 using DomainModules.Emails.Entities;
 using Microsoft.EntityFrameworkCore;
-using TestHelpers;
 
 namespace DataAccess.Tests.Emails;
 

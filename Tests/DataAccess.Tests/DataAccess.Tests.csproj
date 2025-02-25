@@ -12,6 +12,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
         <PackageReference Include="FluentResults" Version="3.16.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.2" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
         <PackageReference Include="NSubstitute" Version="5.3.0" />
@@ -28,7 +29,6 @@
       <ProjectReference Include="..\..\Bootstrapper\Bootstrapper.csproj" />
       <ProjectReference Include="..\..\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\Src\DomainModules\DomainModules.csproj" />
-      <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
     </ItemGroup>
     
 </Project>

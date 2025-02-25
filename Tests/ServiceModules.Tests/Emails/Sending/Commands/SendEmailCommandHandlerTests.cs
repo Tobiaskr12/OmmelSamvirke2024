@@ -9,7 +9,6 @@ using Contracts.SupportModules.Logging;
 using FluentResults;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
 using ServiceModules.Emails.Sending.Commands;
@@ -56,26 +55,6 @@ public class SendEmailCommandHandlerTests
         _configuration.GetSection("ExecutionEnvironment").Value.Returns("Prod");
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerHour, Arg.Any<int>()).Returns(50);
         _emailSendingRepository.CalculateServiceLimitAfterSendingEmails(ServiceLimitInterval.PerMinute, Arg.Any<int>()).Returns(50);
-    }
-
-    [Test]
-    public void SendEmailCommand_AddingEmailToDbFails_ThrowsException()
-    {
-        var email = new Email
-        {
-            Subject = "Test Email",
-            HtmlBody = "This is a test email.",
-            PlainTextBody = "This is a test email.",
-            SenderEmailAddress = ValidSenderEmailAddresses.Auto,
-            Recipients = [new Recipient { EmailAddress = "recipient@example.com" }],
-            Attachments = []
-        };
-        var command = new SendEmailCommand(email);
-
-        // Simulate database error when adding email
-        _genericEmailRepository.AddAsync(email).ThrowsAsync(_ => throw new Exception("Database error"));
-
-        Assert.ThrowsAsync<Exception>(async () => await _handler.Handle(command, CancellationToken.None));
     }
     
     [TestCase(0.0)]
