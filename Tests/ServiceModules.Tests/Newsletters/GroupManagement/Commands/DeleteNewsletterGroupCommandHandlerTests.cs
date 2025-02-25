@@ -6,7 +6,7 @@ using ServiceModules.Errors;
 
 namespace ServiceModules.Tests.Newsletters.GroupManagement.Commands;
 
-[TestFixture, Category("UnitTests")]
+[TestFixture, Category("IntegrationTests")]
 public class DeleteNewsletterGroupCommandHandlerTests : ServiceTestBase
 {
     [Test]
