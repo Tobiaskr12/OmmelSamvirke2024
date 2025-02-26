@@ -1,3 +1,4 @@
+using Contracts.DataAccess;
 using FluentResults;
 using DataAccess.Errors;
 using DomainModules.Emails.Entities;
@@ -7,7 +8,6 @@ namespace DataAccess.Tests.Common;
 [TestFixture, Category("IntegrationTests")]
 public class QueryTests : GenericRepositoryTestsBase
 {
-    // Testing GetById Async
     [Test]
     public async Task GetByIdAsync_EntityExists_ReturnsEntity()
     {
@@ -50,7 +50,6 @@ public class QueryTests : GenericRepositoryTestsBase
         });
     }
     
-    // Testing GetByIdsAsync
     [Test]
     public async Task GetByIdsAsync_EntitiesExist_ReturnsEntities()
     {
@@ -109,7 +108,6 @@ public class QueryTests : GenericRepositoryTestsBase
         });
     }
     
-    // Testing GetAllAsync
     [Test]
     public async Task GetAllAsync_EntitiesExist_ReturnsAllEntities()
     {
@@ -151,7 +149,6 @@ public class QueryTests : GenericRepositoryTestsBase
         });
     }
     
-    // Testing FindAsync
     [Test]
     public async Task FindAsync_EntitiesMatchPredicate_ReturnsMatchingEntities()
     {
@@ -183,6 +180,92 @@ public class QueryTests : GenericRepositoryTestsBase
         await Context.DisposeAsync(); // Simulate database exception
 
         Result<List<Email>> result = await EmailRepository.FindAsync(e => e.Subject.Contains(SeedData.Email1.Subject));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Errors.First(), Is.InstanceOf<DatabaseError>());
+        });
+    }
+    
+    [Test]
+    public async Task GetPaginatedAsync_WithValidPage_ReturnsPaginatedResult()
+    {
+        const int page = 1;
+        const int pageSize = 2;
+        int expectedTotalCount = Context.Set<Email>().Count();
+        
+        Result<PaginatedResult<Email>> result = await EmailRepository.GetPaginatedAsync(page, pageSize);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+            Assert.That(result.Value.Items, Has.Count.LessThanOrEqualTo(pageSize));
+            Assert.That(result.Value.TotalCount, Is.EqualTo(expectedTotalCount));
+        });
+    }
+
+    [Test]
+    public async Task GetPaginatedAsync_PageOutOfRange_ReturnsEmptyListWithCorrectTotalCount()
+    {
+        int totalCount = Context.Set<Email>().Count();
+        const int pageSize = 5;
+        int page = totalCount / pageSize + 2;
+        
+        Result<PaginatedResult<Email>> result = await EmailRepository.GetPaginatedAsync(page, pageSize);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value.Items, Is.Empty);
+            Assert.That(result.Value.TotalCount, Is.EqualTo(totalCount));
+        });
+    }
+
+    [Test]
+    public async Task GetPaginatedAsync_OrderByDescending_DateCreated()
+    {
+        int totalCount = Context.Set<Email>().Count();
+        int pageSize = totalCount; // Retrieve all items in one page for full order check
+        
+        Result<PaginatedResult<Email>> result = await EmailRepository.GetPaginatedAsync(1, pageSize);
+        
+        if (result.Value.Items.Count > 1)
+        {
+            for (int i = 1; i < result.Value.Items.Count; i++)
+            {
+                DateTime? dateCreated = result.Value.Items[i].DateCreated;
+                
+                if (dateCreated != null)
+                    Assert.That(result.Value.Items[i - 1].DateCreated, Is.GreaterThanOrEqualTo(dateCreated));
+            }
+        }
+    }
+
+    [Test]
+    public async Task GetPaginatedAsync_DatabaseException_ReturnsDatabaseError()
+    {
+        // Simulate a database exception by disposing the context
+        await Context.DisposeAsync();
+        
+        Result<PaginatedResult<Email>> result = await EmailRepository.GetPaginatedAsync();
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Errors.First(), Is.InstanceOf<DatabaseError>());
+        });
+    }
+
+    [Test]
+    public async Task GetPaginatedAsync_CancellationRequested_ReturnsDatabaseError()
+    {
+        // Arrange: create a cancellation token that is already cancelled
+        using var cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+        
+        Result<PaginatedResult<Email>> result = await EmailRepository.GetPaginatedAsync(1, 1, cancellationToken: cts.Token);
 
         Assert.Multiple(() =>
         {
