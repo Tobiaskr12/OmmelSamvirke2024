@@ -69,7 +69,7 @@ public class StartNewsletterGroupCleanupCampaignCommandHandlerTests : ServiceTes
         {
             Assert.That(result.IsSuccess);
             Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value.UncleanedRecipients, Has.Count.EqualTo(newsletterGroup.ContactList.Contacts.Count));
+            Assert.That(result.Value.UnconfirmedRecipients, Has.Count.EqualTo(newsletterGroup.ContactList.Contacts.Count));
         });
     }
 }

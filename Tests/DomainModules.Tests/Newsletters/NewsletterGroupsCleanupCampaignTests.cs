@@ -21,11 +21,10 @@ public class NewsletterGroupsCleanupCampaignTests
 
         _baseValidCampaign = new NewsletterGroupsCleanupCampaign
         {
-            UncleanedRecipients = [ 
+            UnconfirmedRecipients = [ 
                 new Recipient { EmailAddress = "test1@example.com" },
                 new Recipient { EmailAddress = "test2@example.com" } 
             ],
-            CleanedRecipients = [ new Recipient { EmailAddress = "test3@example.com" } ],
             CampaignStart = DateTime.UtcNow.AddHours(1),
             CampaignDurationMonths = 3
         };
@@ -75,23 +74,7 @@ public class NewsletterGroupsCleanupCampaignTests
     {
         NewsletterGroupsCleanupCampaign campaign = _baseValidCampaign;
         // Invalidate a recipient by setting an empty email address
-        campaign.UncleanedRecipients[0].EmailAddress = "";
-        ValidationResult? result = _validator.Validate(campaign);
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsValid, Is.False);
-            Assert.That(result.Errors.Any(x =>
-                x.ErrorMessage.Equals(ErrorMessages.Recipient_EmailAddress_MustBeValid)
-            ), Is.True);
-        });
-    }
-
-    [Test]
-    public void Campaign_InvalidCleanedRecipient_FailsValidation()
-    {
-        NewsletterGroupsCleanupCampaign campaign = _baseValidCampaign;
-        // Invalidate a recipient in CleanedRecipients
-        campaign.CleanedRecipients[0].EmailAddress = "";
+        campaign.UnconfirmedRecipients[0].EmailAddress = "";
         ValidationResult? result = _validator.Validate(campaign);
         Assert.Multiple(() =>
         {

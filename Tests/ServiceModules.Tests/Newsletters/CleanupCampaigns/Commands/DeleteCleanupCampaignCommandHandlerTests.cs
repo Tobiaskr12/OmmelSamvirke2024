@@ -48,8 +48,7 @@ public class DeleteCleanupCampaignCommandHandlerTests : ServiceTestBase
     
     private static void PrepareCleanupCampaign(NewsletterGroupsCleanupCampaign campaign)
     {
-        campaign.CleanedRecipients.Clear();
-        campaign.UncleanedRecipients.Clear();
+        campaign.UnconfirmedRecipients.Clear();
         campaign.CampaignStart = DateTime.UtcNow.AddDays(15);
         campaign.CampaignDurationMonths = 3;
         campaign.IsCampaignStarted = false;

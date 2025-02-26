@@ -19,7 +19,7 @@ public class NewsletterGroupsCleanupCampaignEntityTypeConfiguration : IEntityTyp
                .IsRequired();
 
         // Many-to-Many for UncleanedRecipients
-        builder.HasMany(c => c.UncleanedRecipients)
+        builder.HasMany(c => c.UnconfirmedRecipients)
                .WithMany()
                .UsingEntity<Dictionary<string, object>>(
                     "CampaignUncleanedRecipient",
@@ -35,25 +35,6 @@ public class NewsletterGroupsCleanupCampaignEntityTypeConfiguration : IEntityTyp
                     {
                         j.HasKey("CampaignId", "RecipientId");
                         j.ToTable("CampaignUncleanedRecipients");
-                    });
-
-        // Many-to-Many for CleanedRecipients
-        builder.HasMany(c => c.CleanedRecipients)
-               .WithMany()
-               .UsingEntity<Dictionary<string, object>>(
-                    "CampaignCleanedRecipient",
-                    j => j.HasOne<Recipient>()
-                          .WithMany()
-                          .HasForeignKey("RecipientId")
-                          .OnDelete(DeleteBehavior.Cascade),
-                    j => j.HasOne<NewsletterGroupsCleanupCampaign>()
-                          .WithMany()
-                          .HasForeignKey("CampaignId")
-                          .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("CampaignId", "RecipientId");
-                        j.ToTable("CampaignCleanedRecipients");
                     });
 
         builder.HasIndex(c => c.CampaignStart);

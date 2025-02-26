@@ -98,13 +98,13 @@ public class ConfirmUnsubscribeFromNewslettersCommandHandler
             List<NewsletterGroupsCleanupCampaign>? campaigns = activeCleanupCampaignsQuery.Value;
             foreach (NewsletterGroupsCleanupCampaign campaign in campaigns)
             {
-                Recipient? campaignRecipient = campaign.UncleanedRecipients.FirstOrDefault(x => 
+                Recipient? campaignRecipient = campaign.UnconfirmedRecipients.FirstOrDefault(x => 
                     x.EmailAddress.Equals(recipientEmail, StringComparison.OrdinalIgnoreCase)
                 );
                 
                 if (campaignRecipient is not null)
                 {
-                    campaign.UncleanedRecipients.Remove(campaignRecipient);
+                    campaign.UnconfirmedRecipients.Remove(campaignRecipient);
                     await _cleanupCampaignRepository.UpdateAsync(campaign, cancellationToken);
                 }
             }

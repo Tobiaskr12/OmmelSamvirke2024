@@ -78,15 +78,9 @@ public class StartNewsletterGroupCleanupCampaignCommandHandler
                 .DistinctBy(r => r.EmailAddress)
                 .ToList();
 
-        // Populate the uncleaned recipients list excluding any already cleaned.
-        request.CleanupCampaign.UncleanedRecipients.Clear();
-        request.CleanupCampaign.UncleanedRecipients = distinctNewsletterSubscribers;
-        foreach (Recipient cleanedRecipient in request.CleanupCampaign.CleanedRecipients)
-        {
-            request.CleanupCampaign.UncleanedRecipients.RemoveAll(r =>
-                r.EmailAddress.Equals(cleanedRecipient.EmailAddress, StringComparison.OrdinalIgnoreCase));
-        }
-
+        // Populate the uncleaned recipients list
+        request.CleanupCampaign.UnconfirmedRecipients = distinctNewsletterSubscribers;
+        
         // Save the cleanup campaign.
         Result<NewsletterGroupsCleanupCampaign> saveResult = await _cleanupCampaignRepository.AddAsync(request.CleanupCampaign, cancellationToken);
         return saveResult.IsSuccess

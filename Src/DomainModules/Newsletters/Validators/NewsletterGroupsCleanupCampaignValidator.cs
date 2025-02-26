@@ -9,8 +9,7 @@ public class NewsletterGroupsCleanupCampaignValidator : AbstractValidator<Newsle
 {
     public NewsletterGroupsCleanupCampaignValidator(IValidator<Recipient> recipientValidator)
     {
-        RuleForEach(x => x.UncleanedRecipients).SetValidator(recipientValidator);
-        RuleForEach(x => x.CleanedRecipients).SetValidator(recipientValidator);
+        RuleForEach(x => x.UnconfirmedRecipients).SetValidator(recipientValidator);
 
         RuleFor(x => x.CampaignStart)
             .Must(x => x.ToUniversalTime() >= DateTime.UtcNow)

@@ -38,7 +38,7 @@ public class ConfirmContinuedNewsletterSubscriptionCommandHandlerTests : Service
         
         var campaign = GlobalTestSetup.Fixture.Create<NewsletterGroupsCleanupCampaign>();
         PrepareCleanupCampaign(campaign);
-        campaign.UncleanedRecipients.Add(recipient);
+        campaign.UnconfirmedRecipients.Add(recipient);
         await AddTestData(campaign);
 
         var command = new ConfirmContinuedNewsletterSubscriptionCommand(recipient.Token);
@@ -47,8 +47,7 @@ public class ConfirmContinuedNewsletterSubscriptionCommandHandlerTests : Service
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess);
-            Assert.That(campaign.UncleanedRecipients, Is.Empty);
-            Assert.That(campaign.CleanedRecipients, Contains.Item(recipient));
+            Assert.That(campaign.UnconfirmedRecipients, Is.Empty);
         });
     }
 
@@ -63,7 +62,7 @@ public class ConfirmContinuedNewsletterSubscriptionCommandHandlerTests : Service
         
         var campaign = GlobalTestSetup.Fixture.Create<NewsletterGroupsCleanupCampaign>();
         PrepareCleanupCampaign(campaign);
-        campaign.UncleanedRecipients.Add(recipient1);
+        campaign.UnconfirmedRecipients.Add(recipient1);
         await AddTestData(campaign);
 
         var command = new ConfirmContinuedNewsletterSubscriptionCommand(token);
@@ -72,37 +71,13 @@ public class ConfirmContinuedNewsletterSubscriptionCommandHandlerTests : Service
         Assert.Multiple(() =>
         {
             Assert.That(result.IsSuccess);
-            Assert.That(campaign.UncleanedRecipients, Is.Empty);
-            Assert.That(campaign.CleanedRecipients.First().Id, Is.EqualTo(recipient1.Id));
-        });
-    }
-
-    [Test]
-    public async Task Handle_RecipientAlreadyCleaned_ReturnsSuccess()
-    {
-        var recipient = GlobalTestSetup.Fixture.Create<Recipient>();
-        await AddTestData(recipient);
-
-        var campaign = GlobalTestSetup.Fixture.Create<NewsletterGroupsCleanupCampaign>();
-        PrepareCleanupCampaign(campaign);
-        campaign.CleanedRecipients.Add(recipient);
-        await AddTestData(campaign);
-
-        var command = new ConfirmContinuedNewsletterSubscriptionCommand(recipient.Token);
-        Result result = await GlobalTestSetup.Mediator.Send(command);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsSuccess);
-            Assert.That(campaign.UncleanedRecipients, Has.Count.EqualTo(0));
-            Assert.That(campaign.CleanedRecipients, Has.Count.EqualTo(1));
+            Assert.That(campaign.UnconfirmedRecipients, Is.Empty);
         });
     }
 
     private static void PrepareCleanupCampaign(NewsletterGroupsCleanupCampaign campaign)
     {
-        campaign.CleanedRecipients.Clear();
-        campaign.UncleanedRecipients.Clear();
+        campaign.UnconfirmedRecipients.Clear();
         campaign.CampaignStart = DateTime.UtcNow.AddDays(-15);
         campaign.CampaignDurationMonths = 3;
         campaign.IsCampaignStarted = true;

@@ -85,7 +85,7 @@ public class ConfirmUnsubscribeFromNewslettersCommandHandlerTests : ServiceTestB
         cleanupCampaign.IsCampaignStarted = true;
         cleanupCampaign.CampaignStart = DateTime.UtcNow.AddMonths(-1);
         cleanupCampaign.CampaignDurationMonths = 3;
-        Recipient testRecipient = cleanupCampaign.UncleanedRecipients.First();
+        Recipient testRecipient = cleanupCampaign.UnconfirmedRecipients.First();
         await AddTestData(cleanupCampaign);
         
         var confirmation = GlobalTestSetup.Fixture.Create<NewsletterUnsubscribeConfirmation>();
@@ -99,8 +99,8 @@ public class ConfirmUnsubscribeFromNewslettersCommandHandlerTests : ServiceTestB
         Result<NewsletterGroupsCleanupCampaign> cleanupCampaignQuery =
             await GetService<IRepository<NewsletterGroupsCleanupCampaign>>().GetByIdAsync(cleanupCampaign.Id);
 
-        IEnumerable<int> uncleanIds = cleanupCampaignQuery.Value.UncleanedRecipients.Select(x => x.Id);
-        IEnumerable<int> cleanIds = cleanupCampaignQuery.Value.UncleanedRecipients.Select(x => x.Id);
+        IEnumerable<int> uncleanIds = cleanupCampaignQuery.Value.UnconfirmedRecipients.Select(x => x.Id);
+        IEnumerable<int> cleanIds = cleanupCampaignQuery.Value.UnconfirmedRecipients.Select(x => x.Id);
         
         Assert.Multiple(() =>
         {

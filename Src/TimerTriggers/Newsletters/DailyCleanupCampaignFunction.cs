@@ -128,7 +128,7 @@ public class DailyCleanupCampaignFunction
     {
         try
         {
-            foreach (Recipient uncleanedRecipient in cleanupCampaign.UncleanedRecipients)
+            foreach (Recipient uncleanedRecipient in cleanupCampaign.UnconfirmedRecipients)
             {
                 var generationResult = _templateEngine.GenerateBodiesFromTemplate(Templates.Newsletters.CleanupCampaign,
                     ("MonthsDuration", cleanupCampaign.CampaignDurationMonths.ToString()),
@@ -188,7 +188,7 @@ public class DailyCleanupCampaignFunction
         List<ContactList> contactLists = contactListsResult.Value;
 
         // Use a copy of the uncleaned recipients list to avoid modification issues during iteration.
-        foreach (Recipient uncleanedRecipient in cleanupCampaign.UncleanedRecipients.ToList())
+        foreach (Recipient uncleanedRecipient in cleanupCampaign.UnconfirmedRecipients.ToList())
         {
             List<ContactList> affectedContactLists = contactLists
                                                      .Where(cl => cl.Contacts.Any(c => c.Id == uncleanedRecipient.Id))
