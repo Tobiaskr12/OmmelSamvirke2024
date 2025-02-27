@@ -210,4 +210,10 @@
   <data name="EmailIsNotANewsletter" xml:space="preserve">
     <value>E-mailen du prøver at tilgå er ikke et nyhedsbrev</value>
   </data>
+  <data name="Newsletters_AlreadySubscribedToAllSelected" xml:space="preserve">
+    <value>Du er allerede tilmeldt alle de valgte nyhedsbreve</value>
+  </data>
+  <data name="NewsletterSubscription_TooManyPendingRequests" xml:space="preserve">
+    <value>Du har forsøgt at tilmelde dig nyhedsbrevet for mange gange. Bekræft din tilmelding via en af de e-mails vi har sendt til din e-mail-adresse</value>
+  </data>
 </root>

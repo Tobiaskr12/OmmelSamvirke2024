@@ -210,4 +210,10 @@
   <data name="EmailIsNotANewsletter" xml:space="preserve">
     <value>The email you're trying to view is not a newsletter</value>
   </data>
+  <data name="Newsletters_AlreadySubscribedToAllSelected" xml:space="preserve">
+    <value>You are already subscribed to all the selected newsletters</value>
+  </data>
+  <data name="NewsletterSubscription_TooManyPendingRequests" xml:space="preserve">
+    <value>You've submitted this request too many times. Check your email inbox to accept one of the emails that have already been sent to you</value>
+  </data>
 </root>

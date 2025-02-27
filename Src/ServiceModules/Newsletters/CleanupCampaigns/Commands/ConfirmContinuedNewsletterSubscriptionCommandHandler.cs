@@ -66,9 +66,9 @@ public class ConfirmContinuedNewsletterSubscriptionCommandHandler : IRequestHand
         NewsletterGroupsCleanupCampaign cleanupCampaign = campaignQuery.Value.First();
 
         // Find the recipient in the uncleaned list.
-        Recipient? campaignRecipient = cleanupCampaign.UnconfirmedRecipients
-                                                      .FirstOrDefault(x => x.Token == recipient.Token);
-
+        Recipient? campaignRecipient = cleanupCampaign.UnconfirmedRecipients.FirstOrDefault(x => x.Token == recipient.Token);
+        if (campaignRecipient is null) return Result.Fail(ErrorMessages.GenericNotFound);
+        
         // Remove recipient from the unconfirmed list
         cleanupCampaign.UnconfirmedRecipients.Remove(campaignRecipient);
         Result<NewsletterGroupsCleanupCampaign> updateResult = await _cleanupCampaignRepository.UpdateAsync(cleanupCampaign, cancellationToken);

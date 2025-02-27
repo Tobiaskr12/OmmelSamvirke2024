@@ -267,11 +267,29 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Du er allerede tilmeldt alle de valgte nyhedsbreve.
+        /// </summary>
+        public static string Newsletters_AlreadySubscribedToAllSelected {
+            get {
+                return ResourceManager.GetString("Newsletters_AlreadySubscribedToAllSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Vi kunne ikke finde en nyhedsbrevsmodtager ud fra det link du fulgte. Prøv igen..
         /// </summary>
         public static string NewsletterSubscriberNotFound {
             get {
                 return ResourceManager.GetString("NewsletterSubscriberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Du har forsøgt at tilmelde dig nyhedsbrevet for mange gange. Bekræft din tilmelding via en af de e-mails vi har sendt til din e-mail-adresse.
+        /// </summary>
+        public static string NewsletterSubscription_TooManyPendingRequests {
+            get {
+                return ResourceManager.GetString("NewsletterSubscription_TooManyPendingRequests", resourceCulture);
             }
         }
         

@@ -267,11 +267,29 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are already subscribed to all the selected newsletters.
+        /// </summary>
+        public static string Newsletters_AlreadySubscribedToAllSelected {
+            get {
+                return ResourceManager.GetString("Newsletters_AlreadySubscribedToAllSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We could not find a newsletter subscriber via the link you followed. Please try again.
         /// </summary>
         public static string NewsletterSubscriberNotFound {
             get {
                 return ResourceManager.GetString("NewsletterSubscriberNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve submitted this request too many times. Check your email inbox to accept one of the emails that have already been sent to you.
+        /// </summary>
+        public static string NewsletterSubscription_TooManyPendingRequests {
+            get {
+                return ResourceManager.GetString("NewsletterSubscription_TooManyPendingRequests", resourceCulture);
             }
         }
         

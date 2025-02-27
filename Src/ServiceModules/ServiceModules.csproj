@@ -47,7 +47,4 @@
         <DependentUpon>ErrorMessages.resx</DependentUpon>
       </Compile>
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Newsletters\Subscriptions\Queries\" />
-    </ItemGroup>
 </Project>
