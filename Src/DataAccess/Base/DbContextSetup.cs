@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,10 @@ public static class DbContextSetup
                 throw new Exception("Unable to get database connectionString");
             }
             
-            services.AddDbContext<OmmelSamvirkeDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContextFactory<OmmelSamvirkeDbContext>(options =>
+                options.UseSqlServer(connectionString)
+                       .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored)
+            ));
             
             await using ServiceProvider serviceProvider = services.BuildServiceProvider();
             using IServiceScope scope = serviceProvider.CreateScope();

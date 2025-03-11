@@ -1,0 +1,85 @@
+@page "/newsletter-unsubscription"
+@page "/afmeld-nyhedsbreve"
+
+@using Contracts.ServiceModules.Newsletters.GroupManagement
+@using Contracts.ServiceModules.Newsletters.Subscriptions
+@using DomainModules.Newsletters.Entities
+@using FluentResults
+@using MediatR
+
+@inject IMediator Mediator
+
+<MudPaper Class="pa-4 mx-4 mb-4">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="my-10">Afmeld Nyhedsbrev(e)</MudText>
+
+    <MudGrid Justify="Justify.Center">
+        <MudItem sm="12" md="6">
+            <MudText Typo="Typo.body1" Class="mb-5" Align="Align.Justify">
+                Hvis du ønsker at opsige din tilmelding til ét eller flere nyhedsbreve kan du indtaste din e-mailadresse
+                i feltet herunder, samt vælge hvilke nyhedsbreve du ikke ønsker at fortsætte med at modtage. Du vil
+                herefter modtage en e-mail med et link som du skal trykke på for at bekræfte at du ønsker at afmelde de
+                valgte nyhedsbreve.
+            </MudText>
+
+            <MudTextField
+                @bind-Value="EmailInput"
+                Label="E-mail"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"/>
+
+            <MudSelect T="NewsletterGroup"
+                       @bind-SelectedValues="SelectedNewsletterGroups"
+                       MultiSelection="true"
+                       Variant="Variant.Outlined"
+                       ToStringFunc="group => group?.Name"
+                       Margin="Margin.Dense">
+                @foreach (NewsletterGroup group in NewsletterGroups)
+                {
+                    <MudSelectItem Value="@group">@group.Name</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudButton
+                Variant="Variant.Filled"
+                OnClick="RequestUnsubscribe"
+                DropShadow="false"
+                Class="mx-auto my-2 d-block"
+                Color="Color.Primary">
+                Send e-mail med afmeldings-link
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        Result<List<NewsletterGroup>> newsletterGroupsQuery = await Mediator.Send(new GetAllNewsletterGroupsQuery());
+        if (newsletterGroupsQuery.IsSuccess)
+        {
+            NewsletterGroups = newsletterGroupsQuery.Value;
+            StateHasChanged();
+        }
+    }
+    private List<NewsletterGroup> NewsletterGroups { get; set; } = [];
+    public IEnumerable<NewsletterGroup> SelectedNewsletterGroups { get; set; } = [];
+    
+    public string EmailInput { get; set; } = String.Empty;
+
+    private async Task RequestUnsubscribe()
+    {
+        Result result = await Mediator.Send(new UnsubscribeFromNewslettersCommand(
+            EmailInput,
+            SelectedNewsletterGroups.Select(x => x.Id).ToList())
+        );
+
+        if (result.IsSuccess)
+        {
+            EmailInput = string.Empty;
+            StateHasChanged();
+        }
+    }
+}

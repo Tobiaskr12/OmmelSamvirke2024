@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DataAccess.Errors;
 using DomainModules.Common;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DataAccess.Base;
 
@@ -312,29 +311,17 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         {
             query = query.AsNoTrackingWithIdentityResolution();
         }
-
+        
         if (predicate != null)
         {
             query = query.Where(predicate);
         }
         
-        // Dynamically include all navigation properties.
-        IEntityType? entityType = _context.Model.FindEntityType(typeof(T));
-        IEnumerable<INavigation> navigationProperties = entityType?.GetNavigations() ?? [];
-        IEnumerable<ISkipNavigation> skipNavigations = entityType?.GetSkipNavigations() ?? []; // Many-to-many relationships
-        
-        foreach (INavigation navigation in navigationProperties)
-        {
-            query = query.Include(navigation.Name);
-        }
-        
-        foreach (ISkipNavigation skipNavigation in skipNavigations)
-        {
-            query = query.Include(skipNavigation.Name);
-        }
+        query = query.IncludeNavigationProperties(_context, maxDepth: 5).AsSingleQuery();
 
         return query;
     }
+
     
     private void SetNavigationPropertiesAsUnchanged(T entity)
     {

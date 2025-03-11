@@ -1,0 +1,390 @@
+@page "/newsletters"
+@page "/nyhedsbreve"
+
+@using System.Net.Mime
+@using Contracts.ServiceModules.Emails.EmailTemplateEngine
+@using Contracts.ServiceModules.Newsletters.CleanupCampaigns
+@using Contracts.ServiceModules.Newsletters.GroupManagement
+@using Contracts.ServiceModules.Newsletters.Sending
+@using Contracts.ServiceModules.Newsletters.Subscriptions
+@using DomainModules.Emails.Constants
+@using DomainModules.Emails.Entities
+@using DomainModules.Newsletters.Entities
+@using FluentResults
+@using MudExRichTextEditor
+@using MudBlazor.Extensions.Core
+@using MediatR
+
+@inject IMediator Mediator
+@inject IEmailTemplateEngine EmailTemplateEngine
+@inject NavigationManager NavigationManager
+
+<MudPaper Class="pa-4 mx-4 mb-4">
+    <h1 style="text-align: center" class="mb-8">Nyhedsbreve</h1>
+    
+    <MudGrid>
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Opret nyhedsbrev-gruppe</h2>
+                <MudTextField
+                    @bind-Value="NewNewsletterGroupName"
+                    Label="Nyhedsbrevets navn"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"/>
+
+                <MudTextField
+                    @bind-Value="NewNewsletterGroupDescription"
+                    Label="Beskrivelse"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"/>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="CreateNewsletterGroup"
+                    DropShadow="false"
+                    Class="mx-auto my-2 d-block"
+                    Color="Color.Primary">
+                    Opret
+                </MudButton>
+                
+                <ul class="pa-4">
+                    @foreach (NewsletterGroup newsletterGroup in NewsletterGroups)
+                    {
+                        <li>
+                            <div class="d-flex flex-row justify-space-between my-2">
+                                <MudText Typo="Typo.h6">@newsletterGroup.Name</MudText> 
+                                <MudButton
+                                    Size="Size.Small"
+                                    Variant="Variant.Filled"
+                                    Color="Color.Error"
+                                    OnClick="() => DeleteNewsletterGroup(newsletterGroup)">
+                                    Delete
+                                </MudButton>
+                            </div>
+                        </li>   
+                    }
+                </ul>
+            </div>
+        </MudItem>
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Tilmeld nyhedsbreve</h2>
+                <MudTextField
+                    @bind-Value="SubscriptionEmailAddress"
+                    Label="Email"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"/>
+
+                <MudSelect T="NewsletterGroup"
+                           @bind-SelectedValues="SubscriptionSelectedNewsletterGroups"
+                           MultiSelection="true"
+                           Variant="Variant.Outlined"
+                           ToStringFunc="group => group?.Name"
+                           Margin="Margin.Dense">
+                    @foreach (NewsletterGroup group in NewsletterGroups)
+                    {
+                        <MudSelectItem Value="@group">@group.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="CreateNewsletterSubscription"
+                    DropShadow="false"
+                    Class="mx-auto my-2 d-block"
+                    Color="Color.Primary">
+                    Opret
+                </MudButton>
+            </div>
+        </MudItem>
+
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Afmeld nyhedsbrev</h2>
+                
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="@(() => NavigationManager.NavigateTo("/afmeld-nyhedsbreve"))"
+                    DropShadow="false"
+                    Class="mx-auto my-2 d-block"
+                    Color="Color.Primary">
+                    Afmeld
+                </MudButton>
+            </div>
+        </MudItem>
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Find dine nyhedsbrev-tilmeldinger</h2>
+                <MudTextField
+                    @bind-Value="ListEmailAddress"
+                    Label="Email"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"/>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="PerformSearch"
+                    DropShadow="false"
+                    Class="mx-auto my-2 d-block"
+                    Color="Color.Primary">
+                    Søg
+                </MudButton>
+
+                <ul class="pa-4">
+                    @foreach (NewsletterGroup newsletterGroup in ListNewsletterGroups)
+                    {
+                        <li>
+                            <MudText Typo="Typo.h6">@newsletterGroup.Name</MudText>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </MudItem>
+
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Start en oprydningskampagne</h2>
+                <div class="d-flex flex-row gap-4">
+                    <MudDatePicker Label="Startdato" @bind-Date="StartDate" Variant="Variant.Outlined" Margin="Margin.Dense" Class="flex-grow-1" />
+                    <div style="width: 130px;">
+                        <MudNumericField @bind-Value="DurationMonths" Label="Antal måneder" Variant="Variant.Text" Min="2" Max="5" />
+                    </div>
+                </div>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="CreateCleanupCampaign"
+                    DropShadow="false"
+                    Class="mx-auto my-2 d-block"
+                    Color="Color.Primary">
+                    Opret
+                </MudButton>
+            </div>
+        </MudItem>
+        <MudItem xs="12" lg="6">
+            <div class="border pa-4" style="height: 100%">
+                <h2 style="text-align: center" class="mb-10">Send nyhedsbrev</h2>
+                <MudTextField
+                    @bind-Value="Subject"
+                    Label="Overskift"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"/>
+                <MudExRichTextEdit 
+                    @ref="@Editor"
+                    Height="444"
+                    Class="m-2"
+                    BackgroundColor="MudExColor.Surface"
+                    ToolBarBackgroundColor="MudExColor.Surface"
+                    Placeholder="Edit html"/>
+
+                <div class="d-flex flex-row my-2 align-center gap-4">
+                    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                        <ActivatorContent>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.CloudUpload">
+                                Upload Files
+                            </MudButton>
+                        </ActivatorContent>
+                    </MudFileUpload>
+
+                    <MudSelect T="NewsletterGroup"
+                               @bind-SelectedValues="SendingNewsletterGroups"
+                               MultiSelection="true"
+                               Variant="Variant.Outlined"
+                               ToStringFunc="group => group?.Name"
+                               Margin="Margin.Dense">
+                        @foreach (NewsletterGroup group in NewsletterGroups)
+                        {
+                            <MudSelectItem Value="@group">@group.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+
+                <MudButton
+                    Variant="Variant.Filled"
+                    OnClick="SendNewsletter"
+                    DropShadow="false"
+                    Class="mx-auto my-4 d-block"
+                    Color="Color.Primary">
+                    Send Nyhedsbrev
+                </MudButton>
+            </div>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        Result<List<NewsletterGroup>> newsletterGroupsQuery = await Mediator.Send(new GetAllNewsletterGroupsQuery());
+        if (newsletterGroupsQuery.IsSuccess)
+        {
+            NewsletterGroups = newsletterGroupsQuery.Value;
+            SendingNewsletterGroups = newsletterGroupsQuery.Value;
+            StateHasChanged();
+        }
+    }
+    
+    #region Newsletter Groups
+    public string NewNewsletterGroupName { get; set; } = string.Empty;
+    public string NewNewsletterGroupDescription { get; set; } = string.Empty;
+    private List<NewsletterGroup> NewsletterGroups { get; set; } = [];
+
+    public async Task CreateNewsletterGroup()
+    {
+        NewsletterGroup newEntity = new()
+        {
+            Name = NewNewsletterGroupName,
+            Description = NewNewsletterGroupDescription,
+            ContactList = new ContactList
+            {
+                Name = $"NewsletterGroup-{NewNewsletterGroupName}",
+                Description = $"Used to store the recipients for the newsletter group: {NewNewsletterGroupName}"
+            }
+        };
+        
+        Result<NewsletterGroup> result = await Mediator.Send(new CreateNewsletterGroupCommand(newEntity));
+
+        if (result.IsSuccess)
+        {
+            NewNewsletterGroupName = "";
+            NewNewsletterGroupDescription = "";
+            NewsletterGroups.Add(result.Value);
+            StateHasChanged();
+        }
+    }
+
+    public async Task DeleteNewsletterGroup(NewsletterGroup newsletterGroup)
+    {
+        Result deleteResult = await Mediator.Send(new DeleteNewsletterGroupCommand(newsletterGroup.Id));
+        if (deleteResult.IsSuccess)
+        {
+            NewsletterGroups.Remove(newsletterGroup);
+            StateHasChanged();
+        }
+    }
+    #endregion
+
+    #region Subscriptions
+    public string SubscriptionEmailAddress { get; set; } = string.Empty;
+    public IEnumerable<NewsletterGroup> SubscriptionSelectedNewsletterGroups { get; set; } = [];
+
+    public async Task CreateNewsletterSubscription()
+    {
+        Result result = await Mediator.Send(new SubscribeToNewslettersCommand(
+            SubscriptionEmailAddress, 
+            SubscriptionSelectedNewsletterGroups.Select(group => group.Id).ToList())
+        );
+
+        if (result.IsSuccess)
+        {
+            SubscriptionSelectedNewsletterGroups = [];
+            SubscriptionEmailAddress = string.Empty;
+            StateHasChanged();
+        }
+    }
+    #endregion
+    
+    #region List Groups
+    public string ListEmailAddress { get; set; } = string.Empty;
+    public List<NewsletterGroup> ListNewsletterGroups { get; set; } = [];
+    
+    private async Task PerformSearch()
+    {
+        Result<List<NewsletterGroup>> queryResult = await Mediator.Send(new GetNewsletterGroupsForRecipientQuery(ListEmailAddress));
+        if (queryResult.IsSuccess)
+        {
+            ListEmailAddress = string.Empty;
+            ListNewsletterGroups.AddRange(queryResult.Value);
+            
+            StateHasChanged();
+        }
+    }
+    #endregion
+
+    #region CleanupCampaign
+
+    public DateTime? StartDate { get; set; }
+    public int DurationMonths { get; set; } = 3;
+
+    private async Task CreateCleanupCampaign()
+    {
+        if (StartDate is null) return;
+        
+        Result<NewsletterGroupsCleanupCampaign> result = await Mediator.Send(new StartNewsletterGroupCleanupCampaignCommand(
+            new NewsletterGroupsCleanupCampaign
+            {
+                CampaignStart = StartDate.Value,
+                CampaignDurationMonths = DurationMonths
+            }
+        ));
+
+        if (result.IsSuccess)
+        {
+            StartDate = null;
+            DurationMonths = 3;
+            StateHasChanged();
+        }
+    }
+    #endregion
+
+    #region SendNewsletter
+    public IEnumerable<NewsletterGroup> SendingNewsletterGroups { get; set; } = [];
+    public required MudExRichTextEdit Editor { get; set; }
+    public string Subject { get; set; } = string.Empty;
+
+    readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private void UploadFiles(IBrowserFile? file)
+    {
+        if (file is null) return;
+        
+        _files.Add(file);
+    }
+
+    private async Task SendNewsletter()
+    {
+        List<Attachment> attachments = [];
+        foreach (IBrowserFile browserFile in _files)
+        {
+            const int maxAllowedSize = 1024 * 1024 * 5; // 5 MB
+            Stream binaryContentStream = browserFile.OpenReadStream(maxAllowedSize);
+            using var memoryStream = new MemoryStream();
+            await binaryContentStream.CopyToAsync(memoryStream);
+            byte[] binaryContent = memoryStream.ToArray();
+            
+            attachments.Add(new Attachment
+            {
+                Name = browserFile.Name,
+                ContentPath = new Uri("https://www.google.com"),
+                BinaryContent = binaryContent,
+                ContentType = new ContentType(browserFile.ContentType)
+            });
+        }
+
+        EmailTemplateEngine.GenerateBodiesFromTemplate(Templates.Newsletters.Newsletter,
+            ("NewsletterContent", await Editor.GetHtml())
+        );
+        
+        Result result = await Mediator.Send(new SendNewsletterCommand(SendingNewsletterGroups.ToList(), new Email
+        {
+            Recipients = [],
+            Subject = Subject,
+            HtmlBody = EmailTemplateEngine.GetHtmlBody(),
+            PlainTextBody = EmailTemplateEngine.GetSubject(),
+            SenderEmailAddress = ValidSenderEmailAddresses.Newsletter,
+            Attachments = attachments
+        }));
+
+        if (result.IsSuccess)
+        {
+            Subject = string.Empty;
+            Editor.Value = string.Empty;
+            StateHasChanged();
+        }
+    }
+    #endregion
+}

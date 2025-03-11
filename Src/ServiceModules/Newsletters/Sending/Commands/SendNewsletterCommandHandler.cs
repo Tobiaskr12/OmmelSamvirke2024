@@ -28,8 +28,7 @@ public class SendNewsletterCommandHandler : IRequestHandler<SendNewsletterComman
         IRepository<Recipient> genericRecipientRepository,
         ILoggingHandler logger,
         IEmailSendingRepository emailSendingRepository,
-        IEmailTemplateEngine emailTemplateEngine
-        )
+        IEmailTemplateEngine emailTemplateEngine)
     {
         _emailServiceWrapper = emailServiceWrapper;
         _genericEmailRepository = genericEmailRepository;

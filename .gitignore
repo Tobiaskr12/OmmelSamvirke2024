@@ -2,6 +2,7 @@
 appsettings.*.json
 *.secrets.json
 *.secrets.txt
+**/wwwroot/temp
 
 # Created by https://www.toptal.com/developers/gitignore/api/dotnetcore,aspnetcore,windows,git,csharp
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,aspnetcore,windows,git,csharp

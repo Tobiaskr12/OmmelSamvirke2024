@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using DataAccess.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace DataAccess.Tests;
 
@@ -14,6 +15,7 @@ public abstract class TestDatabaseFixture
         DbContextOptions<OmmelSamvirkeDbContext> options = 
             new DbContextOptionsBuilder<OmmelSamvirkeDbContext>()
                 .UseSqlite("Data Source=:memory:")
+                .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored))
                 .EnableSensitiveDataLogging()
                 .Options;
 

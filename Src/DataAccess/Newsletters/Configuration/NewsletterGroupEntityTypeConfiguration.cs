@@ -25,6 +25,8 @@ public class NewsletterGroupEntityTypeConfiguration : IEntityTypeConfiguration<N
                .HasForeignKey<NewsletterGroup>("ContactListId")
                .IsRequired();
 
+        builder.Navigation(ng => ng.ContactList).AutoInclude();
+        
         builder.HasIndex(ng => ng.Name);
     }
 }

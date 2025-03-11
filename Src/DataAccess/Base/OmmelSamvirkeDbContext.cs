@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DomainModules.Common;
 using DomainModules.Emails.Entities;
 using DomainModules.Newsletters.Entities;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataAccess.Base;
 
-public class OmmelSamvirkeDbContext : DbContext
+public sealed class OmmelSamvirkeDbContext : DbContext
 {
     // Emails
     public DbSet<Email> Emails { get; init; }
@@ -22,13 +25,12 @@ public class OmmelSamvirkeDbContext : DbContext
     public DbSet<NewsletterGroupsCleanupCampaign> NewsletterGroupsCleanupCampaigns { get; init; }
     public DbSet<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; init; }
     public DbSet<NewsletterUnsubscribeConfirmation> NewsletterUnsubscribeConfirmations { get; init; }
-    
+
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(OmmelSamvirkeDbContext).Assembly);
-        
         base.OnModelCreating(modelBuilder);
     }
     

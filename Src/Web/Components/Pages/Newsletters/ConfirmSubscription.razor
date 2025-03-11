@@ -1,0 +1,33 @@
+@page "/confirm-subscription"
+@using Contracts.ServiceModules.Newsletters.Subscriptions
+@using FluentResults
+@using MediatR
+
+@inject IMediator Mediator
+
+<h3>@Status</h3>
+
+@code {
+     [SupplyParameterFromQuery]
+     public string? Token { get; set; }
+
+     public string Status { get; set; } = "Indlæser...";
+     
+     protected override async Task OnInitializedAsync()
+     {
+          await base.OnInitializedAsync();
+
+          if (Token is not null)
+          {
+               Result result = await Mediator.Send(new ConfirmNewsletterSubscriptionCommand(Guid.Parse(Token)));
+               Status = result.IsSuccess ? "Din tilmelding er bekræftet" : result.Errors.First().Message;
+          }
+          else
+          {
+               Status = "Modtog ikke en token";
+          }
+          
+          StateHasChanged();
+     }
+
+}

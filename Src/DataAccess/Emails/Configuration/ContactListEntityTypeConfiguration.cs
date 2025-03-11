@@ -40,5 +40,7 @@ public class ContactListEntityTypeConfiguration : IEntityTypeConfiguration<Conta
                    j.HasKey("ContactListId", "RecipientId");
                    j.ToTable("ContactListRecipients");
                });
+        
+        builder.Navigation(cl => cl.Contacts).AutoInclude();
     }
 }
