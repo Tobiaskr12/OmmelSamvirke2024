@@ -87,7 +87,7 @@ public class SubscribeToNewslettersCommandHandler : IRequestHandler<SubscribeToN
         if (addResult.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
 
         // Generate confirmation email.
-        string confirmationLink = $"http://localhost:5114/confirm-subscription?token={confirmation.ConfirmationToken}";
+        string confirmationLink = $"https://www.ommelsamvirke.com/confirm-subscription?token={confirmation.ConfirmationToken}";
         Result templateResult = _templateEngine.GenerateBodiesFromTemplate(Templates.Newsletters.ConfirmNewsletterSubscription,
             ("ConfirmationLink", confirmationLink));
         if (templateResult.IsFailed)

@@ -95,7 +95,7 @@ public class UnsubscribeFromNewslettersCommandHandler  : IRequestHandler<Unsubsc
         if (addResult.IsFailed) return Result.Fail(ErrorMessages.GenericErrorWithRetryPrompt);
 
         // Generate an unsubscribe link
-        string unsubscribeLink = $"http://localhost:5114/confirm-unsubscribe?token={unsubscribeConfirmation.ConfirmationToken}";
+        string unsubscribeLink = $"https://www.ommelsamvirke.com/confirm-unsubscribe?token={unsubscribeConfirmation.ConfirmationToken}";
 
         // Generate email bodies
         Result templateResult = _templateEngine.GenerateBodiesFromTemplate(
