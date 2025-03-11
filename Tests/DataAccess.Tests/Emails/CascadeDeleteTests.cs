@@ -34,7 +34,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
         int initialEmailCount = (await _emailRepository.GetAllAsync()).Value.Count;
         int initialAttachmentCount = (await _attachmentRepository.GetAllAsync()).Value.Count;
         int initialRecipientCount = (await _recipientRepository.GetAllAsync()).Value.Count;
-        long initialEmailRecipientCount = await GetJoinTableCount("EmailRecipients");
+        long initialEmailRecipientCount = await GetJoinTableCount("Join_EmailRecipients");
 
         Assert.Multiple(() =>
         {
@@ -52,7 +52,7 @@ public class CascadeDeleteTests : TestDatabaseFixture
         Result<Email> getEmailResult = await _emailRepository.GetByIdAsync(1);
         Result<List<Attachment>> attachments = await _attachmentRepository.GetAllAsync();
         Result<List<Recipient>> recipients = await _recipientRepository.GetAllAsync();
-        long emailRecipientCount = await GetJoinTableCount("EmailRecipients");
+        long emailRecipientCount = await GetJoinTableCount("Join_EmailRecipients");
         
         Assert.Multiple(() =>
         {

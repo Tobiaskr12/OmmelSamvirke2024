@@ -48,11 +48,15 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
                        j.HasKey("EmailId", "RecipientId");
                        j.ToTable("Join_EmailRecipients");
                    });
+        
+        builder.Navigation(ng => ng.Recipients).AutoInclude();
 
         // One-to-Many with Attachments
         builder.HasMany(e => e.Attachments)
                .WithOne()
                .HasForeignKey("EmailId")
                .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Navigation(ng => ng.Attachments).AutoInclude();
     }
 }

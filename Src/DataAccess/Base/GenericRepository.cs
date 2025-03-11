@@ -316,8 +316,6 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         {
             query = query.Where(predicate);
         }
-        
-        query = query.IncludeNavigationProperties(_context, maxDepth: 5).AsSingleQuery();
 
         return query;
     }
