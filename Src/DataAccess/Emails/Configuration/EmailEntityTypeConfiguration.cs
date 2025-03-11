@@ -46,7 +46,7 @@ public class EmailEntityTypeConfiguration : IEntityTypeConfiguration<Email>
                    j =>
                    {
                        j.HasKey("EmailId", "RecipientId");
-                       j.ToTable("EmailRecipients");
+                       j.ToTable("Join_EmailRecipients");
                    });
 
         // One-to-Many with Attachments

@@ -31,6 +31,6 @@ public class NewsletterSubscriptionConfirmationEntityTypeConfiguration : IEntity
         
         builder.HasMany(nsc => nsc.NewsletterGroups)
                .WithMany(ng => ng.NewsletterSubscriptionConfirmations)
-               .UsingEntity(j => j.ToTable("NewsletterSubscriptionConfirmationNewsletterGroups"));
+               .UsingEntity(j => j.ToTable("Join_NewsletterSubscriptionConfirmationNewsletterGroups"));
     }
 }

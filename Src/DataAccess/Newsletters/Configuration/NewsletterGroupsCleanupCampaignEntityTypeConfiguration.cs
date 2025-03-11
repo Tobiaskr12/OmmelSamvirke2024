@@ -34,7 +34,7 @@ public class NewsletterGroupsCleanupCampaignEntityTypeConfiguration : IEntityTyp
                     j =>
                     {
                         j.HasKey("CampaignId", "RecipientId");
-                        j.ToTable("CampaignUncleanedRecipients");
+                        j.ToTable("Join_CampaignRecipients");
                     });
 
         builder.HasIndex(c => c.CampaignStart);
