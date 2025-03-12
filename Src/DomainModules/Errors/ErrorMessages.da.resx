@@ -90,4 +90,40 @@
     <data name="NewsletterSubscriptionAction_Token_NotEmpty" xml:space="preserve">
         <value>Handlingen kunne ikke oprettes fordi nøglen for handlingen er tom</value>
     </data>
+    <data name="BlockedReservationTimeSlot_EndTime_MustBeAfterStart" xml:space="preserve">
+        <value>Sluttidspunktet skal være mindst en time efter starttidspunktet</value>
+    </data>
+    <data name="Reservation_EndTime_MustBeAfterStart" xml:space="preserve">
+        <value>Sluttidspunktet skal være mindst en time efter starttidspunktet</value>
+    </data>
+    <data name="ReservationHistory_Email_InvalidStructure" xml:space="preserve">
+        <value>E-mailen er ikke gyldig</value>
+    </data>
+    <data name="ReservationHistory_Token_Empty" xml:space="preserve">
+        <value>Nøglen til reservationshistorikken kan ikke være tom</value>
+    </data>
+    <data name="Reservation_CommunityName_InvalidLength" xml:space="preserve">
+        <value>Navnet på foreningen skal være mellem 3-75 tegn langt</value>
+    </data>
+    <data name="Reservation_Email_InvalidStructure" xml:space="preserve">
+        <value>E-mailen er ikke gyldig</value>
+    </data>
+    <data name="Reservation_StartTIme_InPast" xml:space="preserve">
+        <value>Starttidspunktet kan ikke være i fortiden</value>
+    </data>
+    <data name="Reservation_PhoneNumber_InvalidLength" xml:space="preserve">
+        <value>Telefonnummer skal være mellem 5-20 tegn langt</value>
+    </data>
+    <data name="Reservation_Name_Empty" xml:space="preserve">
+        <value>Navn må ikke være tomt</value>
+    </data>
+    <data name="Reservation_Name_InvalidLength" xml:space="preserve">
+        <value>Navn skal være mellem 3-100 tegn langt</value>
+    </data>
+    <data name="Reservation_PhoneNumber_Empty" xml:space="preserve">
+        <value>Telefonnummer må ikke være tomt</value>
+    </data>
+    <data name="BlockedReservationTimeSlot_StartTime_InPast" xml:space="preserve">
+        <value>Starttidspunktet kan ikke være i fortiden</value>
+    </data>
 </root>

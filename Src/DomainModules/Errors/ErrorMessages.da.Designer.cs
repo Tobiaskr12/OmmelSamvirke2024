@@ -87,6 +87,24 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sluttidspunktet skal være mindst en time efter starttidspunktet.
+        /// </summary>
+        public static string BlockedReservationTimeSlot_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("BlockedReservationTimeSlot_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starttidspunktet kan ikke være i fortiden.
+        /// </summary>
+        public static string BlockedReservationTimeSlot_StartTime_InPast {
+            get {
+                return ResourceManager.GetString("BlockedReservationTimeSlot_StartTime_InPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beskrivelsen af en kontaktliste skal være mellem 5-2000 tegn lang.
         /// </summary>
         public static string ContactList_Description_InvalidLength {
@@ -272,6 +290,96 @@ namespace DomainModules.Errors {
         public static string Recipient_EmailAddress_MustBeValid {
             get {
                 return ResourceManager.GetString("Recipient_EmailAddress_MustBeValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navnet på foreningen skal være mellem 3-75 tegn langt.
+        /// </summary>
+        public static string Reservation_CommunityName_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_CommunityName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mailen er ikke gyldig.
+        /// </summary>
+        public static string Reservation_Email_InvalidStructure {
+            get {
+                return ResourceManager.GetString("Reservation_Email_InvalidStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sluttidspunktet skal være mindst en time efter starttidspunktet.
+        /// </summary>
+        public static string Reservation_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("Reservation_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navn må ikke være tomt.
+        /// </summary>
+        public static string Reservation_Name_Empty {
+            get {
+                return ResourceManager.GetString("Reservation_Name_Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navn skal være mellem 3-100 tegn langt.
+        /// </summary>
+        public static string Reservation_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer må ikke være tomt.
+        /// </summary>
+        public static string Reservation_PhoneNumber_Empty {
+            get {
+                return ResourceManager.GetString("Reservation_PhoneNumber_Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telefonnummer skal være mellem 5-20 tegn langt.
+        /// </summary>
+        public static string Reservation_PhoneNumber_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_PhoneNumber_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starttidspunktet kan ikke være i fortiden.
+        /// </summary>
+        public static string Reservation_StartTIme_InPast {
+            get {
+                return ResourceManager.GetString("Reservation_StartTIme_InPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mailen er ikke gyldig.
+        /// </summary>
+        public static string ReservationHistory_Email_InvalidStructure {
+            get {
+                return ResourceManager.GetString("ReservationHistory_Email_InvalidStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nøglen til reservationshistorikken kan ikke være tom.
+        /// </summary>
+        public static string ReservationHistory_Token_Empty {
+            get {
+                return ResourceManager.GetString("ReservationHistory_Token_Empty", resourceCulture);
             }
         }
     }

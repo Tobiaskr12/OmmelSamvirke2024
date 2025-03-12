@@ -90,4 +90,40 @@
     <data name="NewsletterSubscriptionAction_Confirmation_NotNull" xml:space="preserve">
         <value>The action could not be created because no expiry is defined</value>
     </data>
+    <data name="Reservation_Email_InvalidStructure" xml:space="preserve">
+        <value>The email is not valid</value>
+    </data>
+    <data name="Reservation_PhoneNumber_Empty" xml:space="preserve">
+        <value>Phone number can not be empty</value>
+    </data>
+    <data name="Reservation_PhoneNumber_InvalidLength" xml:space="preserve">
+        <value>Phone number must be between 5-20 characters long</value>
+    </data>
+    <data name="Reservation_Name_Empty" xml:space="preserve">
+        <value>Name can not be empty</value>
+    </data>
+    <data name="Reservation_Name_InvalidLength" xml:space="preserve">
+        <value>Name must be between 3-100 characters long</value>
+    </data>
+    <data name="Reservation_CommunityName_InvalidLength" xml:space="preserve">
+        <value>The name of the community must be between 3-75 characters long</value>
+    </data>
+    <data name="Reservation_StartTIme_InPast" xml:space="preserve">
+        <value>The start time must not be in the past</value>
+    </data>
+    <data name="Reservation_EndTime_MustBeAfterStart" xml:space="preserve">
+        <value>The end time must be at least an hour after the start time</value>
+    </data>
+    <data name="BlockedReservationTimeSlot_StartTime_InPast" xml:space="preserve">
+        <value>The start time must not be in the past</value>
+    </data>
+    <data name="BlockedReservationTimeSlot_EndTime_MustBeAfterStart" xml:space="preserve">
+        <value>The end time must be at least an hour after the start time</value>
+    </data>
+    <data name="ReservationHistory_Email_InvalidStructure" xml:space="preserve">
+        <value>The email is not valid</value>
+    </data>
+    <data name="ReservationHistory_Token_Empty" xml:space="preserve">
+        <value>Reservation history token cannot be empty</value>
+    </data>
 </root>

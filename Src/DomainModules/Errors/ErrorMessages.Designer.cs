@@ -87,6 +87,24 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The end time must be at least an hour after the start time.
+        /// </summary>
+        public static string BlockedReservationTimeSlot_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("BlockedReservationTimeSlot_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The start time must not be in the past.
+        /// </summary>
+        public static string BlockedReservationTimeSlot_StartTime_InPast {
+            get {
+                return ResourceManager.GetString("BlockedReservationTimeSlot_StartTime_InPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The description of a contact list must be between 5-2000 characters long.
         /// </summary>
         public static string ContactList_Description_InvalidLength {
@@ -272,6 +290,96 @@ namespace DomainModules.Errors {
         public static string Recipient_EmailAddress_MustBeValid {
             get {
                 return ResourceManager.GetString("Recipient_EmailAddress_MustBeValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the community must be between 3-75 characters long.
+        /// </summary>
+        public static string Reservation_CommunityName_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_CommunityName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email is not valid.
+        /// </summary>
+        public static string Reservation_Email_InvalidStructure {
+            get {
+                return ResourceManager.GetString("Reservation_Email_InvalidStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The end time must be at least an hour after the start time.
+        /// </summary>
+        public static string Reservation_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("Reservation_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name can not be empty.
+        /// </summary>
+        public static string Reservation_Name_Empty {
+            get {
+                return ResourceManager.GetString("Reservation_Name_Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name must be between 3-100 characters long.
+        /// </summary>
+        public static string Reservation_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number can not be empty.
+        /// </summary>
+        public static string Reservation_PhoneNumber_Empty {
+            get {
+                return ResourceManager.GetString("Reservation_PhoneNumber_Empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number must be between 5-20 characters long.
+        /// </summary>
+        public static string Reservation_PhoneNumber_InvalidLength {
+            get {
+                return ResourceManager.GetString("Reservation_PhoneNumber_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The start time must not be in the past.
+        /// </summary>
+        public static string Reservation_StartTIme_InPast {
+            get {
+                return ResourceManager.GetString("Reservation_StartTIme_InPast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email is not valid.
+        /// </summary>
+        public static string ReservationHistory_Email_InvalidStructure {
+            get {
+                return ResourceManager.GetString("ReservationHistory_Email_InvalidStructure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reservation history token cannot be empty.
+        /// </summary>
+        public static string ReservationHistory_Token_Empty {
+            get {
+                return ResourceManager.GetString("ReservationHistory_Token_Empty", resourceCulture);
             }
         }
     }
