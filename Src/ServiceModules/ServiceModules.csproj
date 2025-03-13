@@ -47,4 +47,8 @@
         <DependentUpon>ErrorMessages.resx</DependentUpon>
       </Compile>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Reservations\Commands\" />
+      <Folder Include="Reservations\Queries\" />
+    </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@ using DataAccess.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(OmmelSamvirkeDbContext))]
-    partial class OmmelSamvirkeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250313171816_AddReservationLocationEntity")]
+    partial class AddReservationLocationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -488,6 +491,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -501,22 +507,14 @@ namespace DataAccess.Migrations
                     b.Property<int?>("ReservationHistoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReservationSeriesId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("State")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email");
 
                     b.HasIndex("ReservationHistoryId");
-
-                    b.HasIndex("ReservationSeriesId");
 
                     b.ToTable("Reservations", (string)null);
                 });
@@ -574,41 +572,6 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ReservationLocations", (string)null);
-                });
-
-            modelBuilder.Entity("DomainModules.Reservations.Entities.ReservationSeries", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Interval")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("RecurrenceEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("RecurrenceStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RecurrenceType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecurrenceEndDate");
-
-                    b.HasIndex("RecurrenceStartDate");
-
-                    b.ToTable("ReservationSeries", (string)null);
                 });
 
             modelBuilder.Entity("EmailRecipient", b =>
@@ -732,11 +695,6 @@ namespace DataAccess.Migrations
                     b.HasOne("DomainModules.Reservations.Entities.ReservationHistory", null)
                         .WithMany("Reservations")
                         .HasForeignKey("ReservationHistoryId");
-
-                    b.HasOne("DomainModules.Reservations.Entities.ReservationSeries", null)
-                        .WithMany("Reservations")
-                        .HasForeignKey("ReservationSeriesId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("EmailRecipient", b =>
@@ -797,11 +755,6 @@ namespace DataAccess.Migrations
                 });
 
             modelBuilder.Entity("DomainModules.Reservations.Entities.ReservationHistory", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("DomainModules.Reservations.Entities.ReservationSeries", b =>
                 {
                     b.Navigation("Reservations");
                 });

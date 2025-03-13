@@ -382,5 +382,50 @@ namespace DomainModules.Errors {
                 return ResourceManager.GetString("ReservationHistory_Token_Empty", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the reservation location must be between 3-75 characters long.
+        /// </summary>
+        public static string ReservationLocation_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("ReservationLocation_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recurrence interval must be greater than zero.
+        /// </summary>
+        public static string ReservationSeries_InvalidInterval {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recurrence end date must be after the start date.
+        /// </summary>
+        public static string ReservationSeries_InvalidRecurrenceDates {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidRecurrenceDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recurrence type must be specified.
+        /// </summary>
+        public static string ReservationSeries_InvalidRecurrenceType {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidRecurrenceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recurrence start date cannot be in the past.
+        /// </summary>
+        public static string ReservationSeries_StartDateInPast {
+            get {
+                return ResourceManager.GetString("ReservationSeries_StartDateInPast", resourceCulture);
+            }
+        }
     }
 }

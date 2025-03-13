@@ -382,5 +382,50 @@ namespace DomainModules.Errors {
                 return ResourceManager.GetString("ReservationHistory_Token_Empty", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Navnet på reservationslokationen skal være mellem 3-75 tegn langt.
+        /// </summary>
+        public static string ReservationLocation_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("ReservationLocation_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gentagelsesintervallet skal være større end nul.
+        /// </summary>
+        public static string ReservationSeries_InvalidInterval {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slutdatoen for gentagelsen skal være efter startdatoen.
+        /// </summary>
+        public static string ReservationSeries_InvalidRecurrenceDates {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidRecurrenceDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gentagelsesintervallet skal vælges.
+        /// </summary>
+        public static string ReservationSeries_InvalidRecurrenceType {
+            get {
+                return ResourceManager.GetString("ReservationSeries_InvalidRecurrenceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startdatoen for gentagelsen må ikke være i fortiden.
+        /// </summary>
+        public static string ReservationSeries_StartDateInPast {
+            get {
+                return ResourceManager.GetString("ReservationSeries_StartDateInPast", resourceCulture);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using DomainModules.Common;
+using DomainModules.Reservations.Enums;
 
 namespace DomainModules.Reservations.Entities;
 
@@ -10,6 +11,9 @@ public class Reservation : BaseEntity
     public required DateTime StartTime { get; set; }
     public required DateTime EndTime { get; set; }
     public string? CommunityName { get; set; }
+    public ReservationState State { get; set; } = ReservationState.Pending;
     
+    public int? ReservationSeriesId { get; set; }
+
     // TODO - Add optional link to Event
 }

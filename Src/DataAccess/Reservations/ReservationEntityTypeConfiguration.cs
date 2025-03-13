@@ -29,10 +29,17 @@ public class ReservationEntityTypeConfiguration : IEntityTypeConfiguration<Reser
         
         builder.Property(r => r.EndTime)
                .IsRequired();
+
+        builder.Property(r => r.State)
+               .IsRequired();
         
         builder.Property(r => r.CommunityName)
                .HasMaxLength(75);
         
+        builder.Property(r => r.ReservationSeriesId)
+               .IsRequired(false);
+        
         builder.HasIndex(r => r.Email);
+        builder.HasIndex(r => r.ReservationSeriesId);
     }
 }

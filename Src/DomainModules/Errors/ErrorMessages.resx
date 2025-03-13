@@ -126,4 +126,19 @@
     <data name="ReservationHistory_Token_Empty" xml:space="preserve">
         <value>Reservation history token cannot be empty</value>
     </data>
+    <data name="ReservationLocation_Name_InvalidLength" xml:space="preserve">
+        <value>The name of the reservation location must be between 3-75 characters long</value>
+    </data>
+    <data name="ReservationSeries_InvalidRecurrenceType" xml:space="preserve">
+        <value>The recurrence type must be specified</value>
+    </data>
+    <data name="ReservationSeries_InvalidInterval" xml:space="preserve">
+        <value>The recurrence interval must be greater than zero</value>
+    </data>
+    <data name="ReservationSeries_StartDateInPast" xml:space="preserve">
+        <value>The recurrence start date cannot be in the past</value>
+    </data>
+    <data name="ReservationSeries_InvalidRecurrenceDates" xml:space="preserve">
+        <value>The recurrence end date must be after the start date</value>
+    </data>
 </root>
