@@ -216,4 +216,19 @@
   <data name="NewsletterSubscription_TooManyPendingRequests" xml:space="preserve">
     <value>Du har forsøgt at tilmelde dig nyhedsbrevet for mange gange. Bekræft din tilmelding via en af de e-mails vi har sendt til din e-mail-adresse</value>
   </data>
+  <data name="Reservations_TokenMismatch" xml:space="preserve">
+    <value>Den angivne nøgle matcher ikke reservationshistorikken</value>
+  </data>
+  <data name="Reservations_ReservationNotFound" xml:space="preserve">
+    <value>Reservation ikke fundet</value>
+  </data>
+  <data name="Reservations_ReservationConflict" xml:space="preserve">
+    <value>Der findes allerede en reservationsanmodning for det valgte tidsrum</value>
+  </data>
+  <data name="Reservations_InvalidRecurrencePeriod" xml:space="preserve">
+    <value>Gentagelsesperioden er ugyldig. Slutdato skal være efter startdato</value>
+  </data>
+  <data name="Reservations_SeriesNotFound" xml:space="preserve">
+    <value>Den gentagende reservationsserie blev ikke fundet</value>
+  </data>
 </root>

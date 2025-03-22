@@ -69,7 +69,7 @@ public abstract class CsvBufferedWriter<T> : IDisposable
         lock (_flushLock)
         {
             list = new List<T>();
-            while (_buffer.TryDequeue(out var entry))
+            while (_buffer.TryDequeue(out T? entry))
             {
                 list.Add(entry);
             }

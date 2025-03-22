@@ -207,7 +207,7 @@ public class EmailTests
     public void Email_HasValidContentSize_PassesValidation(double contentSizeMb)
     {
         Email email = _baseValidEmail;
-        var attachmentContentSize =
+        int attachmentContentSize =
             (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
         email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
         
@@ -220,7 +220,7 @@ public class EmailTests
     public void Email_HasInvalidContentSize_FailsValidationWithExpectedErrorMessage(double contentSizeMb)
     {
         Email email = _baseValidEmail;
-        var attachmentContentSize =
+        int attachmentContentSize =
             (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
         email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
         
@@ -238,7 +238,7 @@ public class EmailTests
     [Test]
     public void Email_HasDuplicateRecipients_FailsValidationWithExpectedErrorMessage()
     {
-        var duplicatedEmailAddress = "testemail@example.com";
+        string? duplicatedEmailAddress = "testemail@example.com";
         List<Recipient> recipients = CreateRecipients(3);
         recipients[0].EmailAddress = duplicatedEmailAddress;
         recipients[1].EmailAddress = duplicatedEmailAddress;
@@ -260,7 +260,7 @@ public class EmailTests
     [Test]
     public void Email_HasDuplicateAttachments_FailsValidationWithExpectedErrorMessage()
     {
-        var duplicatedAttachmentNames = "testemailattachment";
+        string? duplicatedAttachmentNames = "testemailattachment";
         List<Attachment> attachments = CreateAttachments(3, 2_000);
         attachments[0].Name = duplicatedAttachmentNames;
         attachments[1].Name = duplicatedAttachmentNames;
@@ -284,7 +284,7 @@ public class EmailTests
         _baseValidEmail.Recipients.Clear();
         var recipients = new List<Recipient>();
         
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             recipients.Add(new Recipient()
             {
@@ -299,7 +299,7 @@ public class EmailTests
     {
         var attachments = new List<Attachment>();
         
-        for (var i = 0; i < count; i++)
+        for (int i = 0; i < count; i++)
         {
             attachments.Add(CreateAttachmentOfSize(sizeInBytes));
         }
@@ -310,7 +310,7 @@ public class EmailTests
     private static Attachment CreateAttachmentOfSize(int sizeInBytes)
     {
         Random randomGen = new();
-        var binaryContent = new byte[sizeInBytes];
+        byte[]? binaryContent = new byte[sizeInBytes];
         randomGen.NextBytes(binaryContent);
 
         return new Attachment

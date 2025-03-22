@@ -105,7 +105,7 @@ public class AttachmentTests
     private static byte[] CreateBinaryContent(int contentSize)
     {
         Random randomGen = new();
-        var content = new byte[contentSize];
+        byte[]? content = new byte[contentSize];
         randomGen.NextBytes(content);
 
         return content;

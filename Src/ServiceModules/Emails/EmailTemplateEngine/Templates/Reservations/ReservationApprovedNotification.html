@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Din reservation er godkendt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+{{>header}}
+<div style="max-width:700px; margin:0 auto; border:1px solid #d6d6d6; background:white; padding:20px; font-family: 'Roboto', Arial, sans-serif;">
+    <p style="line-height:24px; font-size:16px;">
+        Vi er glade for at meddele, at din reservationsanmodning for {{LocationName}} er blevet godkendt.<br/> 
+        Vi glæder os til at byde dig velkommen!
+    </p>
+    <p style="line-height:24px; font-size:16px;">
+        For at se alle detaljer om din reservation, herunder tidspunkter og praktiske oplysninger, klik på knappen nedenfor:
+    </p>
+    <p style="text-align: center; margin:40px 0;">
+        <a href="{{ReservationDetailsLink}}" target="_blank" style="background-color:#007BFF; color:white; padding:10px 20px; text-decoration:none; font-size:16px; border-radius:5px;">
+            Se din reservation
+        </a>
+    </p>
+    <p style="line-height:24px; font-size:16px;">
+        Har du spørgsmål eller brug for yderligere information, er du altid velkommen til at kontakte os.
+    </p>
+    <p style="line-height:24px; font-size:16px;">
+        Med venlig hilsen,<br>
+        Ommel Samvirke
+    </p>
+    
+    {{>no-reply}}
+</div>
+{{>footer}}
+</body>
+</html>

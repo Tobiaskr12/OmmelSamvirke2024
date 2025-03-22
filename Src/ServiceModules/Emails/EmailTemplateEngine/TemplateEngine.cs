@@ -139,7 +139,7 @@ public partial class TemplateEngine : IEmailTemplateEngine
         ProcessHtmlNode(htmlDoc.DocumentNode, plainTextBuilder);
         
         // Remove newline character at the end if there is one
-        var plainTextBody = plainTextBuilder.ToString();
+        string? plainTextBody = plainTextBuilder.ToString();
         if (plainTextBody.EndsWith("\r\n"))
         {
             plainTextBody = plainTextBody[..^2];

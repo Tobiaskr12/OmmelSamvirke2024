@@ -13,6 +13,7 @@ public class Reservation : BaseEntity
     public string? CommunityName { get; set; }
     public ReservationState State { get; set; } = ReservationState.Pending;
     
+    public required ReservationLocation Location { get; set; }
     public int? ReservationSeriesId { get; set; }
 
     // TODO - Add optional link to Event

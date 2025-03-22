@@ -33,8 +33,8 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
-        var requestName = request.GetType().Name;
-        var operationType = requestName.Contains("Query") ? "Query" : "Command";
+        string? requestName = request.GetType().Name;
+        string? operationType = requestName.Contains("Query") ? "Query" : "Command";
         _correlationContext.OperationId = _shortIdGenerator.Generate();
 
         try
@@ -56,10 +56,10 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
             _logger.LogWarning($"Validation failed: {ex.Message}");
 
             // Gather all validation errors
-            var errorMessages = ex.Errors
-                                  .Select(e => e.ErrorMessage)
-                                  .Where(msg => !string.IsNullOrWhiteSpace(msg))
-                                  .ToList();
+            List<string>? errorMessages = ex.Errors
+                                            .Select(e => e.ErrorMessage)
+                                            .Where(msg => !string.IsNullOrWhiteSpace(msg))
+                                            .ToList();
 
             // If nothing was in the ErrorMessage list, try ex.Message
             if (errorMessages.Count == 0 && !string.IsNullOrEmpty(ex.Message))
@@ -96,7 +96,7 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
         // 1. Handle the non-generic Result
         if (responseType == typeof(Result))
         {
-            var result = Result.Fail(errors);
+            Result? result = Result.Fail(errors);
             return (TResponse)(object)result;
         }
 
@@ -125,7 +125,7 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
             MethodInfo genericFailMethod = failMethod.MakeGenericMethod(genericTypeArg);
 
             // Invoke: "Result.Fail<T>(errors)" => returns a "Result<T>"
-            var failedResult = genericFailMethod.Invoke(null, [errors]);
+            object? failedResult = genericFailMethod.Invoke(null, [errors]);
             return (TResponse)failedResult!;
         }
 

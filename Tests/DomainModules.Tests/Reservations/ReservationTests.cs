@@ -22,7 +22,11 @@ public class ReservationTests
             Name = "Valid Reservation Name",
             StartTime = DateTime.UtcNow.AddMinutes(10),
             EndTime = DateTime.UtcNow.AddHours(2),
-            CommunityName = "Valid Community"
+            CommunityName = "Valid Community",
+            Location = new ReservationLocation
+            {
+                Name = "Beboerhuset"
+            }
         };
     }
 

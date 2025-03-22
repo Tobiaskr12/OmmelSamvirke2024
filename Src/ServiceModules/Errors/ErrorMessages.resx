@@ -216,4 +216,19 @@
   <data name="NewsletterSubscription_TooManyPendingRequests" xml:space="preserve">
     <value>You've submitted this request too many times. Check your email inbox to accept one of the emails that have already been sent to you</value>
   </data>
+  <data name="Reservations_TokenMismatch" xml:space="preserve">
+    <value>The provided token does not match the reservation history</value>
+  </data>
+  <data name="Reservations_ReservationNotFound" xml:space="preserve">
+    <value>Reservation not found</value>
+  </data>
+  <data name="Reservations_InvalidRecurrencePeriod" xml:space="preserve">
+    <value>The recurrence period is invalid. The end date must be after the start date</value>
+  </data>
+  <data name="Reservations_ReservationConflict" xml:space="preserve">
+    <value>A reservation request for the selected time period already exists</value>
+  </data>
+  <data name="Reservations_SeriesNotFound" xml:space="preserve">
+    <value>The recurring reservation series was not found</value>
+  </data>
 </root>

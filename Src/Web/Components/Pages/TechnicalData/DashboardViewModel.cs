@@ -172,8 +172,8 @@ public partial class DashboardViewModel : ObservableObject
     {
         if (_selectedDate is not null)
         {
-            var start = _selectedDate.Value.Date.Add(selectedTime);
-            var end = start.AddMinutes(1);
+            DateTime start = _selectedDate.Value.Date.Add(selectedTime);
+            DateTime end = start.AddMinutes(1);
             ReloadData(start, end);
         }
     }
@@ -182,8 +182,8 @@ public partial class DashboardViewModel : ObservableObject
     {
         if (_selectedDate is not null)
         {
-            var start = _selectedDate.Value.Date.Add(selectedTime);
-            var end = start.AddHours(1);
+            DateTime start = _selectedDate.Value.Date.Add(selectedTime);
+            DateTime end = start.AddHours(1);
             ReloadData(start, end);
         }
     }

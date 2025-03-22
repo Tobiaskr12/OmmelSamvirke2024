@@ -81,7 +81,7 @@ public class DailyCleanupCampaignFunction
             if (!cleanupCampaign.IsCampaignStarted)
             {
                 cleanupCampaign.IsCampaignStarted = true;
-                var updateResult = await _cleanupCampaignRepository.UpdateAsync(cleanupCampaign);
+                Result<NewsletterGroupsCleanupCampaign>? updateResult = await _cleanupCampaignRepository.UpdateAsync(cleanupCampaign);
                 if (updateResult.IsFailed)
                 {
                     throw new Exception("Failed to update campaign status.");
@@ -130,7 +130,7 @@ public class DailyCleanupCampaignFunction
         {
             foreach (Recipient uncleanedRecipient in cleanupCampaign.UnconfirmedRecipients)
             {
-                var generationResult = _templateEngine.GenerateBodiesFromTemplate(Templates.Newsletters.CleanupCampaign,
+                Result? generationResult = _templateEngine.GenerateBodiesFromTemplate(Templates.Newsletters.CleanupCampaign,
                     ("MonthsDuration", cleanupCampaign.CampaignDurationMonths.ToString()),
                     ("ConfirmationLink", $"https://www.ommelsamvirke.com/newsletter-cleanup-unsubscribe?token={uncleanedRecipient.Token}"),
                     ("UnsubscribeLink", $"https://www.ommelsamvirke.com/newsletter-cleanup-confirm-subscription?token={uncleanedRecipient.Token}")

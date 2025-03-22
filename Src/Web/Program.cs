@@ -50,8 +50,8 @@ public class Program
         builder.Services.AddApexCharts();
 
         // Setup localization
-        var supportedCultureCodes = new[] { "da", "en" };
-        var supportedCultures = supportedCultureCodes.Select(code => new CultureInfo(code)).ToList();
+        string[]? supportedCultureCodes = new[] { "da", "en" };
+        List<CultureInfo>? supportedCultures = supportedCultureCodes.Select(code => new CultureInfo(code)).ToList();
 
         builder.Services.AddLocalization();
         builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -67,7 +67,7 @@ public class Program
 
             options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
             {
-                var acceptLangs = context.Request.Headers["Accept-Language"].ToString();
+                string? acceptLangs = context.Request.Headers["Accept-Language"].ToString();
                 string primaryLanguage = acceptLangs.Split(',').FirstOrDefault() ?? "da";
 
                 if (primaryLanguage.Contains("en", StringComparison.OrdinalIgnoreCase))
@@ -92,7 +92,7 @@ public class Program
 
         WebApplication app = builder.Build();
 
-        var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+        RequestLocalizationOptions? localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
         app.UseRequestLocalization(localizationOptions);
 
         if (!app.Environment.IsDevelopment())

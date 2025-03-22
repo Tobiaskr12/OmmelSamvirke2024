@@ -79,10 +79,10 @@ public class SendEmailToContactListCommandHandler : IRequestHandler<SendEmailToC
             
         // Create batches
         int batchSize = request.BatchSize ?? ServiceLimits.RecipientsPerEmail;
-        var batchCount = (int)Math.Ceiling((double)request.ContactList.Contacts.Count / batchSize);
+        int batchCount = (int)Math.Ceiling((double)request.ContactList.Contacts.Count / batchSize);
         List<Email> emails = [];
             
-        for (var i = 0; i < batchCount; i++)
+        for (int i = 0; i < batchCount; i++)
         {
             var email = new Email
             {

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DomainModules.Common;
 using DomainModules.Emails.Entities;
 using DomainModules.Newsletters.Entities;
+using DomainModules.Reservations.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -25,6 +26,13 @@ public sealed class OmmelSamvirkeDbContext : DbContext
     public DbSet<NewsletterGroupsCleanupCampaign> NewsletterGroupsCleanupCampaigns { get; init; }
     public DbSet<NewsletterSubscriptionConfirmation> NewsletterSubscriptionConfirmations { get; init; }
     public DbSet<NewsletterUnsubscribeConfirmation> NewsletterUnsubscribeConfirmations { get; init; }
+    
+    // Reservations
+    public DbSet<Reservation> Reservations { get; init; }
+    public DbSet<BlockedReservationTimeSlot> BlockedReservationTimeSlots { get; init; }
+    public DbSet<ReservationHistory> ReservationHistories { get; init; }
+    public DbSet<ReservationLocation> ReservationLocations { get; init; }
+    public DbSet<ReservationSeries> ReservationSeries { get; init; }
 
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     

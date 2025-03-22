@@ -501,6 +501,9 @@ namespace DataAccess.Migrations
                     b.Property<int?>("ReservationHistoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ReservationLocationId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ReservationSeriesId")
                         .HasColumnType("int");
 
@@ -515,6 +518,8 @@ namespace DataAccess.Migrations
                     b.HasIndex("Email");
 
                     b.HasIndex("ReservationHistoryId");
+
+                    b.HasIndex("ReservationLocationId");
 
                     b.HasIndex("ReservationSeriesId");
 
@@ -733,10 +738,18 @@ namespace DataAccess.Migrations
                         .WithMany("Reservations")
                         .HasForeignKey("ReservationHistoryId");
 
+                    b.HasOne("DomainModules.Reservations.Entities.ReservationLocation", "Location")
+                        .WithMany()
+                        .HasForeignKey("ReservationLocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DomainModules.Reservations.Entities.ReservationSeries", null)
                         .WithMany("Reservations")
                         .HasForeignKey("ReservationSeriesId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("EmailRecipient", b =>

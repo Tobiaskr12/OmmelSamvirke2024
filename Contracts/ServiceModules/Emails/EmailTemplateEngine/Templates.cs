@@ -23,4 +23,11 @@ public  static class Templates
         public const string ConfirmNewsletterUnsubscription = "Newsletters/ConfirmNewsletterUnsubscription.html";
         public const string Newsletter = "Newsletters/Newsletter.html";
     }
+    
+    public static class Reservations
+    {
+        public const string ReservationRequestConfirmation = "Reservations/ReservationRequestConfirmation.html";
+        public const string ReservationApprovedNotification = "Reservations/ReservationApprovedNotification.html";
+        public const string ReservationDeclinedNotification = "Reservations/ReservationDeclinedNotification.html";
+    }
 }

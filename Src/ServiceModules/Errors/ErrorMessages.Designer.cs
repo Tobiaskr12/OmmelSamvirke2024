@@ -339,6 +339,51 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The recurrence period is invalid. The end date must be after the start date.
+        /// </summary>
+        public static string Reservations_InvalidRecurrencePeriod {
+            get {
+                return ResourceManager.GetString("Reservations_InvalidRecurrencePeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A reservation request for the selected time period already exists.
+        /// </summary>
+        public static string Reservations_ReservationConflict {
+            get {
+                return ResourceManager.GetString("Reservations_ReservationConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reservation not found.
+        /// </summary>
+        public static string Reservations_ReservationNotFound {
+            get {
+                return ResourceManager.GetString("Reservations_ReservationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recurring reservation series was not found.
+        /// </summary>
+        public static string Reservations_SeriesNotFound {
+            get {
+                return ResourceManager.GetString("Reservations_SeriesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provided token does not match the reservation history.
+        /// </summary>
+        public static string Reservations_TokenMismatch {
+            get {
+                return ResourceManager.GetString("Reservations_TokenMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The email address is invalid.
         /// </summary>
         public static string SearchContactListsByEmail_InvalidEmail {

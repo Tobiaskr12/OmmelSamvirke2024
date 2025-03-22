@@ -34,7 +34,7 @@ public class LogCleaningService : BackgroundService
                 {
                     _stopwatch.Stop();
 
-                    using var scope = _serviceScopeFactory.CreateScope();
+                    using IServiceScope? scope = _serviceScopeFactory.CreateScope();
                     var loggingHandler = scope.ServiceProvider.GetRequiredService<ILoggingHandler>();
                     var traceHandler = scope.ServiceProvider.GetRequiredService<ITraceHandler>();
 
@@ -46,9 +46,9 @@ public class LogCleaningService : BackgroundService
                 }
             }
 
-            var now = DateTime.UtcNow;
-            var nextRun = now.Date.AddDays(1).AddHours(4); // 4AM UTC
-            var delay = nextRun - now;
+            DateTime now = DateTime.UtcNow;
+            DateTime nextRun = now.Date.AddDays(1).AddHours(4); // 4AM UTC
+            TimeSpan delay = nextRun - now;
 
             await Task.Delay(delay, stoppingToken);
         }
@@ -56,7 +56,7 @@ public class LogCleaningService : BackgroundService
 
     private void DeleteOldData()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
+        using IServiceScope? scope = _serviceScopeFactory.CreateScope();
         var traceHandler = scope.ServiceProvider.GetRequiredService<ITraceHandler>();
 
         _logRepository.DeleteOldLogs();

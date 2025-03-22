@@ -67,12 +67,12 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
 
                 foreach ((double currentUsagePercentage, int emailsToSend) in scenarios)
                 {
-                    var emailsSent = (int)Math.Round(serviceLimit * currentUsagePercentage);
+                    int emailsSent = (int)Math.Round(serviceLimit * currentUsagePercentage);
                     double expectedUsagePercentage = (emailsSent + emailsToSend) / (double)serviceLimit;
                     
                     expectedUsagePercentage = Math.Round(expectedUsagePercentage, 2);
 
-                    var testName = $"{interval}_CurrentUsage:{currentUsagePercentage * 100}%_EmailsToSend:{emailsToSend}";
+                    string? testName = $"{interval}_CurrentUsage:{currentUsagePercentage * 100}%_EmailsToSend:{emailsToSend}";
 
                     yield return new TestCaseData(interval, currentUsagePercentage, emailsToSend, expectedUsagePercentage)
                         .SetName(testName);
@@ -144,7 +144,7 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
         };
 
         var emails = new List<Email>();
-        for (var i = 1; i <= numberOfEmailsToInsert; i++)
+        for (int i = 1; i <= numberOfEmailsToInsert; i++)
         {
             emails.Add(new Email
             {

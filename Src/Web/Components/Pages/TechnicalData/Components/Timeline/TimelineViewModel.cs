@@ -77,7 +77,7 @@ public partial class TimelineViewModel : ObservableObject
 
     private TimelinePointSeries<BucketedEntry> BuildLogsTimeline(IEnumerable<LogEntry> logs)
     {
-        var grouped = TimelineGroupingHelper.GroupByTimeInterval(logs);
+        IEnumerable<BucketedEntry>? grouped = TimelineGroupingHelper.GroupByTimeInterval(logs);
         return new TimelinePointSeries<BucketedEntry>()
         {
             Type = typeof(LogEntry),
@@ -88,7 +88,7 @@ public partial class TimelineViewModel : ObservableObject
 
     private TimelinePointSeries<BucketedEntry> BuildTracesTimeline(IEnumerable<TraceEntry> traces)
     {
-        var grouped = TimelineGroupingHelper.GroupByTimeInterval(traces);
+        IEnumerable<BucketedEntry>? grouped = TimelineGroupingHelper.GroupByTimeInterval(traces);
         return new TimelinePointSeries<BucketedEntry>()
         {
             Type = typeof(TraceEntry),

@@ -339,6 +339,51 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gentagelsesperioden er ugyldig. Slutdato skal være efter startdato.
+        /// </summary>
+        public static string Reservations_InvalidRecurrencePeriod {
+            get {
+                return ResourceManager.GetString("Reservations_InvalidRecurrencePeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der findes allerede en reservationsanmodning for det valgte tidsrum.
+        /// </summary>
+        public static string Reservations_ReservationConflict {
+            get {
+                return ResourceManager.GetString("Reservations_ReservationConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reservation ikke fundet.
+        /// </summary>
+        public static string Reservations_ReservationNotFound {
+            get {
+                return ResourceManager.GetString("Reservations_ReservationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Den gentagende reservationsserie blev ikke fundet.
+        /// </summary>
+        public static string Reservations_SeriesNotFound {
+            get {
+                return ResourceManager.GetString("Reservations_SeriesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Den angivne nøgle matcher ikke reservationshistorikken.
+        /// </summary>
+        public static string Reservations_TokenMismatch {
+            get {
+                return ResourceManager.GetString("Reservations_TokenMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E-mailadressen er ikke gyldig.
         /// </summary>
         public static string SearchContactListsByEmail_InvalidEmail {

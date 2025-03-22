@@ -259,7 +259,7 @@ public class SendEmailToContactListCommandHandlerTests
     {
         List<Recipient> recipients = [];
         
-        for (var i = 0; i < contactsCount; i++)
+        for (int i = 0; i < contactsCount; i++)
         {
             recipients.Add(new Recipient { EmailAddress =  $"test{i}@example.com" });   
         }
