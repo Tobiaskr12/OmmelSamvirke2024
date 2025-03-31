@@ -204,6 +204,222 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Begivenhedsbeskrivelsen skal være mellem 10 og 5000 tegn.
+        /// </summary>
+        public static string Event_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedsbeskrivelsen må ikke være tom.
+        /// </summary>
+        public static string Event_Description_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Description_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens varighed skal være mindst 15 minutter.
+        /// </summary>
+        public static string Event_Duration_Minimum15Minutes {
+            get {
+                return ResourceManager.GetString("Event_Duration_Minimum15Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens sluttid skal være efter starttid.
+        /// </summary>
+        public static string Event_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("Event_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to En eventkoordinator er påkrævet.
+        /// </summary>
+        public static string Event_EventCoordinator_NotNull {
+            get {
+                return ResourceManager.GetString("Event_EventCoordinator_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens lokation skal være mellem 3 og 50 tegn.
+        /// </summary>
+        public static string Event_Location_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Location_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens lokation må ikke være tom.
+        /// </summary>
+        public static string Event_Location_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Location_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hver vedhæftet fil skal have en gyldig URL.
+        /// </summary>
+        public static string Event_RemoteFile_InvalidUrl {
+            get {
+                return ResourceManager.GetString("Event_RemoteFile_InvalidUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vedhæftede filer skal være unikke.
+        /// </summary>
+        public static string Event_RemoteFiles_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Event_RemoteFiles_MustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vedhæftede filer må ikke være null.
+        /// </summary>
+        public static string Event_RemoteFiles_NotNull {
+            get {
+                return ResourceManager.GetString("Event_RemoteFiles_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens starttid skal være i fremtiden.
+        /// </summary>
+        public static string Event_StartTime_MustBeInFuture {
+            get {
+                return ResourceManager.GetString("Event_StartTime_MustBeInFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens titel skal være mellem 3 og 100 tegn.
+        /// </summary>
+        public static string Event_Title_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Title_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Begivenhedens titel må ikke være tom.
+        /// </summary>
+        public static string Event_Title_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Title_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tovholderens emailadresse er ugyldig.
+        /// </summary>
+        public static string EventCoordinator_EmailAddress_Invalid {
+            get {
+                return ResourceManager.GetString("EventCoordinator_EmailAddress_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tovholderens navn skal være mellem 2 og 100 tegn.
+        /// </summary>
+        public static string EventCoordinator_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventCoordinator_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tovholderens navn må ikke være tomt.
+        /// </summary>
+        public static string EventCoordinator_Name_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventCoordinator_Name_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tovholderens telefonnummer er ugyldigt.
+        /// </summary>
+        public static string EventCoordinator_PhoneNumber_Invalid {
+            get {
+                return ResourceManager.GetString("EventCoordinator_PhoneNumber_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filnavn skal være mellem 1 og 255 tegn.
+        /// </summary>
+        public static string EventRemoteFile_FileName_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filnavn må ikke være tomt.
+        /// </summary>
+        public static string EventRemoteFile_FileName_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileName_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filstørrelse skal være større end 0 byte.
+        /// </summary>
+        public static string EventRemoteFile_FileSize_Invalid {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileSize_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filtype skal være mellem 1 og 100 tegn.
+        /// </summary>
+        public static string EventRemoteFile_FileType_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileType_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filtype må ikke være tom.
+        /// </summary>
+        public static string EventRemoteFile_FileType_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileType_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fil URL skal være en gyldig URL.
+        /// </summary>
+        public static string EventRemoteFile_Url_Invalid {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_Url_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fil URL må ikke være tom.
+        /// </summary>
+        public static string EventRemoteFile_Url_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_Url_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beskrivelsen på nyhedsbrevsgruppen skal være mellem 5-500 tegn lang.
         /// </summary>
         public static string NewsletterGroup_Description_InvalidLength {

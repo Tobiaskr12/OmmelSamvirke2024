@@ -1,5 +1,6 @@
 using AutoFixture;
 using Contracts.ServiceModules.Reservations;
+using DomainModules.Common;
 using DomainModules.Reservations.Entities;
 using FluentResults;
 
@@ -28,7 +29,7 @@ public class GetReservationsInSeriesQueryTests : ServiceTestBase
 
         var series = new ReservationSeries
         {
-            RecurrenceType = DomainModules.Reservations.Enums.RecurrenceType.Daily,
+            RecurrenceType = RecurrenceType.Daily,
             Interval = 1,
             RecurrenceStartDate = DateTime.UtcNow.Date.AddDays(1),
             RecurrenceEndDate = DateTime.UtcNow.Date.AddDays(3),

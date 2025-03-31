@@ -204,6 +204,222 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event description must be between 10 and 5000 characters.
+        /// </summary>
+        public static string Event_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event description must not be empty.
+        /// </summary>
+        public static string Event_Description_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Description_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event duration must be at least 15 minutes.
+        /// </summary>
+        public static string Event_Duration_Minimum15Minutes {
+            get {
+                return ResourceManager.GetString("Event_Duration_Minimum15Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event end time must be after start time.
+        /// </summary>
+        public static string Event_EndTime_MustBeAfterStart {
+            get {
+                return ResourceManager.GetString("Event_EndTime_MustBeAfterStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event coordinator is required.
+        /// </summary>
+        public static string Event_EventCoordinator_NotNull {
+            get {
+                return ResourceManager.GetString("Event_EventCoordinator_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event location must be between 3 and 50 characters.
+        /// </summary>
+        public static string Event_Location_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Location_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event location must not be empty.
+        /// </summary>
+        public static string Event_Location_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Location_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each remote file must be a valid URL.
+        /// </summary>
+        public static string Event_RemoteFile_InvalidUrl {
+            get {
+                return ResourceManager.GetString("Event_RemoteFile_InvalidUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote files must be unique.
+        /// </summary>
+        public static string Event_RemoteFiles_MustBeUnique {
+            get {
+                return ResourceManager.GetString("Event_RemoteFiles_MustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote files collection must not be null.
+        /// </summary>
+        public static string Event_RemoteFiles_NotNull {
+            get {
+                return ResourceManager.GetString("Event_RemoteFiles_NotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event start time must be in the future.
+        /// </summary>
+        public static string Event_StartTime_MustBeInFuture {
+            get {
+                return ResourceManager.GetString("Event_StartTime_MustBeInFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event title must be between 3 and 100 characters.
+        /// </summary>
+        public static string Event_Title_InvalidLength {
+            get {
+                return ResourceManager.GetString("Event_Title_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event title must not be empty.
+        /// </summary>
+        public static string Event_Title_NotEmpty {
+            get {
+                return ResourceManager.GetString("Event_Title_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event coordinator email address is invalid.
+        /// </summary>
+        public static string EventCoordinator_EmailAddress_Invalid {
+            get {
+                return ResourceManager.GetString("EventCoordinator_EmailAddress_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event coordinator name must be between 2 and 100 characters.
+        /// </summary>
+        public static string EventCoordinator_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventCoordinator_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event coordinator name must not be empty.
+        /// </summary>
+        public static string EventCoordinator_Name_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventCoordinator_Name_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event coordinator phone number is invalid.
+        /// </summary>
+        public static string EventCoordinator_PhoneNumber_Invalid {
+            get {
+                return ResourceManager.GetString("EventCoordinator_PhoneNumber_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name must be between 1 and 255 characters.
+        /// </summary>
+        public static string EventRemoteFile_FileName_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name must not be empty.
+        /// </summary>
+        public static string EventRemoteFile_FileName_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileName_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File size must be greater than 0 bytes.
+        /// </summary>
+        public static string EventRemoteFile_FileSize_Invalid {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileSize_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File type must be between 1 and 100 characters.
+        /// </summary>
+        public static string EventRemoteFile_FileType_InvalidLength {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileType_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File type must not be empty.
+        /// </summary>
+        public static string EventRemoteFile_FileType_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_FileType_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File URL must be a valid URL.
+        /// </summary>
+        public static string EventRemoteFile_Url_Invalid {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_Url_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File URL must not be empty.
+        /// </summary>
+        public static string EventRemoteFile_Url_NotEmpty {
+            get {
+                return ResourceManager.GetString("EventRemoteFile_Url_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The description of the newsletter group must be between 5-500 characters long.
         /// </summary>
         public static string NewsletterGroup_Description_InvalidLength {

@@ -1,4 +1,5 @@
 using DomainModules.Common;
+using DomainModules.Events.Entities;
 using DomainModules.Reservations.Enums;
 
 namespace DomainModules.Reservations.Entities;
@@ -15,6 +16,5 @@ public class Reservation : BaseEntity
     
     public required ReservationLocation Location { get; set; }
     public int? ReservationSeriesId { get; set; }
-
-    // TODO - Add optional link to Event
+    public Event? Event { get; set; }
 }

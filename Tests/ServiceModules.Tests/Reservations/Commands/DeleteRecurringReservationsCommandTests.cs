@@ -1,7 +1,7 @@
 using AutoFixture;
 using Contracts.ServiceModules.Reservations;
+using DomainModules.Common;
 using DomainModules.Reservations.Entities;
-using DomainModules.Reservations.Enums;
 using FluentResults;
 
 namespace ServiceModules.Tests.Reservations.Commands;

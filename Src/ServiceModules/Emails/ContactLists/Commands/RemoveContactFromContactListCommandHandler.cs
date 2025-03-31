@@ -2,13 +2,13 @@ using Contracts.DataAccess.Base;
 using Contracts.ServiceModules.Emails.ContactLists;
 using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.ServiceModules.Emails.Sending;
+using DomainModules.Common;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using MediatR;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
-using DomainModules.Emails.Validators;
 using ServiceModules.Errors;
 
 namespace ServiceModules.Emails.ContactLists.Commands;
@@ -20,7 +20,7 @@ public class RemoveContactFromContactListCommandValidator : AbstractValidator<Re
     {
         RuleFor(x => x.ContactList).SetValidator(contactListValidator);
         RuleFor(x => x.EmailAddress)
-            .Must(RecipientValidator.IsEmailStructureValid)
+            .Must(ValidationUtils.IsEmailStructureValid)
             .WithMessage(DomainModules.Errors.ErrorMessages.Recipient_EmailAddress_MustBeValid);
     }
 }

@@ -3,6 +3,7 @@ using Contracts.ServiceModules.Emails.DTOs;
 using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using Contracts.ServiceModules.Emails.Sending;
 using Contracts.ServiceModules.Reservations;
+using DomainModules.Common;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
 using DomainModules.Reservations.Entities;
@@ -212,8 +213,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
     private async Task<bool> HasConflict(Reservation newReservation, CancellationToken cancellationToken)
     {
         Result<List<Reservation>> conflictResult = await _reservationRepository.FindAsync(
-            r => r.Email == newReservation.Email &&
-                 r.State != ReservationState.Denied &&
+            r => r.State != ReservationState.Denied &&
                  r.StartTime < newReservation.EndTime &&
                  r.EndTime > newReservation.StartTime,
             readOnly: true,

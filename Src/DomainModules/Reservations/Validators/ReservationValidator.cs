@@ -1,4 +1,4 @@
-using DomainModules.Emails.Validators;
+using DomainModules.Common;
 using DomainModules.Errors;
 using DomainModules.Reservations.Entities;
 using FluentValidation;
@@ -10,7 +10,7 @@ public class ReservationValidator : AbstractValidator<Reservation>
     public ReservationValidator()
     {
         RuleFor(x => x.Email)
-            .Must(RecipientValidator.IsEmailStructureValid)
+            .Must(ValidationUtils.IsEmailStructureValid)
             .WithMessage(ErrorMessages.Reservation_Email_InvalidStructure);
 
         RuleFor(x => x.PhoneNumber)

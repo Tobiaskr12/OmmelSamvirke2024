@@ -289,6 +289,132 @@ namespace DataAccess.Migrations
                     b.ToTable("Recipients", (string)null);
                 });
 
+            modelBuilder.Entity("DomainModules.Events.Entities.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EventCoordinatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventCoordinatorId");
+
+                    b.HasIndex("ReservationId")
+                        .IsUnique()
+                        .HasFilter("[ReservationId] IS NOT NULL");
+
+                    b.ToTable("Events", (string)null);
+                });
+
+            modelBuilder.Entity("DomainModules.Events.Entities.EventCoordinator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailAddress")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EventCoordinators", (string)null);
+                });
+
+            modelBuilder.Entity("DomainModules.Events.Entities.EventRemoteFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventRemoteFiles", (string)null);
+                });
+
             modelBuilder.Entity("DomainModules.Newsletters.Entities.NewsletterGroup", b =>
                 {
                     b.Property<int>("Id")
@@ -699,6 +825,32 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("DomainModules.Events.Entities.Event", b =>
+                {
+                    b.HasOne("DomainModules.Events.Entities.EventCoordinator", "EventCoordinator")
+                        .WithMany()
+                        .HasForeignKey("EventCoordinatorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DomainModules.Reservations.Entities.Reservation", "Reservation")
+                        .WithOne("Event")
+                        .HasForeignKey("DomainModules.Events.Entities.Event", "ReservationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EventCoordinator");
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("DomainModules.Events.Entities.EventRemoteFile", b =>
+                {
+                    b.HasOne("DomainModules.Events.Entities.Event", null)
+                        .WithMany("RemoteFiles")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("DomainModules.Newsletters.Entities.NewsletterGroup", b =>
                 {
                     b.HasOne("DomainModules.Emails.Entities.ContactList", "ContactList")
@@ -807,6 +959,16 @@ namespace DataAccess.Migrations
                     b.Navigation("NewsletterSubscriptionConfirmations");
 
                     b.Navigation("NewsletterUnsubscribeConfirmations");
+                });
+
+            modelBuilder.Entity("DomainModules.Events.Entities.Event", b =>
+                {
+                    b.Navigation("RemoteFiles");
+                });
+
+            modelBuilder.Entity("DomainModules.Reservations.Entities.Reservation", b =>
+                {
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("DomainModules.Reservations.Entities.ReservationHistory", b =>

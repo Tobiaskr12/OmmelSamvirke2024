@@ -1,5 +1,5 @@
+using DomainModules.Common;
 using DomainModules.Reservations.Entities;
-using DomainModules.Reservations.Enums;
 using DomainModules.Reservations.Validators;
 using FluentValidation.Results;
 

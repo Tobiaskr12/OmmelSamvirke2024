@@ -1,6 +1,6 @@
+using DomainModules.Common;
 using DomainModules.Errors;
 using DomainModules.Reservations.Entities;
-using DomainModules.Reservations.Enums;
 using FluentValidation;
 
 namespace DomainModules.Reservations.Validators;

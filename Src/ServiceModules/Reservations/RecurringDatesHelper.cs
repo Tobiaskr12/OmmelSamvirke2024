@@ -1,5 +1,4 @@
-using Contracts.ServiceModules.Reservations;
-using DomainModules.Reservations.Enums;
+using DomainModules.Common;
 
 namespace ServiceModules.Reservations;
 

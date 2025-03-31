@@ -1,7 +1,7 @@
 using Contracts.DataAccess.Base;
 using Contracts.ServiceModules.Reservations;
+using DomainModules.Common;
 using DomainModules.Reservations.Entities;
-using DomainModules.Reservations.Enums;
 using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;

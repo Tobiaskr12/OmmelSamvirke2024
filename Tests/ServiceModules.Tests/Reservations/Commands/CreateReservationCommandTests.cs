@@ -1,5 +1,6 @@
 using AutoFixture;
 using Contracts.ServiceModules.Reservations;
+using DomainModules.Common;
 using DomainModules.Reservations.Entities;
 using DomainModules.Reservations.Enums;
 using FluentResults;
@@ -90,6 +91,7 @@ public class CreateReservationCommandTests : ServiceTestBase
         await AddTestData(location);
         var existingReservation = GlobalTestSetup.Fixture.Create<Reservation>();
         existingReservation.Location = location;
+        existingReservation.State = ReservationState.Accepted;
         existingReservation.StartTime = DateTime.UtcNow.AddHours(2);
         existingReservation.EndTime = DateTime.UtcNow.AddHours(3);
         await AddTestData(existingReservation);

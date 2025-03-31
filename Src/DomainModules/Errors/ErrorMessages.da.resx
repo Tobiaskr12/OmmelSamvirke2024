@@ -141,4 +141,76 @@
     <data name="ReservationSeries_InvalidRecurrenceDates" xml:space="preserve">
         <value>Slutdatoen for gentagelsen skal være efter startdatoen</value>
     </data>
+    <data name="EventCoordinator_Name_NotEmpty" xml:space="preserve">
+        <value>Tovholderens navn må ikke være tomt</value>
+    </data>
+    <data name="EventCoordinator_Name_InvalidLength" xml:space="preserve">
+        <value>Tovholderens navn skal være mellem 2 og 100 tegn</value>
+    </data>
+    <data name="EventCoordinator_EmailAddress_Invalid" xml:space="preserve">
+        <value>Tovholderens emailadresse er ugyldig</value>
+    </data>
+    <data name="EventCoordinator_PhoneNumber_Invalid" xml:space="preserve">
+        <value>Tovholderens telefonnummer er ugyldigt</value>
+    </data>
+    <data name="Event_Title_NotEmpty" xml:space="preserve">
+        <value>Begivenhedens titel må ikke være tom</value>
+    </data>
+    <data name="Event_Title_InvalidLength" xml:space="preserve">
+        <value>Begivenhedens titel skal være mellem 3 og 100 tegn</value>
+    </data>
+    <data name="Event_Description_NotEmpty" xml:space="preserve">
+        <value>Begivenhedsbeskrivelsen må ikke være tom</value>
+    </data>
+    <data name="Event_Description_InvalidLength" xml:space="preserve">
+        <value>Begivenhedsbeskrivelsen skal være mellem 10 og 5000 tegn</value>
+    </data>
+    <data name="Event_StartTime_MustBeInFuture" xml:space="preserve">
+        <value>Begivenhedens starttid skal være i fremtiden</value>
+    </data>
+    <data name="Event_EndTime_MustBeAfterStart" xml:space="preserve">
+        <value>Begivenhedens sluttid skal være efter starttid</value>
+    </data>
+    <data name="Event_Duration_Minimum15Minutes" xml:space="preserve">
+        <value>Begivenhedens varighed skal være mindst 15 minutter</value>
+    </data>
+    <data name="Event_EventCoordinator_NotNull" xml:space="preserve">
+        <value>En eventkoordinator er påkrævet</value>
+    </data>
+    <data name="Event_Location_NotEmpty" xml:space="preserve">
+        <value>Begivenhedens lokation må ikke være tom</value>
+    </data>
+    <data name="Event_Location_InvalidLength" xml:space="preserve">
+        <value>Begivenhedens lokation skal være mellem 3 og 50 tegn</value>
+    </data>
+    <data name="Event_RemoteFiles_MustBeUnique" xml:space="preserve">
+        <value>Vedhæftede filer skal være unikke</value>
+    </data>
+    <data name="Event_RemoteFile_InvalidUrl" xml:space="preserve">
+        <value>Hver vedhæftet fil skal have en gyldig URL</value>
+    </data>
+    <data name="EventRemoteFile_FileName_NotEmpty" xml:space="preserve">
+        <value>Filnavn må ikke være tomt</value>
+    </data>
+    <data name="EventRemoteFile_FileSize_Invalid" xml:space="preserve">
+        <value>Filstørrelse skal være større end 0 byte</value>
+    </data>
+    <data name="EventRemoteFile_FileName_InvalidLength" xml:space="preserve">
+        <value>Filnavn skal være mellem 1 og 255 tegn</value>
+    </data>
+    <data name="EventRemoteFile_FileType_NotEmpty" xml:space="preserve">
+        <value>Filtype må ikke være tom</value>
+    </data>
+    <data name="EventRemoteFile_FileType_InvalidLength" xml:space="preserve">
+        <value>Filtype skal være mellem 1 og 100 tegn</value>
+    </data>
+    <data name="EventRemoteFile_Url_NotEmpty" xml:space="preserve">
+        <value>Fil URL må ikke være tom</value>
+    </data>
+    <data name="EventRemoteFile_Url_Invalid" xml:space="preserve">
+        <value>Fil URL skal være en gyldig URL</value>
+    </data>
+    <data name="Event_RemoteFiles_NotNull" xml:space="preserve">
+        <value>Vedhæftede filer må ikke være null</value>
+    </data>
 </root>
