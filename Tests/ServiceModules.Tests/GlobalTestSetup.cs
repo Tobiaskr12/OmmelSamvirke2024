@@ -1,10 +1,12 @@
 using AutoFixture;
 using Bootstrapper;
+using Contracts.SupportModules.Logging;
 using Contracts.SupportModules.SecretsManager;
 using DataAccess.Base;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using ServiceModules.Tests.Config;
 using SupportModules.SecretsManager;
 
@@ -28,7 +30,7 @@ public class GlobalTestSetup
         Configuration = new ConfigurationBuilder()
             .AddKeyVaultSecrets(ExecutionEnvironment.Testing)
             .Build();
-        
+
         services.AddSingleton<IConfiguration>(Configuration);
         services.AddSingleton(Configuration); // Adds as IConfigurationRoot
         

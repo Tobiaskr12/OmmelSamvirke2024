@@ -4,12 +4,11 @@ using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using SupportModules.SecretsManager;
 using Bootstrapper;
-using Web.BackgroundServices;
 using Web.Components;
-using Web.Components.Pages.TechnicalData;
 using Web.Components.ViewModels;
 using System.Globalization;
 using Contracts.SupportModules.SecretsManager;
+using SupportModules;
 
 namespace Web;
 
@@ -18,10 +17,6 @@ public class Program
     public static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
-        builder.Services.AddRazorComponents()
-               .AddInteractiveServerComponents();
         
         // Setup Configuration
         ExecutionEnvironment executionEnvironment = builder.Environment.IsDevelopment()
@@ -34,13 +29,17 @@ public class Program
                    .AddEnvironmentVariables()
                    .Build();
         
+        SerilogConfigurator.ConfigureStaticLogger(configuration, executionEnvironment);
+        builder.Host.UseSharedSerilogConfiguration();
+        
+        // Add services to the container.
+        builder.Services.AddRazorComponents()
+               .AddInteractiveServerComponents();
+        
         builder.Services.AddSingleton(configuration);
         
         // Register all service-layers
         builder.Services.InitializeAllServices(configuration, executionEnvironment);
-
-        // Register pages
-        builder.Services.InitializeTechnicalDataPage();
 
         // Add ViewModels
         builder.Services.AddScoped<ThemeViewModel>();
@@ -50,7 +49,7 @@ public class Program
         builder.Services.AddApexCharts();
 
         // Setup localization
-        string[]? supportedCultureCodes = new[] { "da", "en" };
+        string[] supportedCultureCodes = ["da", "en"];
         List<CultureInfo>? supportedCultures = supportedCultureCodes.Select(code => new CultureInfo(code)).ToList();
 
         builder.Services.AddLocalization();
@@ -86,9 +85,6 @@ public class Program
                 return await Task.FromResult(new ProviderCultureResult(primaryLanguage, primaryLanguage));
             }));
         });
-
-        // Register background services
-        builder.Services.AddHostedService<LogCleaningService>();
 
         WebApplication app = builder.Build();
 

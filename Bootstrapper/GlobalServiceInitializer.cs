@@ -16,9 +16,8 @@ public static class GlobalServiceInitializer
         IConfigurationRoot configuration,
         ExecutionEnvironment executionEnvironment)
     {
-
         services
-            .InitializeLoggingModule(executionEnvironment)
+            .InitializeLoggingModule(configuration, executionEnvironment)
             .InitializeDataAccessModule(configuration).Result
             .InitializeInfrastructureModule()
             .InitializeDomainModule()

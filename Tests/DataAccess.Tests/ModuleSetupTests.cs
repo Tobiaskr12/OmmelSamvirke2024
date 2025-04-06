@@ -8,6 +8,8 @@ using DataAccess.Base;
 using DataAccess.Emails.Repositories;
 using DomainModules.Emails.Entities;
 using Bootstrapper;
+using Contracts.SupportModules.Logging;
+using NSubstitute;
 
 namespace DataAccess.Tests;
 
