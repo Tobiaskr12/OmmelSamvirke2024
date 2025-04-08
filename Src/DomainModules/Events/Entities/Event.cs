@@ -13,4 +13,7 @@ public class Event : BaseEntity
     public required string Location { get; set; }
     public List<EventRemoteFile> RemoteFiles { get; set; } = [];
     public Reservation? Reservation { get; set; }
+    
+    // Used as identifier for ICS-file
+    public Guid Uid { get; set; } = Guid.NewGuid();
 }

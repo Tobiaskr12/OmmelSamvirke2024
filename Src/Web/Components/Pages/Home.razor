@@ -1,7 +1,13 @@
 ﻿@page "/"
+@using Contracts.ServiceModules.Events.EventCoordinators
+@using Contracts.ServiceModules.Events.Events
 @using Contracts.SupportModules.Logging
+@using DomainModules.Events.Entities
+@using FluentResults
+@using MediatR
 
 @inject ILoggingHandler Logger
+@inject IMediator Mediator
 
 <PageTitle>Home</PageTitle>
 
@@ -10,40 +16,60 @@
 Welcome to your new app.
 
 @code {
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        Logger.LogInformation("Information Log");
-        Logger.LogWarning("Warning Log");
-        Logger.LogDebug("Debug Log");
+        // Logger.LogInformation("Information Log");
+        // Logger.LogWarning("Warning Log");
+        // Logger.LogDebug("Debug Log");
+        //
+        // try
+        // {
+        //     // Call a series of nested methods to generate a large stack trace
+        //     Level1();
+        // }
+        // catch (Exception ex)
+        // {
+        //     Logger.LogError(ex, "Error log");
+        // }
+        //
+        // Logger.LogCritical(new Exception("This is a critical log"), "Critical Log");
 
-        try
-        {
-            // Call a series of nested methods to generate a large stack trace
-            Level1();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Error log");
-        }
-
-        Logger.LogCritical(new Exception("This is a critical log"), "Critical Log");
-
-        return base.OnInitializedAsync();
+        // Result<EventCoordinator> createEventCoordinatorResult = await Mediator.Send(new CreateEventCoordinatorCommand(new EventCoordinator
+        // {
+        //     Name = "TestPerson McTest",
+        //     PhoneNumber = "12345678",
+        //     EmailAddress = "test@example.com"
+        // }));
+        //
+        // if (createEventCoordinatorResult.IsFailed) throw new Exception("Failed");
+        //
+        // Result<List<Event>> createEventResult = await Mediator.Send(new CreateEventCommand(new Event
+        // {
+        //     Title = "This is a test event",
+        //     Description = "This is the description for the test event",
+        //     Location = "Beboerhuset",
+        //     StartTime = DateTime.UtcNow.AddHours(1),
+        //     EndTime = DateTime.UtcNow.AddHours(6),
+        //     EventCoordinator = createEventCoordinatorResult.Value
+        // }));
+        // if (createEventResult.IsFailed) throw new Exception("Failed");
+        
+        await base.OnInitializedAsync();
     }
 
     // A chain of nested methods to build up the stack trace
-    private void Level1() => Level2();
-    private void Level2() => Level3();
-    private void Level3() => Level4();
-    private void Level4() => Level5();
-    private void Level5() => Level6();
-    private void Level6() => Level7();
-    private void Level7() => Level8();
-    private void Level8() => Level9();
-    private void Level9() => Level10();
-    private void Level10() 
-    {
-        // Throwing an exception here generates a stack trace that includes all the above methods
-        throw new Exception("This is an error log with a large stack trace");
-    }
+    // private void Level1() => Level2();
+    // private void Level2() => Level3();
+    // private void Level3() => Level4();
+    // private void Level4() => Level5();
+    // private void Level5() => Level6();
+    // private void Level6() => Level7();
+    // private void Level7() => Level8();
+    // private void Level8() => Level9();
+    // private void Level9() => Level10();
+    // private void Level10() 
+    // {
+    //     // Throwing an exception here generates a stack trace that includes all the above methods
+    //     throw new Exception("This is an error log with a large stack trace");
+    // }
 }

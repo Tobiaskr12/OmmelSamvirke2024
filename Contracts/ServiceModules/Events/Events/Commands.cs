@@ -6,6 +6,6 @@ using MediatR;
 
 namespace Contracts.ServiceModules.Events.Events;
 
-public record CreateEventCommand(Event Event, RecurrenceOptions? RecurrenceOptions, Reservation? Reservation) : IRequest<Result<List<Event>>>;
+public record CreateEventCommand(Event Event, RecurrenceOptions? RecurrenceOptions = null, Reservation? Reservation = null) : IRequest<Result<List<Event>>>;
 public record UpdateEventCommand(Event Event) : IRequest<Result<Event>>;
 public record DeleteEventCommand(int Id) : IRequest<Result>;

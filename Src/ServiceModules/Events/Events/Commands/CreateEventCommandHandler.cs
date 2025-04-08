@@ -9,6 +9,7 @@ using FluentResults;
 using FluentValidation;
 using JetBrains.Annotations;
 using ServiceModules.Errors;
+using ServiceModules.Events.IcsFeed;
 using ServiceModules.Reservations;
 
 namespace ServiceModules.Events.Events.Commands;
@@ -26,13 +27,16 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Res
 {
     private readonly IRepository<Event> _eventRepository;
     private readonly IMediator _mediator;
+    private readonly IcsFeedService _icsFeedService;
 
     public CreateEventCommandHandler(
         IRepository<Event> eventRepository,
-        IMediator mediator)
+        IMediator mediator,
+        IcsFeedService icsFeedService)
     {
         _eventRepository = eventRepository;
         _mediator = mediator;
+        _icsFeedService = icsFeedService;
     }
 
     public async Task<Result<List<Event>>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
@@ -100,6 +104,9 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Res
             
             createdEvents.Add(addResult.Value);
         }
+        
+        // Save event(s) to ICS-file
+        await _icsFeedService.UpdateCalendarFile(cancellationToken);
 
         return Result.Ok(createdEvents);
     }

@@ -28,6 +28,9 @@ public class EventEntityTypeConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.Location)
                .IsRequired()
                .HasMaxLength(50);
+
+        builder.Property(e => e.Uid)
+               .IsRequired();
             
         // One-to-many: One event can have many remote files
         builder.HasMany(e => e.RemoteFiles)

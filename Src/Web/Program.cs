@@ -18,6 +18,15 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         
+        // Set ICS-feed output path
+        string webRootPath = builder.Environment.WebRootPath;
+        string calendarFilePath = Path.Combine(webRootPath, "calendar.ics");
+        
+        Dictionary<string, string> inMemoryConfig = new()
+        {
+            { "CalendarFilePath", calendarFilePath }
+        };
+        
         // Setup Configuration
         ExecutionEnvironment executionEnvironment = builder.Environment.IsDevelopment()
             ? ExecutionEnvironment.Development
@@ -27,6 +36,7 @@ public class Program
             builder.Configuration
                    .AddKeyVaultSecrets(executionEnvironment)
                    .AddEnvironmentVariables()
+                   .AddInMemoryCollection(inMemoryConfig!)
                    .Build();
         
         SerilogConfigurator.ConfigureStaticLogger(configuration, executionEnvironment);
@@ -105,6 +115,15 @@ public class Program
 
         app.MapRazorComponents<App>()
            .AddInteractiveServerRenderMode();
+        
+        // Expose ICS-file (Calendar-events)
+        app.MapGet("/calendar.ics", (IWebHostEnvironment env) =>
+        {
+            string filePath = Path.Combine(env.WebRootPath, "calendar.ics");
+            return !File.Exists(filePath) 
+                ? Results.NotFound("ICS file not found. Please try again later.") 
+                : Results.File(filePath, "text/calendar");
+        });
 
         app.Run();
     }

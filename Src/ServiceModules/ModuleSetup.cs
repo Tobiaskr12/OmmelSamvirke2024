@@ -2,6 +2,7 @@ using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceModules.Emails.EmailTemplateEngine;
+using ServiceModules.Events.IcsFeed;
 using ServiceModules.MediatorConfig.PipelineBehaviors;
 
 namespace ServiceModules;
@@ -13,6 +14,8 @@ public static class ModuleSetup
         serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorMessages");
         serviceCollection.AddValidatorsFromAssembly(typeof(ModuleSetup).Assembly);
         serviceCollection.AddScoped<IEmailTemplateEngine, TemplateEngine>();
+        
+        serviceCollection.AddScoped<IcsFeedService>();
 
         serviceCollection.AddMediatR(config =>
         {
