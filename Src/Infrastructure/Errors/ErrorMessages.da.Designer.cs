@@ -67,5 +67,41 @@ namespace Infrastructure.Errors {
                 return ResourceManager.GetString("AzureEmailSendingFailed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fil ikke fundet.
+        /// </summary>
+        public static string BlobStorage_BlobNotFound {
+            get {
+                return ResourceManager.GetString("BlobStorage_BlobNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download af fil mislykkedes.
+        /// </summary>
+        public static string BlobStorage_Download_Failed {
+            get {
+                return ResourceManager.GetString("BlobStorage_Download_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ugyldigt filnavn-format.
+        /// </summary>
+        public static string BlobStorage_InvalidBlobNameFormat {
+            get {
+                return ResourceManager.GetString("BlobStorage_InvalidBlobNameFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filupload mislykkedes.
+        /// </summary>
+        public static string BlobStorage_Upload_Failed {
+            get {
+                return ResourceManager.GetString("BlobStorage_Upload_Failed", resourceCulture);
+            }
+        }
     }
 }

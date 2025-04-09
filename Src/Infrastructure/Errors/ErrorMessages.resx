@@ -21,4 +21,16 @@
     <data name="AzureEmailSendingFailed" xml:space="preserve">
         <value>An error occured while trying to send the email via the server. Please try again later</value>
     </data>
+    <data name="BlobStorage_Upload_Failed" xml:space="preserve">
+        <value>Failed to upload file</value>
+    </data>
+    <data name="BlobStorage_InvalidBlobNameFormat" xml:space="preserve">
+        <value>Invalid file name format</value>
+    </data>
+    <data name="BlobStorage_BlobNotFound" xml:space="preserve">
+        <value>File not found</value>
+    </data>
+    <data name="BlobStorage_Download_Failed" xml:space="preserve">
+        <value>Failed to download file</value>
+    </data>
 </root>

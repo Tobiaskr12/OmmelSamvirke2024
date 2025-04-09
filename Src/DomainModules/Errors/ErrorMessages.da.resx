@@ -213,4 +213,22 @@
     <data name="Event_RemoteFiles_NotNull" xml:space="preserve">
         <value>Vedhæftede filer må ikke være null</value>
     </data>
+    <data name="BlobStorageFile_FileBaseName_NotEmpty" xml:space="preserve">
+        <value>Filens navn må ikke være tomt</value>
+    </data>
+    <data name="BlobStorageFile_FileExtension_NotEmpty" xml:space="preserve">
+        <value>Filtypen må ikke være tom</value>
+    </data>
+    <data name="BlobStorageFile_FileExtension_Invalid" xml:space="preserve">
+        <value>Filtypen indeholder ugyldige tegn. Kun alfanumeriske tegn er tilladt</value>
+    </data>
+    <data name="BlobStorageFile_FileSize_GreaterThanZero" xml:space="preserve">
+        <value>Filstørrelsen skal være større end nul</value>
+    </data>
+    <data name="BlobStorageFile_ContentType_NotEmpty" xml:space="preserve">
+        <value>Indholdstypen må ikke være tom</value>
+    </data>
+    <data name="BlobStorageFile_BlobGuid_NotEmpty" xml:space="preserve">
+        <value>Blob GUID må ikke være tom</value>
+    </data>
 </root>

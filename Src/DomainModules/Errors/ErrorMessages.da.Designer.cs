@@ -87,6 +87,60 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blob GUID må ikke være tom.
+        /// </summary>
+        public static string BlobStorageFile_BlobGuid_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_BlobGuid_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indholdstypen må ikke være tom.
+        /// </summary>
+        public static string BlobStorageFile_ContentType_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_ContentType_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filens navn må ikke være tomt.
+        /// </summary>
+        public static string BlobStorageFile_FileBaseName_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileBaseName_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filtypen indeholder ugyldige tegn. Kun alfanumeriske tegn er tilladt.
+        /// </summary>
+        public static string BlobStorageFile_FileExtension_Invalid {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileExtension_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filtypen må ikke være tom.
+        /// </summary>
+        public static string BlobStorageFile_FileExtension_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileExtension_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filstørrelsen skal være større end nul.
+        /// </summary>
+        public static string BlobStorageFile_FileSize_GreaterThanZero {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileSize_GreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sluttidspunktet skal være mindst en time efter starttidspunktet.
         /// </summary>
         public static string BlockedReservationTimeSlot_EndTime_MustBeAfterStart {

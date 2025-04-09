@@ -1,4 +1,6 @@
+using Contracts.Infrastructure.BlobStorage;
 using Contracts.Infrastructure.Emails;
+using Infrastructure.BlobStorage;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Emails;
 
@@ -10,6 +12,7 @@ public static class ModuleSetup
     {
         serviceCollection.AddLocalization(options => options.ResourcesPath = "ErrorMessages");
         serviceCollection.AddScoped<IExternalEmailServiceWrapper, AzureEmailServiceWrapper>();
+        serviceCollection.AddScoped<IBlobStorageService, AzureBlobStorageService>();
 
         return serviceCollection;
     }

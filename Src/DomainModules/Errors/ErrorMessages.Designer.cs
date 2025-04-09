@@ -87,6 +87,60 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blob GUID must not be empty.
+        /// </summary>
+        public static string BlobStorageFile_BlobGuid_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_BlobGuid_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content type must not be empty.
+        /// </summary>
+        public static string BlobStorageFile_ContentType_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_ContentType_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file name must not be empty.
+        /// </summary>
+        public static string BlobStorageFile_FileBaseName_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileBaseName_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File extension contains invalid characters. Only alphanumeric characters are allowed.
+        /// </summary>
+        public static string BlobStorageFile_FileExtension_Invalid {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileExtension_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File extension must not be empty.
+        /// </summary>
+        public static string BlobStorageFile_FileExtension_NotEmpty {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileExtension_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File size must be greater than zero.
+        /// </summary>
+        public static string BlobStorageFile_FileSize_GreaterThanZero {
+            get {
+                return ResourceManager.GetString("BlobStorageFile_FileSize_GreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The end time must be at least an hour after the start time.
         /// </summary>
         public static string BlockedReservationTimeSlot_EndTime_MustBeAfterStart {
