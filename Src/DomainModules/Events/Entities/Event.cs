@@ -1,3 +1,4 @@
+using DomainModules.BlobStorage.Entities;
 using DomainModules.Common;
 using DomainModules.Reservations.Entities;
 
@@ -11,7 +12,7 @@ public class Event : BaseEntity
     public required DateTime EndTime { get; set; }
     public required EventCoordinator EventCoordinator { get; set; }
     public required string Location { get; set; }
-    public List<EventRemoteFile> RemoteFiles { get; set; } = [];
+    public List<BlobStorageFile> RemoteFiles { get; set; } = [];
     public Reservation? Reservation { get; set; }
     
     // Used as identifier for ICS-file

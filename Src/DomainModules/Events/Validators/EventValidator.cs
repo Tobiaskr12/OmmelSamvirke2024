@@ -1,3 +1,4 @@
+using DomainModules.BlobStorage.Entities;
 using DomainModules.Errors;
 using DomainModules.Events.Entities;
 using FluentValidation;
@@ -6,7 +7,9 @@ namespace DomainModules.Events.Validators;
 
 public class EventValidator : AbstractValidator<Event>
 {
-    public EventValidator(IValidator<EventCoordinator> eventCoordinatorValidator, IValidator<EventRemoteFile> remoteFileValidator)
+    public EventValidator(
+        IValidator<EventCoordinator> eventCoordinatorValidator, 
+        IValidator<BlobStorageFile> remoteFileValidator)
     {
         RuleFor(x => x.Title)
             .NotEmpty()
@@ -46,9 +49,6 @@ public class EventValidator : AbstractValidator<Event>
         RuleFor(x => x.RemoteFiles)
             .NotNull()
             .WithMessage(ErrorMessages.Event_RemoteFiles_NotNull)
-            // Ensure uniqueness based on URL (case-insensitive)
-            .Must(files => files.Select(f => f.Url.ToLowerInvariant()).Distinct().Count() == files.Count)
-            .WithMessage(ErrorMessages.Event_RemoteFiles_MustBeUnique)
             .ForEach(fileRule => fileRule.SetValidator(remoteFileValidator));
     }
 }

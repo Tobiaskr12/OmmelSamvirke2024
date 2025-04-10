@@ -1,3 +1,4 @@
+using DomainModules.BlobStorage.Validators;
 using DomainModules.Errors;
 using DomainModules.Events.Entities;
 using DomainModules.Events.Validators;
@@ -16,7 +17,7 @@ public class EventValidatorTests
     public void SetUp()
     {
         var coordinatorValidator = new EventCoordinatorValidator();
-        var remoteFileValidator = new EventRemoteFileValidator();
+        var remoteFileValidator = new BlobStorageFileValidator();
         _validator = new EventValidator(coordinatorValidator, remoteFileValidator);
 
         _validCoordinator = new EventCoordinator
@@ -33,17 +34,7 @@ public class EventValidatorTests
             StartTime = DateTime.UtcNow.AddHours(1),
             EndTime = DateTime.UtcNow.AddHours(2),
             EventCoordinator = _validCoordinator,
-            Location = "Conference Room",
-            RemoteFiles =
-            [
-                new EventRemoteFile
-                {
-                    FileName = "file1.pdf",
-                    FileSizeBytes = 1024,
-                    FileType = "application/pdf",
-                    Url = "https://example.com/file1"
-                }
-            ]
+            Location = "Conference Room"
         };
     }
 
@@ -124,45 +115,5 @@ public class EventValidatorTests
         TestValidationResult<Event>? result = _validator.TestValidate(_validEvent);
         result.ShouldHaveValidationErrorFor(x => x.Location)
               .WithErrorMessage(ErrorMessages.Event_Location_InvalidLength);
-    }
-
-    [Test]
-    public void DuplicateRemoteFiles_FailsValidation()
-    {
-        _validEvent.RemoteFiles =
-        [
-            new EventRemoteFile
-            {
-                FileName = "file1.pdf", FileSizeBytes = 1024, FileType = "application/pdf",
-                Url = "https://example.com/file1"
-            },
-            new EventRemoteFile
-            {
-                FileName = "file1-duplicate.pdf", FileSizeBytes = 2048, FileType = "application/pdf",
-                Url = "https://example.com/file1"
-            }
-        ];
-        TestValidationResult<Event>? result = _validator.TestValidate(_validEvent);
-        result.ShouldHaveValidationErrorFor(x => x.RemoteFiles)
-              .WithErrorMessage(ErrorMessages.Event_RemoteFiles_MustBeUnique);
-    }
-
-    [Test]
-    public void InvalidRemoteFileUrl_FailsValidation()
-    {
-        _validEvent.RemoteFiles =
-        [
-            new EventRemoteFile
-            {
-                FileName = "file1.pdf",
-                FileSizeBytes = 1024,
-                FileType = "application/pdf",
-                Url = "examplecom/file1" // invalid URL
-            }
-        ];
-        TestValidationResult<Event>? result = _validator.TestValidate(_validEvent);
-        
-        result.ShouldHaveValidationErrorFor("RemoteFiles[0].Url")
-              .WithErrorMessage(ErrorMessages.EventRemoteFile_Url_Invalid);
     }
 }

@@ -1,5 +1,6 @@
 using System.Reflection;
 using AutoFixture.Kernel;
+using DomainModules.BlobStorage.Entities;
 using DomainModules.Events.Entities;
 using DomainModules.Reservations.Entities;
 
@@ -20,7 +21,7 @@ public class EventSpecimenBuilder : IEntitySpecimenBuilder
                 case nameof(Event.EndTime):
                     return DateTime.UtcNow.AddHours(3);
                 case nameof(Event.RemoteFiles):
-                    return new List<EventRemoteFile>();
+                    return new List<BlobStorageFile>();
             }
         }
         return new NoSpecimen();
