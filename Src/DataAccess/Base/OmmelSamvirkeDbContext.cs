@@ -1,8 +1,10 @@
 ﻿using System.Linq.Expressions;
+using DomainModules.BlobStorage.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DomainModules.Common;
 using DomainModules.Emails.Entities;
+using DomainModules.Events.Entities;
 using DomainModules.Newsletters.Entities;
 using DomainModules.Reservations.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -33,6 +35,13 @@ public sealed class OmmelSamvirkeDbContext : DbContext
     public DbSet<ReservationHistory> ReservationHistories { get; init; }
     public DbSet<ReservationLocation> ReservationLocations { get; init; }
     public DbSet<ReservationSeries> ReservationSeries { get; init; }
+    
+    // Events
+    public DbSet<EventCoordinator> EventCoordinators { get; init; }
+    public DbSet<Event> Events { get; init; }
+    
+    // BlobStorage
+    public DbSet<BlobStorageFile> BlobStorageFiles { get; init; }
 
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     
