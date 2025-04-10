@@ -1,19 +1,19 @@
-using System.Net.Mime;
 using DataAccess.Base;
+using DomainModules.BlobStorage.Entities;
 using DomainModules.Emails.Entities;
 
 namespace DataAccess.Tests.Common;
 
 public static class SeedData
 {
-    public static int SeedEmailCount { get; set; } = 2;
-    
+    public static int SeedEmailCount => 2;
+
     public static Email Email1 { get; set; } = null!;
-    public static List<Attachment> Email1Attachments { get; set; } = null!;
+    public static List<BlobStorageFile> Email1Files { get; set; } = null!;
     public static List<Recipient> Email1Recipients { get; set; } = null!;
     
     public static Email Email2 { get; set; } = null!;
-    public static List<Attachment> Email2Attachments { get; set; } = null!;
+    public static List<BlobStorageFile> Email2Files { get; set; } = null!;
     public static List<Recipient> Email2Recipients { get; set; } = null!;
     
     public static async Task AddSeed(OmmelSamvirkeDbContext dbContext)
@@ -32,49 +32,47 @@ public static class SeedData
         ];
         await dbContext.Set<Recipient>().AddRangeAsync(Email2Recipients);
         
-        Email1Attachments =
+        Email1Files =
         [
-            new Attachment
+            new BlobStorageFile
             {
                 Id = 1,
-                Name = "Attachment1",
-                ContentPath = new Uri("https://example.com/attachment1"),
-                ContentType = new ContentType("application/pdf"),
-                BinaryContent = [0x00, 0x01],
+                FileBaseName = "File1",
+                FileExtension = "pdf",
+                ContentType = "application/pdf",
+                FileContent = new MemoryStream([0x00, 0x01])
             },
-
-            new Attachment
+            new BlobStorageFile
             {
                 Id = 2,
-                Name = "Attachment2",
-                ContentPath = new Uri("https://example.com/attachment2"),
-                ContentType = new ContentType("image/png"),
-                BinaryContent = [0x02, 0x03],
+                FileBaseName = "File2",
+                FileExtension = "png",
+                ContentType = "image/png",
+                FileContent = new MemoryStream([0x02, 0x03])
             }
         ];
-        await dbContext.Set<Attachment>().AddRangeAsync(Email1Attachments);
+        await dbContext.Set<BlobStorageFile>().AddRangeAsync(Email1Files);
         
-        Email2Attachments =
+        Email2Files =
         [
-            new Attachment
+            new BlobStorageFile
             {
                 Id = 3,
-                Name = "Attachment3",
-                ContentPath = new Uri("https://example.com/attachment3"),
-                ContentType = new ContentType("application/pdf"),
-                BinaryContent = [0x04, 0x05]
+                FileBaseName = "File3",
+                FileExtension = "pdf",
+                ContentType = "application/pdf",
+                FileContent = new MemoryStream([0x04, 0x05])
             },
-
-            new Attachment
+            new BlobStorageFile
             {
                 Id = 4,
-                Name = "Attachment4",
-                ContentPath = new Uri("https://example.com/attachment4"),
-                ContentType = new ContentType("image/png"),
-                BinaryContent = [0x06, 0x07]
+                FileBaseName = "File4",
+                FileExtension = "png",
+                ContentType = "image/png",
+                FileContent = new MemoryStream([0x06, 0x07])
             }
         ];
-        await dbContext.Set<Attachment>().AddRangeAsync(Email2Attachments);
+        await dbContext.Set<BlobStorageFile>().AddRangeAsync(Email2Files);
         
         Email1 = new Email
         {
@@ -84,7 +82,7 @@ public static class SeedData
             HtmlBody = "This is a test email.",
             PlainTextBody = "This is a test email.",
             Recipients = Email1Recipients,
-            Attachments = Email1Attachments
+            Attachments = Email1Files
         };
         await dbContext.Set<Email>().AddAsync(Email1);
         
@@ -96,7 +94,7 @@ public static class SeedData
             HtmlBody = "This is also a test email.",
             PlainTextBody = "This is also a test email.",
             Recipients = Email2Recipients,
-            Attachments = Email2Attachments
+            Attachments = Email2Files
         };
         await dbContext.Set<Email>().AddAsync(Email2);
     }

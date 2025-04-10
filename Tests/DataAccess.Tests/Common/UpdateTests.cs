@@ -148,7 +148,7 @@ public class UpdateTests : GenericRepositoryTestsBase
                 HtmlBody = "This update will fail.",
                 PlainTextBody = "This update will fail.",
                 Recipients = SeedData.Email1Recipients,
-                Attachments = SeedData.Email1Attachments
+                Attachments = SeedData.Email1Files
             },
 
             new Email
@@ -159,7 +159,7 @@ public class UpdateTests : GenericRepositoryTestsBase
                 HtmlBody = "This update will also fail.",
                 PlainTextBody = "This update will also fail.",
                 Recipients = SeedData.Email2Recipients,
-                Attachments = SeedData.Email2Attachments
+                Attachments = SeedData.Email2Files
             }
         ];
 

@@ -72,7 +72,7 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
                     
                     expectedUsagePercentage = Math.Round(expectedUsagePercentage, 2);
 
-                    string? testName = $"{interval}_CurrentUsage:{currentUsagePercentage * 100}%_EmailsToSend:{emailsToSend}";
+                    string testName = $"{interval}_CurrentUsage:{currentUsagePercentage * 100}%_EmailsToSend:{emailsToSend}";
 
                     yield return new TestCaseData(interval, currentUsagePercentage, emailsToSend, expectedUsagePercentage)
                         .SetName(testName);
@@ -153,8 +153,8 @@ public class EmailSendingRepositoryTests : TestDatabaseFixture
                 HtmlBody = "This is a test email",
                 PlainTextBody = "This is a test email",
                 SenderEmailAddress = "test@example.com",
-                Attachments = new List<Attachment>(),
-                Recipients = new List<Recipient>(),
+                Attachments = [],
+                Recipients = [],
                 DateCreated = createdDate,
                 DateModified = createdDate
             });

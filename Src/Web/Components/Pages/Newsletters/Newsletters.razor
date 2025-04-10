@@ -7,6 +7,7 @@
 @using Contracts.ServiceModules.Newsletters.GroupManagement
 @using Contracts.ServiceModules.Newsletters.Sending
 @using Contracts.ServiceModules.Newsletters.Subscriptions
+@using DomainModules.BlobStorage.Entities
 @using DomainModules.Emails.Constants
 @using DomainModules.Emails.Entities
 @using DomainModules.Newsletters.Entities
@@ -333,35 +334,39 @@
     #endregion
 
     #region SendNewsletter
-    public IEnumerable<NewsletterGroup> SendingNewsletterGroups { get; set; } = [];
+    public IEnumerable<NewsletterGroup> SendingNewsletterGroups { get; set; } = new List<NewsletterGroup>();
     public required MudExRichTextEdit Editor { get; set; }
     public string Subject { get; set; } = string.Empty;
 
     readonly IList<IBrowserFile> _files = new List<IBrowserFile>();
+
     private void UploadFiles(IBrowserFile? file)
     {
         if (file is null) return;
-        
         _files.Add(file);
     }
 
     private async Task SendNewsletter()
     {
-        List<Attachment> attachments = [];
+        List<BlobStorageFile> attachments = new();
         foreach (IBrowserFile browserFile in _files)
         {
             const int maxAllowedSize = 1024 * 1024 * 5; // 5 MB
-            Stream binaryContentStream = browserFile.OpenReadStream(maxAllowedSize);
+            await using Stream binaryContentStream = browserFile.OpenReadStream(maxAllowedSize);
             using var memoryStream = new MemoryStream();
             await binaryContentStream.CopyToAsync(memoryStream);
             byte[] binaryContent = memoryStream.ToArray();
-            
-            attachments.Add(new Attachment
+
+            // Extract base name and extension from browserFile.Name
+            string fileBaseName = Path.GetFileNameWithoutExtension(browserFile.Name);
+            string fileExtension = Path.GetExtension(browserFile.Name).TrimStart('.');
+
+            attachments.Add(new BlobStorageFile
             {
-                Name = browserFile.Name,
-                ContentPath = new Uri("https://www.google.com"),
-                BinaryContent = binaryContent,
-                ContentType = new ContentType(browserFile.ContentType)
+                FileBaseName = fileBaseName,
+                FileExtension = fileExtension,
+                ContentType = browserFile.ContentType,
+                FileContent = new MemoryStream(binaryContent)
             });
         }
 
@@ -369,16 +374,17 @@
             ("NewsletterContent", await Editor.GetHtml())
         );
         
-        Result result = await Mediator.Send(new SendNewsletterCommand(SendingNewsletterGroups.ToList(), new Email
+        var email = new Email
         {
-            Recipients = [],
+            Recipients = new List<Recipient>(),
             Subject = Subject,
             HtmlBody = EmailTemplateEngine.GetHtmlBody(),
             PlainTextBody = EmailTemplateEngine.GetSubject(),
             SenderEmailAddress = ValidSenderEmailAddresses.Newsletter,
             Attachments = attachments
-        }));
+        };
 
+        Result result = await Mediator.Send(new SendNewsletterCommand(SendingNewsletterGroups.ToList(), email));
         if (result.IsSuccess)
         {
             Subject = string.Empty;

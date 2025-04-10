@@ -21,11 +21,11 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
         string? connectionString = configuration.GetSection("AcsConnectionString").Value;
         if (string.IsNullOrEmpty(connectionString))
             throw new Exception("No connection string found for Azure Communication Services");
-        
+
         _emailClient = new EmailClient(connectionString);
         _logger = logger;
     }
-    
+        
     public async Task<Result<EmailSendingStatus>> SendAsync(Email email, bool useBcc = false, CancellationToken cancellationToken = default)
     {
         try
@@ -68,14 +68,14 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
             return Result.Fail(ErrorMessages.AzureEmailSendingFailed);
         }
     }
-    
+        
     private static EmailMessage ConvertEmailToAzureEmailMessage(Email email, bool useBcc)
     {
         EmailMessage emailMessage;
-        
+            
         if (useBcc)
         {
-            emailMessage= new EmailMessage(
+            emailMessage = new EmailMessage(
                 senderAddress: email.SenderEmailAddress,
                 recipients: new EmailRecipients(
                     bcc: email.Recipients.Select(recipient => new EmailAddress(recipient.EmailAddress))
@@ -86,7 +86,7 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
                     PlainText = email.PlainTextBody,
                 }
             );
-        } 
+        }
         else
         {
             emailMessage = new EmailMessage(
@@ -102,15 +102,16 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
             );
         }
 
-        List<EmailAttachment> emailAttachments = email.Attachments.Select(attachment => new EmailAttachment(
-            attachment.Name,
-            attachment.ContentType.MediaType,
-            BinaryData.FromBytes(attachment.BinaryContent ?? throw new InvalidOperationException("Email attachment cannot be empty"))
+        // Convert each BlobStorageFile attachment into an EmailAttachment.
+        List<EmailAttachment> emailAttachments = email.Attachments.Select(file => new EmailAttachment(
+            file.FileName,
+            file.ContentType,
+            BinaryData.FromStream(file.FileContent ?? throw new InvalidOperationException("Email attachment cannot be empty"))
         )).ToList();
 
-        foreach (EmailAttachment emailAttachment in emailAttachments)
+        foreach (EmailAttachment attachment in emailAttachments)
         {
-            emailMessage.Attachments.Add(emailAttachment);
+            emailMessage.Attachments.Add(attachment);
         }
 
         return emailMessage;

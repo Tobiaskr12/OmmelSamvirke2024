@@ -17,7 +17,6 @@ public sealed class OmmelSamvirkeDbContext : DbContext
     // Emails
     public DbSet<Email> Emails { get; init; }
     public DbSet<Recipient> Recipients { get; init; }
-    public DbSet<Attachment> Attachments { get; init; }
     public DbSet<ContactList> ContactLists { get; init; }
     public DbSet<DailyEmailAnalytics> DailyEmailAnalytics { get; init; }
     public DbSet<DailyContactListAnalytics> DailyContactListAnalytics { get; init; }

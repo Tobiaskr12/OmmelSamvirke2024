@@ -1,5 +1,6 @@
 using Contracts.ServiceModules.Emails.DTOs;
 using Contracts.ServiceModules.Emails.Sending;
+using DomainModules.BlobStorage.Entities;
 using FluentResults;
 using MimeKit;
 using DomainModules.Emails.Constants;
@@ -11,70 +12,63 @@ namespace ServiceModules.Tests.Emails.Sending.Commands.E2E;
 public class EmailSendingTests : ServiceTestBase
 {
     private const string BaseTestDocumentsPath = "./Emails/Sending/Commands/E2E/TestDocuments/";
-    
+        
     private static IEnumerable<string> SenderEmailAddressesSource =>
     [
         ValidSenderEmailAddresses.Admins,
-        ValidSenderEmailAddresses.Auto,
-        ValidSenderEmailAddresses.Auth,
-        ValidSenderEmailAddresses.Newsletter
+            ValidSenderEmailAddresses.Auto,
+            ValidSenderEmailAddresses.Auth,
+            ValidSenderEmailAddresses.Newsletter
     ];
-    
+        
     [TestCaseSource(nameof(SenderEmailAddressesSource))]
     public async Task GivenValidEmailIsSent_WhenCheckingEmailClient_TheEmailIsDelivered(string senderEmailAddress)
     {
         var messageGuid = Guid.NewGuid();
         Email email = await CreateAndSendEmail(senderEmailAddress, "Test Email", GlobalTestSetup.TestEmailClientOne.EmailAddress, messageGuid);
         MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
-
         AssertEmailReceived(receivedMessage, email);
     }
-
+        
     [Test]
     public async Task GivenValidEmailIsSentToTwoClients_WhenCheckingEmailClients_TheEmailsAreDelivered()
     {
         var messageGuid = Guid.NewGuid();
-        List<Recipient> recipients = 
+        List<Recipient> recipients =
         [
             new() { EmailAddress = GlobalTestSetup.TestEmailClientOne.EmailAddress },
             new() { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
         ];
-        
         Email email = await CreateAndSendEmail(ValidSenderEmailAddresses.Admins, "Test Email", recipients, messageGuid);
-
         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
-
         AssertEmailReceived(testClientOneMessage, email);
         AssertEmailReceived(testClientTwoMessage, email);
     }
-
+        
     [TestCase(1, $"{BaseTestDocumentsPath}Test_PDF1.pdf")]
     [TestCase(2, $"{BaseTestDocumentsPath}Test_PDF1.pdf", $"{BaseTestDocumentsPath}Test_PDF2.pdf")]
     public async Task GivenEmailHasAttachments_WhenCheckingEmailClient_TheEmailContainsAllAttachments(int attachmentCount, params string[] attachmentPaths)
     {
         var messageGuid = Guid.NewGuid();
-        Email email = await CreateAndSendEmailWithAttachments(
-            ValidSenderEmailAddresses.Admins,
-            "Test Email with Attachments", 
-            GlobalTestSetup.TestEmailClientOne.EmailAddress, 
-            messageGuid, 
-            attachmentPaths);
-
+        Email email = await CreateAndSendEmailWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", GlobalTestSetup.TestEmailClientOne.EmailAddress, messageGuid, attachmentPaths);
         MimeMessage? receivedMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
         AssertEmailReceived(receivedMessage, email);
-
         Assert.Multiple(() =>
         {
-            List<MimePart>? receivedAttachments = receivedMessage?.BodyParts.OfType<MimePart>().Where(bp => bp.IsAttachment).ToList();
-            Assert.That(receivedAttachments!, Has.Count.EqualTo(attachmentCount));
+            List<MimePart>? receivedAttachments = receivedMessage?.BodyParts
+                                                                 .OfType<MimePart>()
+                                                                 .Where(bp => bp.IsAttachment)
+                                                                 .ToList();
+            Assert.That(receivedAttachments, Is.Not.Null);
+            Assert.That(receivedAttachments, Has.Count.EqualTo(attachmentCount));
             for (int i = 0; i < attachmentCount; i++)
             {
                 AssertAttachment(receivedAttachments?[i], email.Attachments[i]);
             }
         });
     }
-
+        
     [Test]
     public async Task GivenContactListIsEmpty_WhenSendingToContactList_ValidationFails()
     {
@@ -94,12 +88,10 @@ public class EmailSendingTests : ServiceTestBase
             Description = "Test Description",
             Contacts = []
         };
-
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailToContactListCommand(email, contactList));
-        
         Assert.That(result.IsFailed);
     }
-
+        
     [Test]
     public async Task GivenEmailIsSentViaContactList_AllRecipientsReceiveTheEmail()
     {
@@ -115,22 +107,18 @@ public class EmailSendingTests : ServiceTestBase
                 new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
             ]
         };
-        
-         Email email = await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: false, attachmentPaths);
-
-         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
-         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
-         
-         Assert.Multiple(() =>
-         {
-             AssertEmailReceived(testClientOneMessage, email);
-             AssertEmailReceived(testClientTwoMessage, email);
-             
-             Assert.That(testClientOneMessage?.To.Count, Is.EqualTo(2));
-             Assert.That(testClientTwoMessage?.To.Count, Is.EqualTo(2));
-         });
+        Email email = await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: false, attachmentPaths);
+        MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
+        MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
+        Assert.Multiple(() =>
+        {
+            AssertEmailReceived(testClientOneMessage, email);
+            AssertEmailReceived(testClientTwoMessage, email);
+            Assert.That(testClientOneMessage?.To.Count, Is.EqualTo(2));
+            Assert.That(testClientTwoMessage?.To.Count, Is.EqualTo(2));
+        });
     }
-    
+        
     [Test]
     public async Task GivenEmailIsSentViaContactListUsingBcc_AllRecipientsReceiveTheEmailAsBccRecipients()
     {
@@ -146,25 +134,18 @@ public class EmailSendingTests : ServiceTestBase
                 new Recipient { EmailAddress = GlobalTestSetup.TestEmailClientTwo.EmailAddress }
             ]
         };
-        
         await CreateAndSendEmailToContactListWithAttachments(ValidSenderEmailAddresses.Admins, "Test Email with Attachments", messageGuid, contactList, batchSize: 10, useBcc: true, attachmentPaths);
-
         MimeMessage? testClientOneMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientOne, messageGuid);
         MimeMessage? testClientTwoMessage = await ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClientTwo, messageGuid);
-        
         Assert.Multiple(() =>
         {
             Assert.That(testClientOneMessage?.To.Count, Is.EqualTo(1));
             Assert.That(testClientTwoMessage?.To.Count, Is.EqualTo(1));
             Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
-            Assert.That(testClientOneMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
+            Assert.That(testClientTwoMessage?.To[0].Name, Is.EqualTo("Undisclosed recipients"));
         });
     }
-    
-    /// <summary>
-    /// This test attempts to send an email to a non-whitelisted email address,
-    /// which should not be allowed from the testing environment
-    /// </summary>
+        
     [Test]
     public async Task GivenNonWhitelistedRecipient_WhenSendingEmail_TheEmailSendingFails()
     {
@@ -178,12 +159,12 @@ public class EmailSendingTests : ServiceTestBase
             Recipients = [invalidRecipient],
             Attachments = []
         };
-
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
-        
         Assert.That(result.IsFailed);
     }
-    
+        
+    // Helper methods
+
     private async Task<Email> CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, string recipientEmail, Guid messageGuid)
     {
         var recipient = new Recipient { EmailAddress = recipientEmail };
@@ -196,12 +177,11 @@ public class EmailSendingTests : ServiceTestBase
             Recipients = [recipient],
             Attachments = []
         };
-        
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
-    
+        
     private async Task<Email> CreateAndSendEmail(string senderEmailAddress, string emailSubjectSuffix, List<Recipient> recipients, Guid messageGuid)
     {
         var email = new Email
@@ -213,13 +193,11 @@ public class EmailSendingTests : ServiceTestBase
             Recipients = recipients,
             Attachments = []
         };
-
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
-        
         return email;
     }
-
+        
     private async Task<Email> CreateAndSendEmailWithAttachments(
         string senderEmailAddress,
         string emailSubjectSuffix,
@@ -228,7 +206,7 @@ public class EmailSendingTests : ServiceTestBase
         params string[] attachmentPaths)
     {
         var recipient = new Recipient { EmailAddress = recipientEmail };
-        List<Attachment> attachments = attachmentPaths.Select(CreateAttachementFromPath).ToList();
+        List<BlobStorageFile> attachments = attachmentPaths.Select(CreateFileFromPath).ToList();
         var email = new Email
         {
             SenderEmailAddress = senderEmailAddress,
@@ -238,12 +216,11 @@ public class EmailSendingTests : ServiceTestBase
             Recipients = [recipient],
             Attachments = attachments
         };
-        
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailCommand(email));
         if (result.IsFailed) throw new Exception("Sending failed");
         return email;
     }
-    
+        
     private async Task<Email> CreateAndSendEmailToContactListWithAttachments(
         string senderEmailAddress,
         string emailSubjectSuffix,
@@ -253,51 +230,49 @@ public class EmailSendingTests : ServiceTestBase
         bool useBcc = false,
         params string[] attachmentPaths)
     {
-        List<Attachment> attachments = attachmentPaths.Select(CreateAttachementFromPath).ToList();
+        List<BlobStorageFile> attachments = attachmentPaths.Select(CreateFileFromPath).ToList();
         var email = new Email
         {
             SenderEmailAddress = senderEmailAddress,
             Subject = $"{messageGuid} - {emailSubjectSuffix}",
             HtmlBody = "This is a test email",
             PlainTextBody = "This is a test email",
-            Recipients = [],
+            Recipients = [], // Will be derived from the contact list.
             Attachments = attachments
         };
-        
         Result<EmailSendingStatus> result = await GlobalTestSetup.Mediator.Send(new SendEmailToContactListCommand(email, contactList, batchSize, useBcc));
         if (result.IsFailed) throw new Exception("Sending failed");
-
         return email;
     }
-
-    private static Attachment CreateAttachementFromPath(string path)
+        
+    private static BlobStorageFile CreateFileFromPath(string path)
     {
         var fileInfo = new FileInfo(path);
         byte[] fileBytes = File.ReadAllBytes(path);
+        // Use a MIME mapping utility to determine the content type.
         string contentType = MimeMapping.MimeUtility.GetMimeMapping(fileInfo.FullName);
-        
-        return new Attachment
+            
+        return new BlobStorageFile
         {
-            Name = fileInfo.Name,
-            ContentPath = new Uri("https://example.com/testpdf"),
-            ContentType = new System.Net.Mime.ContentType(contentType),
-            BinaryContent = fileBytes
+            FileBaseName = fileInfo.Name,
+            FileExtension = Path.GetExtension(fileInfo.Name).TrimStart('.'),
+            ContentType = contentType,
+            FileContent = new MemoryStream(fileBytes)
         };
     }
-    
+        
     private async Task<MimeMessage?> ExtractLatestReceivedMessageFromInbox(GlobalTestSetup.TestEmailClient testEmailClient, Guid messageGuid)
     {
-        MimeMessage? receivedMessageResult = await GetLatestEmailAsync(testEmailClient, subjectIdentifier: messageGuid.ToString());
-        if (receivedMessageResult == null)
+        MimeMessage? receivedMessage = await GetLatestEmailAsync(testEmailClient, messageGuid.ToString());
+        if (receivedMessage == null)
         {
             Assert.Fail();
             return null;
         }
-        
-        Assert.That(receivedMessageResult.Subject, Does.Contain(messageGuid.ToString()));
-        return receivedMessageResult;
+        Assert.That(receivedMessage.Subject, Does.Contain(messageGuid.ToString()));
+        return receivedMessage;
     }
-
+        
     private static void AssertEmailReceived(MimeMessage? receivedMessage, Email expectedEmail)
     {
         Assert.Multiple(() =>
@@ -307,15 +282,15 @@ public class EmailSendingTests : ServiceTestBase
             Assert.That(receivedMessage.HtmlBody.Trim(), Is.EqualTo(expectedEmail.HtmlBody));
         });
     }
-
-    private static void AssertAttachment(MimePart? receivedAttachment, Attachment expectedAttachment)
+        
+    private static void AssertAttachment(MimePart? receivedAttachment, BlobStorageFile expectedFile)
     {
         Assert.Multiple(() =>
         {
             Assert.That(receivedAttachment, Is.Not.Null);
             Assert.That(receivedAttachment!.IsAttachment, Is.True);
-            Assert.That(receivedAttachment.ContentType.MimeType, Is.EqualTo(expectedAttachment.ContentType.MediaType));
-            Assert.That(receivedAttachment.FileName, Is.EqualTo(expectedAttachment.Name));
+            Assert.That(receivedAttachment.ContentType.MimeType, Is.EqualTo(expectedFile.ContentType));
+            Assert.That(receivedAttachment.FileName, Is.EqualTo($"{expectedFile.FileBaseName}###{expectedFile.BlobGuid}.{expectedFile.FileExtension}"));
         });
     }
 }

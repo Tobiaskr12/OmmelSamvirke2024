@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using System.Reflection;
 using Azure;
 using Azure.Communication.Email;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using DomainModules.Emails.Entities;
 using Infrastructure.Emails;
+using DomainModules.BlobStorage.Entities;
 
 namespace Infrastructure.Tests.Emails;
 
@@ -39,13 +39,11 @@ public class AzureEmailServiceWrapperTests
     {
         // Arrange
         Email email = CreateValidEmail();
-
-        // Simulate SendAsync throwing an exception.
         _emailClient.SendAsync(
-            Arg.Any<WaitUntil>(),
-            Arg.Any<EmailMessage>(),
-            Arg.Any<CancellationToken>())
-            .Returns<Task<EmailSendOperation>>(_ => Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")));
+                        Arg.Any<WaitUntil>(),
+                        Arg.Any<EmailMessage>(),
+                        Arg.Any<CancellationToken>())
+                    .Returns<Task<EmailSendOperation>>(_ => Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")));
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
         InjectEmailClient(serviceWrapper, _emailClient);
@@ -66,22 +64,23 @@ public class AzureEmailServiceWrapperTests
     {
         // Arrange
         Email email = CreateValidEmail();
-        email.Attachments.Add(new Attachment
+        // Set a file (BlobStorageFile) with null FileContent (invalid)
+        email.Attachments.Add(new BlobStorageFile
         {
-            Name = "test.txt",
-            ContentType = new ContentType { Name = "text/plain" },
-            ContentPath = new Uri("https://www.test.example.com"),
-            BinaryContent = null // Invalid attachment: null content.
+            FileBaseName = "test.txt",
+            FileExtension = "txt",
+            ContentType = "txt",
+            FileContent = null
         });
 
         var emailSendOperation = Substitute.For<EmailSendOperation>();
         emailSendOperation.HasValue.Returns(false);
 
         _emailClient.SendAsync(
-            Arg.Any<WaitUntil>(),
-            Arg.Any<EmailMessage>(),
-            Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(emailSendOperation));
+                        Arg.Any<WaitUntil>(),
+                        Arg.Any<EmailMessage>(),
+                        Arg.Any<CancellationToken>())
+                    .Returns(Task.FromResult(emailSendOperation));
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
         InjectEmailClient(serviceWrapper, _emailClient);
@@ -99,21 +98,22 @@ public class AzureEmailServiceWrapperTests
         // Arrange
         Email email = CreateValidEmail();
         email.Recipients =
-        [
-            new Recipient { EmailAddress = "recipient1@example.com" },
-            new Recipient { EmailAddress = "recipient2@example.com" },
-            new Recipient { EmailAddress = "recipient3@example.com" }
-        ];
+            new[]
+            {
+                new Recipient { EmailAddress = "recipient1@example.com" },
+                new Recipient { EmailAddress = "recipient2@example.com" },
+                new Recipient { EmailAddress = "recipient3@example.com" }
+            }.ToList();
         const int batchSize = 2;
 
         var emailSendOperation = Substitute.For<EmailSendOperation>();
         emailSendOperation.HasValue.Returns(true);
 
         _emailClient.SendAsync(
-            Arg.Any<WaitUntil>(),
-            Arg.Any<EmailMessage>(),
-            Arg.Any<CancellationToken>())
-            .Returns(Task.FromResult(emailSendOperation));
+                        Arg.Any<WaitUntil>(),
+                        Arg.Any<EmailMessage>(),
+                        Arg.Any<CancellationToken>())
+                    .Returns(Task.FromResult(emailSendOperation));
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
         InjectEmailClient(serviceWrapper, _emailClient);
@@ -134,26 +134,26 @@ public class AzureEmailServiceWrapperTests
     {
         // Arrange
         Email email = CreateValidEmail();
-        email.Recipients =
-        [
-            new Recipient() { EmailAddress = "recipient1@example.com" },
-            new Recipient() { EmailAddress = "recipient2@example.com" },
-            new Recipient() { EmailAddress = "recipient3@example.com" }
-        ];
+        email.Recipients = new[]
+        {
+            new Recipient { EmailAddress = "recipient1@example.com" },
+            new Recipient { EmailAddress = "recipient2@example.com" },
+            new Recipient { EmailAddress = "recipient3@example.com" }
+        }.ToList();
         const int batchSize = 2;
 
         var successOperation = Substitute.For<EmailSendOperation>();
         successOperation.HasValue.Returns(true);
 
-        // Setup sequence: first call throws exception, second call returns success.
+        // Sequence: first call throws exception, second call succeeds.
         _emailClient.SendAsync(
-            Arg.Any<WaitUntil>(),
-            Arg.Any<EmailMessage>(),
-            Arg.Any<CancellationToken>())
-            .Returns(
-                Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")),
-                Task.FromResult(successOperation)
-            );
+                        Arg.Any<WaitUntil>(),
+                        Arg.Any<EmailMessage>(),
+                        Arg.Any<CancellationToken>())
+                    .Returns(
+                        Task.FromException<EmailSendOperation>(new Exception("SendAsync failed")),
+                        Task.FromResult(successOperation)
+                    );
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
         InjectEmailClient(serviceWrapper, _emailClient);
@@ -175,7 +175,7 @@ public class AzureEmailServiceWrapperTests
     {
         // Arrange
         Email email = CreateValidEmail();
-        email.Recipients = null!; // This will cause an exception in Chunking the recipients.
+        email.Recipients = null!; // Will cause exception in chunking.
         const int batchSize = 2;
 
         var serviceWrapper = new AzureEmailServiceWrapper(_configuration, _logger);
@@ -202,7 +202,7 @@ public class AzureEmailServiceWrapperTests
             Subject = "Test Email",
             HtmlBody = "<h1>This is a test email</h1>",
             PlainTextBody = "<h1>This is a test email</h1>",
-            Attachments = []
+            Attachments = new List<BlobStorageFile>()
         };
     }
 
@@ -210,7 +210,6 @@ public class AzureEmailServiceWrapperTests
     {
         FieldInfo? emailClientField = typeof(AzureEmailServiceWrapper)
             .GetField("_emailClient", BindingFlags.NonPublic | BindingFlags.Instance);
-
         emailClientField?.SetValue(serviceWrapper, emailClient);
     }
 }

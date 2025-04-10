@@ -1,10 +1,11 @@
-using System.Net.Mime;
 using System.Text;
 using FluentValidation.Results;
 using DomainModules.Emails.Constants;
 using DomainModules.Emails.Entities;
 using DomainModules.Emails.Validators;
 using DomainModules.Errors;
+using DomainModules.BlobStorage.Entities;
+using DomainModules.BlobStorage.Validators;
 
 namespace DomainModules.Tests.Emails;
 
@@ -15,28 +16,28 @@ public class EmailTests
     private Email _baseValidEmail;
 
     private const int OneMb = 1024 * 1024;
-    
+
     [SetUp]
     public void SetUp()
     {
         var recipientValidator = new RecipientValidator();
-        var attachmentValidator = new AttachmentValidator();
-        
-        _validator = new EmailValidator(recipientValidator, attachmentValidator);
+        var fileValidator = new BlobStorageFileValidator();
+            
+        _validator = new EmailValidator(recipientValidator, fileValidator);
         _baseValidEmail = new Email
         {
             SenderEmailAddress = ValidSenderEmailAddresses.Auto,
             Subject = "This is a test email",
             HtmlBody = "This is the body content of a test email",
             PlainTextBody = "This is the body content of a test email",
-            Attachments = [],
-            Recipients = [new Recipient
+            Attachments = new List<BlobStorageFile>(),
+            Recipients = new List<Recipient>
             {
-                EmailAddress = "test@example.com"
-            }]
+                new Recipient { EmailAddress = "test@example.com" }
+            }
         };
     }
-    
+
     [TestCase("auto@ommelsamvirke.com")]
     [TestCase("admins@ommelsamvirke.com")]
     [TestCase("auth@ommelsamvirke.com")]
@@ -47,10 +48,10 @@ public class EmailTests
         email.SenderEmailAddress = fromEmailAddress;
 
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.That(validationResult.IsValid, Is.True);
     }
-    
+
     [TestCase("auto@example.com")]
     [TestCase("random@example.com")]
     [TestCase("invalid@ommelsamvirke.com")]
@@ -62,13 +63,13 @@ public class EmailTests
         email.SenderEmailAddress = fromEmailAddress!;
 
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
             Assert.That(validationResult.Errors.Any(x =>
-                x.ErrorMessage.Equals(ErrorMessages.Email_SenderAddress_MustBeApproved) ||
-                x.ErrorMessage.Equals(ErrorMessages.Email_SenderAddress_MustNotBeEmpty)
+                x.ErrorMessage.Equals(ErrorMessages.Email_SenderAddress_MustBeApproved)
+                || x.ErrorMessage.Equals(ErrorMessages.Email_SenderAddress_MustNotBeEmpty)
             ), Is.True);
         });
     }
@@ -79,12 +80,12 @@ public class EmailTests
     {
         Email email = _baseValidEmail;
         email.Subject = new string('a', subjectLength);
-        
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.That(validationResult.IsValid, Is.True);
     }
-    
+
     [TestCase(0)]
     [TestCase(2)]
     [TestCase(81)]
@@ -92,9 +93,9 @@ public class EmailTests
     {
         Email email = _baseValidEmail;
         email.Subject = new string('a', subjectLength);
-    
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -103,31 +104,31 @@ public class EmailTests
             ));
         });
     }
-    
-    // This test assumes UTF-16 encoding
+
+    // This test assumes UTF-16 encoding.
     [TestCase(20)]
     [TestCase((int)(6.9 * OneMb / 2))]
     public void Body_ValidLength_PassesValidation(int bodyLength)
     {
         Email email = _baseValidEmail;
         email.HtmlBody = new string('a', bodyLength);
-        
+
         ValidationResult validationResult = _validator.Validate(email);
 
         Assert.That(validationResult.IsValid, Is.True);
     }
-    
-    // This test assumes UTF-16 encoding
+
+    // This test assumes UTF-16 encoding.
     [TestCase(0)]
     [TestCase(19)]
     [TestCase((int)(7.1 * OneMb / 2))]
-    public void Body_InvalidLength_FailsValidationWithExpectedErrorMessage(int subjectLength)
+    public void Body_InvalidLength_FailsValidationWithExpectedErrorMessage(int bodyLength)
     {
         Email email = _baseValidEmail;
-        email.HtmlBody = new string('a', subjectLength);
-    
+        email.HtmlBody = new string('a', bodyLength);
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -136,7 +137,7 @@ public class EmailTests
             ));
         });
     }
-    
+
     [TestCase(1)]
     [TestCase(ServiceLimits.RecipientsPerEmail)]
     public void Recipients_HasValidSize_PassesValidation(int numberOfRecipients)
@@ -144,12 +145,12 @@ public class EmailTests
         List<Recipient> recipients = CreateRecipients(numberOfRecipients);
         Email email = _baseValidEmail;
         email.Recipients = recipients;
-        
+
         ValidationResult validationResult = _validator.Validate(email);
 
         Assert.That(validationResult.IsValid, Is.True);
     }
-    
+
     [TestCase(0)]
     [TestCase(ServiceLimits.RecipientsPerEmail + 1)]
     public void Recipient_InvalidSize_FailsValidationWithExpectedErrorMessage(int numberOfRecipients)
@@ -157,9 +158,9 @@ public class EmailTests
         List<Recipient> recipients = CreateRecipients(numberOfRecipients);
         Email email = _baseValidEmail;
         email.Recipients = recipients;
-    
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -168,30 +169,30 @@ public class EmailTests
             ));
         });
     }
-    
+
     [TestCase(0)]
     [TestCase(1)]
     [TestCase(10)]
-    public void Attachments_HasValidSize_PassesValidation(int numberOfAttachments)
+    public void Attachments_HasValidSize_PassesValidation(int numberOfFiles)
     {
-        List<Attachment> attachments = CreateAttachments(numberOfAttachments, 10_000);
+        List<BlobStorageFile> files = CreateFiles(numberOfFiles, 10_000);
         Email email = _baseValidEmail;
-        email.Attachments = attachments;
-        
+        email.Attachments = files;
+
         ValidationResult validationResult = _validator.Validate(email);
 
         Assert.That(validationResult.IsValid, Is.True);
     }
-    
+
     [TestCase(11)]
-    public void Attachments_InvalidSize_FailsValidationWithExpectedErrorMessage(int numberOfAttachments)
+    public void Attachments_InvalidSize_FailsValidationWithExpectedErrorMessage(int numberOfFiles)
     {
-        List<Attachment> attachments = CreateAttachments(numberOfAttachments, 10_000);
+        List<BlobStorageFile> files = CreateFiles(numberOfFiles, 10_000);
         Email email = _baseValidEmail;
-        email.Attachments = attachments;
-    
+        email.Attachments = files;
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -207,10 +208,10 @@ public class EmailTests
     public void Email_HasValidContentSize_PassesValidation(double contentSizeMb)
     {
         Email email = _baseValidEmail;
-        int attachmentContentSize =
+        int fileContentSize =
             (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
-        email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
-        
+        email.Attachments.Add(CreateFileOfSize(fileContentSize));
+
         ValidationResult validationResult = _validator.Validate(email);
 
         Assert.That(validationResult.IsValid, Is.True);
@@ -220,12 +221,12 @@ public class EmailTests
     public void Email_HasInvalidContentSize_FailsValidationWithExpectedErrorMessage(double contentSizeMb)
     {
         Email email = _baseValidEmail;
-        int attachmentContentSize =
+        int fileContentSize =
             (int)(contentSizeMb * OneMb - Encoding.Unicode.GetByteCount(email.Subject + email.HtmlBody + email.PlainTextBody));
-        email.Attachments.Add(CreateAttachmentOfSize(attachmentContentSize));
-        
+        email.Attachments.Add(CreateFileOfSize(fileContentSize));
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -238,16 +239,16 @@ public class EmailTests
     [Test]
     public void Email_HasDuplicateRecipients_FailsValidationWithExpectedErrorMessage()
     {
-        string? duplicatedEmailAddress = "testemail@example.com";
+        string duplicatedEmailAddress = "testemail@example.com";
         List<Recipient> recipients = CreateRecipients(3);
         recipients[0].EmailAddress = duplicatedEmailAddress;
         recipients[1].EmailAddress = duplicatedEmailAddress;
-        
+
         Email email = _baseValidEmail;
         email.Recipients = recipients;
-        
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -256,20 +257,20 @@ public class EmailTests
             ));
         });
     }
-    
+
     [Test]
     public void Email_HasDuplicateAttachments_FailsValidationWithExpectedErrorMessage()
     {
-        string? duplicatedAttachmentNames = "testemailattachment";
-        List<Attachment> attachments = CreateAttachments(3, 2_000);
-        attachments[0].Name = duplicatedAttachmentNames;
-        attachments[1].Name = duplicatedAttachmentNames;
-        
+        string duplicatedFileName = "testfile";
+        List<BlobStorageFile> files = CreateFiles(3, 2000);
+        files[0].FileBaseName = duplicatedFileName;
+        files[1].FileBaseName = duplicatedFileName;
+
         Email email = _baseValidEmail;
-        email.Attachments = attachments;
-        
+        email.Attachments = files;
+
         ValidationResult validationResult = _validator.Validate(email);
-        
+
         Assert.Multiple(() =>
         {
             Assert.That(validationResult.IsValid, Is.False);
@@ -279,11 +280,12 @@ public class EmailTests
         });
     }
 
+    // Helper method to create a list of Recipient objects.
     private List<Recipient> CreateRecipients(int count)
     {
         _baseValidEmail.Recipients.Clear();
         var recipients = new List<Recipient>();
-        
+
         for (int i = 0; i < count; i++)
         {
             recipients.Add(new Recipient()
@@ -291,34 +293,36 @@ public class EmailTests
                 EmailAddress = $"test{i}@example.com",
             });
         }
-        
+
         return recipients;
     }
 
-    private static List<Attachment> CreateAttachments(int count, int sizeInBytes)
+    // Helper method to create a list of BlobStorageFile objects.
+    private static List<BlobStorageFile> CreateFiles(int count, int sizeInBytes)
     {
-        var attachments = new List<Attachment>();
-        
+        var files = new List<BlobStorageFile>();
+
         for (int i = 0; i < count; i++)
         {
-            attachments.Add(CreateAttachmentOfSize(sizeInBytes));
+            files.Add(CreateFileOfSize(sizeInBytes));
         }
 
-        return attachments;
-    } 
-    
-    private static Attachment CreateAttachmentOfSize(int sizeInBytes)
+        return files;
+    }
+
+    // Helper method to create a BlobStorageFile with file content of specified size.
+    private static BlobStorageFile CreateFileOfSize(int sizeInBytes)
     {
         Random randomGen = new();
-        byte[]? binaryContent = new byte[sizeInBytes];
+        byte[] binaryContent = new byte[sizeInBytes];
         randomGen.NextBytes(binaryContent);
 
-        return new Attachment
+        return new BlobStorageFile
         {
-            Name = Guid.NewGuid().ToString(),
-            ContentPath = new Uri("https://example.com"),
-            ContentType = new ContentType("application/pdf"),
-            BinaryContent = binaryContent
+            FileBaseName = Guid.NewGuid().ToString(),
+            FileExtension = "pdf",
+            ContentType = "application/pdf",
+            FileContent = new MemoryStream(binaryContent)
         };
     }
 }

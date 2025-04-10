@@ -4,7 +4,7 @@ namespace DomainModules.BlobStorage.Entities;
 
 public class BlobStorageFile : BaseEntity
 {
-    private long? _storedFileSize;
+    private long? _storedFileSize = 0;
     
     public Guid BlobGuid { get; set; } = Guid.NewGuid();
     public required string FileBaseName { get; set; }
