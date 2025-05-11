@@ -231,4 +231,40 @@
     <data name="BlobStorageFile_BlobGuid_NotEmpty" xml:space="preserve">
         <value>Blob GUID må ikke være tom</value>
     </data>
+    <data name="Album_Name_NotEmpty" xml:space="preserve">
+        <value>Albumnavn må ikke være tom</value>
+    </data>
+    <data name="Album_Name_InvalidLength" xml:space="preserve">
+        <value>Albumnavn skal være mellem 3 og 100 tegn</value>
+    </data>
+    <data name="Album_Description_InvalidLength" xml:space="preserve">
+        <value>Beskrivelsen må højst være 500 tegn lang</value>
+    </data>
+    <data name="Album_Images_InvalidSize" xml:space="preserve">
+        <value>Der skal være mindst ét billede i albummet</value>
+    </data>
+    <data name="Album_CoverImage_MustBeInImages" xml:space="preserve">
+        <value>Forsidebilledet skal være et af albummets billeder</value>
+    </data>
+    <data name="Image_OriginalUpload_NotEmpty" xml:space="preserve">
+        <value>Upload venligst en billedfil</value>
+    </data>
+    <data name="Image_DateTaken_InFuture" xml:space="preserve">
+        <value>Billedets dato kan ikke ligge i fremtiden</value>
+    </data>
+    <data name="Image_Location_InvalidLength" xml:space="preserve">
+        <value>Billedets lokation må højst være 256 tegn</value>
+    </data>
+    <data name="Image_PhotographerName_InvalidLength" xml:space="preserve">
+        <value>Fotografens navn må højst være 100 tegn</value>
+    </data>
+    <data name="Image_Title_InvalidLength" xml:space="preserve">
+        <value>Titlen må højst være 100 tegn</value>
+    </data>
+    <data name="Image_Description_InvalidLength" xml:space="preserve">
+        <value>Beskrivelsen må højst være 500 tegn</value>
+    </data>
+    <data name="GenericError" xml:space="preserve">
+        <value>Der opstod en fejl</value>
+    </data>
 </root>

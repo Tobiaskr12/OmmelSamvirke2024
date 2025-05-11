@@ -33,8 +33,8 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var stopwatch = Stopwatch.StartNew();
-        string? requestName = request.GetType().Name;
-        string? operationType = requestName.Contains("Query") ? "Query" : "Command";
+        string requestName = request.GetType().Name;
+        string operationType = requestName.Contains("Query") ? "Query" : "Command";
         _correlationContext.OperationId = _shortIdGenerator.Generate();
 
         try
@@ -56,7 +56,7 @@ public class ResponseHandlingBehavior<TRequest, TResponse> : IPipelineBehavior<T
             _logger.LogWarning($"Validation failed: {ex.Message}");
 
             // Gather all validation errors
-            List<string>? errorMessages = ex.Errors
+            List<string> errorMessages = ex.Errors
                                             .Select(e => e.ErrorMessage)
                                             .Where(msg => !string.IsNullOrWhiteSpace(msg))
                                             .ToList();

@@ -1,24 +1,41 @@
-using DomainModules.BlobStorage.Entities;
 using FluentResults;
 
-namespace Contracts.Infrastructure.BlobStorage;
+namespace Contracts.Infrastructure.BlobStorage; // Or your appropriate namespace
 
+/// <summary>
+/// Defines operations for interacting with a configured blob storage provider.
+/// Assumes a single container is configured per environment.
+/// </summary>
 public interface IBlobStorageService
 {
     /// <summary>
-    /// Uploads a blob to a third party Blob Storage service.
+    /// Uploads a blob to the configured container.
     /// </summary>
-    /// <param name="blobStorageFile">The BlobStorageFile metadata instance.</param>
-    /// <param name="content">The stream containing the binary content.</param>
+    /// <param name="blobName">The desired name for the blob within the container (e.g., "{id}.{extension}").</param>
+    /// <param name="content">The stream containing the binary content of the blob.</param>
+    /// <param name="contentType">The MIME type of the content (e.g., "image/jpeg").</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A <see cref="Result"/> indicating success or failure.</returns>
-    Task<Result> UploadBlobAsync(BlobStorageFile blobStorageFile, Stream content, CancellationToken cancellationToken = default);
+    Task<Result> UploadAsync(
+        string blobName,
+        Stream content,
+        string contentType,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Downloads a blob from a third party Blob Storage service based on the provided BlobStorageFile's BlobGuid
+    /// Deletes a blob from the configured container.
     /// </summary>
-    /// <param name="blobStorageFile">Entity containing data about the blob. Will also contain the downloaded data</param>
+    /// <param name="blobName">The name of the blob to delete.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>A <see cref="Result{BlobStorageFile}"/> containing the file metadata (and content) if found.</returns>
-    Task<Result<BlobStorageFile>> DownloadBlobAsync(BlobStorageFile  blobStorageFile, CancellationToken cancellationToken = default);
+    /// <returns>A <see cref="Result"/> indicating success or failure. Success indicates the blob either was deleted or did not exist.</returns>
+    Task<Result> DeleteAsync(
+        string blobName,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the configured base URL for constructing public blob links.
+    /// Example: "https://youraccount.blob.core.windows.net/yourcontainer/"
+    /// </summary>
+    /// <returns>The base URL string, including the container name and trailing slash.</returns>
+    string GetPublicBlobBaseUrl();
 }

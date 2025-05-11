@@ -78,6 +78,15 @@ namespace Infrastructure.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blob storage deletion failed.
+        /// </summary>
+        public static string BlobStorage_Delete_Failed {
+            get {
+                return ResourceManager.GetString("BlobStorage_Delete_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to download file.
         /// </summary>
         public static string BlobStorage_Download_Failed {

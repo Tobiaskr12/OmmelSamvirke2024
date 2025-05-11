@@ -60,9 +60,6 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("BlobGuid")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -95,9 +92,6 @@ namespace DataAccess.Migrations
                         .HasColumnName("FileSizeInBytes");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BlobGuid")
-                        .IsUnique();
 
                     b.HasIndex("DateCreated");
 
@@ -391,6 +385,110 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventCoordinators", (string)null);
+                });
+
+            modelBuilder.Entity("DomainModules.ImageAlbums.Entities.Album", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CoverImageId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoverImageId")
+                        .IsUnique()
+                        .HasFilter("[CoverImageId] IS NOT NULL");
+
+                    b.HasIndex("DateCreated");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Albums", (string)null);
+                });
+
+            modelBuilder.Entity("DomainModules.ImageAlbums.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AlbumId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateTaken")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DefaultBlobStorageFileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("OriginalBlobStorageFileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhotographerName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ThumbnailBlobStorageFileId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
+
+                    b.HasIndex("DateCreated");
+
+                    b.HasIndex("DateTaken");
+
+                    b.HasIndex("DefaultBlobStorageFileId")
+                        .IsUnique();
+
+                    b.HasIndex("OriginalBlobStorageFileId")
+                        .IsUnique();
+
+                    b.HasIndex("ThumbnailBlobStorageFileId")
+                        .IsUnique();
+
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("DomainModules.Newsletters.Entities.NewsletterGroup", b =>
@@ -826,6 +924,51 @@ namespace DataAccess.Migrations
                     b.Navigation("Reservation");
                 });
 
+            modelBuilder.Entity("DomainModules.ImageAlbums.Entities.Album", b =>
+                {
+                    b.HasOne("DomainModules.ImageAlbums.Entities.Image", "CoverImage")
+                        .WithOne()
+                        .HasForeignKey("DomainModules.ImageAlbums.Entities.Album", "CoverImageId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("CoverImage");
+                });
+
+            modelBuilder.Entity("DomainModules.ImageAlbums.Entities.Image", b =>
+                {
+                    b.HasOne("DomainModules.ImageAlbums.Entities.Album", "Album")
+                        .WithMany("Images")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DomainModules.BlobStorage.Entities.BlobStorageFile", "DefaultBlobStorageFile")
+                        .WithOne()
+                        .HasForeignKey("DomainModules.ImageAlbums.Entities.Image", "DefaultBlobStorageFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DomainModules.BlobStorage.Entities.BlobStorageFile", "OriginalBlobStorageFile")
+                        .WithOne()
+                        .HasForeignKey("DomainModules.ImageAlbums.Entities.Image", "OriginalBlobStorageFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DomainModules.BlobStorage.Entities.BlobStorageFile", "ThumbnailBlobStorageFile")
+                        .WithOne()
+                        .HasForeignKey("DomainModules.ImageAlbums.Entities.Image", "ThumbnailBlobStorageFileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Album");
+
+                    b.Navigation("DefaultBlobStorageFile");
+
+                    b.Navigation("OriginalBlobStorageFile");
+
+                    b.Navigation("ThumbnailBlobStorageFile");
+                });
+
             modelBuilder.Entity("DomainModules.Newsletters.Entities.NewsletterGroup", b =>
                 {
                     b.HasOne("DomainModules.Emails.Entities.ContactList", "ContactList")
@@ -939,6 +1082,11 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DomainModules.Events.Entities.Event", b =>
                 {
                     b.Navigation("RemoteFiles");
+                });
+
+            modelBuilder.Entity("DomainModules.ImageAlbums.Entities.Album", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("DomainModules.Reservations.Entities.Reservation", b =>

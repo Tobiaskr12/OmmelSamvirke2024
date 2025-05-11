@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using DataAccess.Base;
 using DomainModules.Common;
 using MailKit;
@@ -73,5 +74,27 @@ public abstract class ServiceTestBase
         }
         await client.DisconnectAsync(true);
         return foundMessage;
+    }
+    
+    protected static async Task<bool> DoesBlobExistAsync(string blobName)
+    {
+        string connectionString = GlobalTestSetup.Configuration["AzureBlobStorageConnectionString"]
+                                  ?? throw new InvalidOperationException("Missing AzureBlobStorageConnectionString in configuration");
+        string containerName = GlobalTestSetup.Configuration["AzureBlobStorageContainerName"]
+                               ?? throw new InvalidOperationException("Missing AzureBlobStorageContainerName in configuration");
+
+        try
+        {
+            var containerClient = new BlobContainerClient(connectionString, containerName);
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            Azure.Response<bool> response = await blobClient.ExistsAsync();
+            return response.Value;
+        }
+        catch (Exception ex)
+        {
+            // Log or handle exception if needed during test execution
+            Console.WriteLine($@"Error checking blob existence for '{blobName}': {ex.Message}");
+            return false;
+        }
     }
 }

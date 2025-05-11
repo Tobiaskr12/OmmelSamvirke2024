@@ -202,7 +202,7 @@ public class QueryTests : GenericRepositoryTestsBase
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Value, Is.Not.Null);
             Assert.That(result.Value.Items, Has.Count.LessThanOrEqualTo(pageSize));
-            Assert.That(result.Value.TotalCount, Is.EqualTo(expectedTotalCount));
+            Assert.That(result.Value.ItemsCount, Is.EqualTo(expectedTotalCount));
         });
     }
 
@@ -219,7 +219,7 @@ public class QueryTests : GenericRepositoryTestsBase
         {
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Value.Items, Is.Empty);
-            Assert.That(result.Value.TotalCount, Is.EqualTo(totalCount));
+            Assert.That(result.Value.ItemsCount, Is.EqualTo(totalCount));
         });
     }
 

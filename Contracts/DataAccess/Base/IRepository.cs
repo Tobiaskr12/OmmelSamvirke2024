@@ -51,7 +51,7 @@ public interface IRepository<T> where T : BaseEntity
     /// A Result of <see cref="List{T}"/> containing all entities.
     /// </returns>
     Task<Result<List<T>>> GetAllAsync(bool readOnly = true, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Retrieves a paginated list of entities.
     /// The results are returned in descending order based on the date they were created.
@@ -62,11 +62,20 @@ public interface IRepository<T> where T : BaseEntity
     /// Determines if the entities should be tracked by the context.
     /// If <c>true</c>, the entities are retrieved without tracking (read-only).
     /// </param>
+    /// <param name="sortDirection">Determines how the paginated results should be sorted</param>
+    /// <param name="predicate">Predicate to filter results</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>
     /// A <see cref="PaginatedResult{T}"/> containing the result entities and the total count of entities
     /// </returns>
-    Task<Result<PaginatedResult<T>>> GetPaginatedAsync(int page = 1, int pageSize = 20, bool readOnly = true, CancellationToken cancellationToken = default);
+    Task<Result<PaginatedResult<T>>> GetPaginatedAsync(
+        int page = 1, 
+        int pageSize = 20, 
+        bool readOnly = true, 
+        SortDirection sortDirection = SortDirection.NewestFirst,
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Finds entities that match the specified predicate.

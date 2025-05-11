@@ -9,16 +9,13 @@ public class BlobStorageFileEntityTypeConfiguration : IEntityTypeConfiguration<B
     public void Configure(EntityTypeBuilder<BlobStorageFile> builder)
     {
         builder.ToTable("BlobStorageFiles");
-        
+
         builder.HasKey(b => b.Id);
         builder.HasIndex(b => b.DateCreated);
-        builder.HasIndex(b => b.BlobGuid)
-               .IsUnique();
 
         builder.Ignore(b => b.FileContent);
         builder.Ignore(b => b.FileSizeInBytes);
-        builder.Ignore(b => b.FileName);
-        
+
         builder.Property(b => b.FileBaseName)
                .IsRequired()
                .HasMaxLength(200);
@@ -30,12 +27,9 @@ public class BlobStorageFileEntityTypeConfiguration : IEntityTypeConfiguration<B
         builder.Property<long?>("_storedFileSize")
                .HasColumnName("FileSizeInBytes")
                .IsRequired();
-        
+
         builder.Property(b => b.ContentType)
                .IsRequired()
                .HasMaxLength(100);
-
-        builder.Property(b => b.BlobGuid)
-               .IsRequired();
     }
 }

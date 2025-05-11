@@ -231,4 +231,40 @@
     <data name="BlobStorageFile_BlobGuid_NotEmpty" xml:space="preserve">
         <value>Blob GUID must not be empty</value>
     </data>
+    <data name="Album_Name_NotEmpty" xml:space="preserve">
+        <value>Album name must not be empty</value>
+    </data>
+    <data name="Album_Name_InvalidLength" xml:space="preserve">
+        <value>Album name must be between 3 and 100 characters</value>
+    </data>
+    <data name="Album_Description_InvalidLength" xml:space="preserve">
+        <value>Description must be at most 500 characters long</value>
+    </data>
+    <data name="Album_Images_InvalidSize" xml:space="preserve">
+        <value>At least one image is required</value>
+    </data>
+    <data name="Album_CoverImage_MustBeInImages" xml:space="preserve">
+        <value>Cover image must be one of the album's images</value>
+    </data>
+    <data name="Image_OriginalUpload_NotEmpty" xml:space="preserve">
+        <value>Please upload an image file</value>
+    </data>
+    <data name="Image_DateTaken_InFuture" xml:space="preserve">
+        <value>Photo date cannot be in the future</value>
+    </data>
+    <data name="Image_Location_InvalidLength" xml:space="preserve">
+        <value>Location must be at most 256 characters</value>
+    </data>
+    <data name="Image_PhotographerName_InvalidLength" xml:space="preserve">
+        <value>Photographer name must be at most 100 characters</value>
+    </data>
+    <data name="Image_Title_InvalidLength" xml:space="preserve">
+        <value>Title must be at most 100 characters</value>
+    </data>
+    <data name="Image_Description_InvalidLength" xml:space="preserve">
+        <value>Description must be at most 500 characters</value>
+    </data>
+    <data name="GenericError" xml:space="preserve">
+        <value>An error occurred</value>
+    </data>
 </root>

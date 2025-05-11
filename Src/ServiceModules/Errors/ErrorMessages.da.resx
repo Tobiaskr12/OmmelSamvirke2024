@@ -231,4 +231,16 @@
   <data name="Reservations_SeriesNotFound" xml:space="preserve">
     <value>Den gentagende reservationsserie blev ikke fundet</value>
   </data>
+  <data name="Album_Images_InvalidSize" xml:space="preserve">
+    <value>Et album skal indeholde mindst ét billede</value>
+  </data>
+  <data name="Album_ImageProcessingFailed" xml:space="preserve">
+    <value>Kunne ikke behandle et eller flere billeder</value>
+  </data>
+  <data name="Album_BlobUploadFailed" xml:space="preserve">
+    <value>Kunne ikke uploade en eller flere billedfiler</value>
+  </data>
+  <data name="Album_Images_MustProvideAtLeastOne" xml:space="preserve">
+    <value>Mindst ét billede skal angives til upload</value>
+  </data>
 </root>

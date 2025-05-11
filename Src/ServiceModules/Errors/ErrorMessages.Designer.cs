@@ -60,6 +60,42 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to upload one or more image files to storage.
+        /// </summary>
+        public static string Album_BlobUploadFailed {
+            get {
+                return ResourceManager.GetString("Album_BlobUploadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to process one or more images.
+        /// </summary>
+        public static string Album_ImageProcessingFailed {
+            get {
+                return ResourceManager.GetString("Album_ImageProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An album must contain at least one image.
+        /// </summary>
+        public static string Album_Images_InvalidSize {
+            get {
+                return ResourceManager.GetString("Album_Images_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one image must be provided for upload.
+        /// </summary>
+        public static string Album_Images_MustProvideAtLeastOne {
+            get {
+                return ResourceManager.GetString("Album_Images_MustProvideAtLeastOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot delete an active cleanup campaign.
         /// </summary>
         public static string CleanupCampaign_CannotDeleteActiveCampaign {

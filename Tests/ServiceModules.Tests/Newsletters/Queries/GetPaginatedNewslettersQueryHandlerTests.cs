@@ -32,7 +32,7 @@ public class GetPaginatedNewslettersQueryHandlerTests : ServiceTestBase
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(paginatedResult.Items, Has.Count.EqualTo(20));
             Assert.That(paginatedResult.Items.First().Id, Is.EqualTo(expectedFirst.Id));
-            Assert.That(paginatedResult.TotalCount, Is.EqualTo(emails.Count));
+            Assert.That(paginatedResult.ItemsCount, Is.EqualTo(emails.Count));
         });
     }
 }

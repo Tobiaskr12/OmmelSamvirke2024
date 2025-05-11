@@ -5,8 +5,7 @@ namespace DomainModules.BlobStorage.Entities;
 public class BlobStorageFile : BaseEntity
 {
     private long? _storedFileSize = 0;
-    
-    public Guid BlobGuid { get; set; } = Guid.NewGuid();
+
     public required string FileBaseName { get; set; }
     public required string FileExtension { get; set; }
     public Stream? FileContent { get; set; }
@@ -14,10 +13,11 @@ public class BlobStorageFile : BaseEntity
 
     // Computed properties
     public long FileSizeInBytes => FileContent?.Length ?? (_storedFileSize ?? 0);
-    public string FileName => $"{FileBaseName}###{BlobGuid}.{FileExtension}";
-    
+
+    // Removed: Computed FileName property
+
     /// <summary>
-    /// Sets the stored file size. This is used internally during upload/download.
+    /// Sets the stored file size. This is used internally.
     /// </summary>
     /// <param name="size">The size of the file in bytes.</param>
     public void SetFileSize(long size)

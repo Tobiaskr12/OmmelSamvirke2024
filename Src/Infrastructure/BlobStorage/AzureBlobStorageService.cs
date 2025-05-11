@@ -3,7 +3,6 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Contracts.Infrastructure.BlobStorage;
-using DomainModules.BlobStorage.Entities;
 using FluentResults;
 using Infrastructure.Errors;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +12,7 @@ namespace Infrastructure.BlobStorage;
 public class AzureBlobStorageService : IBlobStorageService
 {
     private readonly BlobContainerClient _blobContainerClient;
+    private readonly string _publicBaseUrl;
     private const int MaxRetryAttempts = 3;
     private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(2);
 
@@ -20,33 +20,36 @@ public class AzureBlobStorageService : IBlobStorageService
     {
         ArgumentNullException.ThrowIfNull(configuration);
 
-        string connectionString = configuration["AzureBlobStorageConnectionString"] 
-                                  ?? throw new Exception("Missing AzureBlobStorageConnectionString in configuration");
-        string containerName = configuration["AzureBlobStorageContainerName"] 
-                               ?? throw new Exception("Missing AzureBlobStorageContainerName in configuration");
+        string connectionString = configuration["AzureBlobStorageConnectionString"]
+                                  ?? throw new InvalidOperationException("Missing AzureBlobStorageConnectionString in configuration");
+        string containerName = configuration["AzureBlobStorageContainerName"]
+                               ?? throw new InvalidOperationException("Missing AzureBlobStorageContainerName in configuration");
 
+        // Initialize the client for the container
         _blobContainerClient = new BlobContainerClient(connectionString, containerName);
+
+        // Construct and store the public base URL
+        _publicBaseUrl = $"https://ommelsamvirke.blob.core.windows.net/{containerName}/";
     }
 
-    public async Task<Result> UploadBlobAsync(
-        BlobStorageFile blobStorageFile,
+    public async Task<Result> UploadAsync(
+        string blobName,
         Stream content,
+        string contentType,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(blobStorageFile);
+        ArgumentException.ThrowIfNullOrWhiteSpace(blobName);
         ArgumentNullException.ThrowIfNull(content);
+        ArgumentException.ThrowIfNullOrWhiteSpace(contentType);
 
         try
         {
-            // Get the computed blob name "<FileBaseName>###<BlobGuid>.<FileExtension>"
-            string blobName = blobStorageFile.FileName;
             BlobClient blobClient = _blobContainerClient.GetBlobClient(blobName);
-
-            // Ensure the stream is at the beginning
             if (content.CanSeek) content.Position = 0;
 
+            // Retry loop
             int attempt = 0;
-            while (true)
+            while (true) 
             {
                 try
                 {
@@ -55,78 +58,60 @@ public class AzureBlobStorageService : IBlobStorageService
 
                     var uploadOptions = new BlobUploadOptions
                     {
+                        HttpHeaders = new BlobHttpHeaders { ContentType = contentType },
                         TransferOptions = new StorageTransferOptions
                         {
-                            MaximumTransferSize = 4 * 1024 * 1024, // 4 MB chunks
+                            MaximumTransferSize = 4 * 1024 * 1024,
                             InitialTransferSize = 4 * 1024 * 1024
                         }
                     };
 
                     await blobClient.UploadAsync(content, uploadOptions, cancellationToken);
 
-                    // Update file size from the stream
-                    blobStorageFile.SetFileSize(content.Length);
+                    // Upload succeeded
                     return Result.Ok();
                 }
                 catch (RequestFailedException) when (++attempt < MaxRetryAttempts)
                 {
                     await Task.Delay(RetryDelay, cancellationToken);
                 }
+                catch (RequestFailedException ex)
+                {
+                    return Result.Fail($"{ErrorMessages.BlobStorage_Upload_Failed}: Attempt {attempt} failed with status {ex.Status}. ErrorCode: {ex.ErrorCode}. Message: {ex.Message}");
+                }
             }
         }
         catch (Exception ex)
         {
-            return Result.Fail(ErrorMessages.BlobStorage_Upload_Failed + ": " + ex.Message);
+            return Result.Fail($"{ErrorMessages.BlobStorage_Upload_Failed}: An unexpected error occurred. {ex.Message}");
         }
     }
 
-    public async Task<Result<BlobStorageFile>> DownloadBlobAsync(
-        BlobStorageFile blobStorageFile,
+    public async Task<Result> DeleteAsync(
+        string blobName,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(blobStorageFile);
+        ArgumentException.ThrowIfNullOrWhiteSpace(blobName);
 
         try
         {
-            string blobGuidString = blobStorageFile.BlobGuid.ToString();
-
-            // Iterate through blobs in the container to find the matching naming pattern
-            await foreach (BlobItem blobItem in _blobContainerClient.GetBlobsAsync(cancellationToken: cancellationToken))
-            {
-                // Expected format: "<FileBaseName>###<BlobGuid>.<FileExtension>"
-                if (blobItem.Name.Contains($"###{blobGuidString}."))
-                {
-                    BlobClient blobClient = _blobContainerClient.GetBlobClient(blobItem.Name);
-                    var memoryStream = new MemoryStream();
-
-                    int attempt = 0;
-                    while (true)
-                    {
-                        try
-                        {
-                            await blobClient.DownloadToAsync(memoryStream, cancellationToken);
-                            break;
-                        }
-                        catch (RequestFailedException) when (++attempt < MaxRetryAttempts)
-                        {
-                            await Task.Delay(RetryDelay, cancellationToken);
-                        }
-                    }
-
-                    // Reset stream position and assign it to the entity
-                    memoryStream.Position = 0;
-                    blobStorageFile.FileContent = memoryStream;
-                    blobStorageFile.SetFileSize(memoryStream.Length);
-
-                    return Result.Ok(blobStorageFile);
-                }
-            }
-
-            return Result.Fail<BlobStorageFile>(ErrorMessages.BlobStorage_BlobNotFound);
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(blobName);
+            await blobClient.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots, cancellationToken: cancellationToken);
+            
+            return Result.Ok();
+        }
+        catch (RequestFailedException ex)
+        {
+            return Result.Fail($"{ErrorMessages.BlobStorage_Delete_Failed}: Status {ex.Status}. ErrorCode: {ex.ErrorCode}. Message: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return Result.Fail<BlobStorageFile>(ErrorMessages.BlobStorage_Download_Failed + ": " + ex.Message);
+            return Result.Fail($"{ErrorMessages.BlobStorage_Delete_Failed}: An unexpected error occurred. {ex.Message}");
         }
+    }
+
+    public string GetPublicBlobBaseUrl()
+    {
+        return _publicBaseUrl;
     }
 }

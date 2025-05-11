@@ -231,4 +231,16 @@
   <data name="Reservations_SeriesNotFound" xml:space="preserve">
     <value>The recurring reservation series was not found</value>
   </data>
+  <data name="Album_Images_InvalidSize" xml:space="preserve">
+    <value>An album must contain at least one image</value>
+  </data>
+  <data name="Album_ImageProcessingFailed" xml:space="preserve">
+    <value>Failed to process one or more images</value>
+  </data>
+  <data name="Album_BlobUploadFailed" xml:space="preserve">
+    <value>Failed to upload one or more image files to storage</value>
+  </data>
+  <data name="Album_Images_MustProvideAtLeastOne" xml:space="preserve">
+    <value>At least one image must be provided for upload</value>
+  </data>
 </root>

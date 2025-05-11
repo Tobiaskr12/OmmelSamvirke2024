@@ -78,6 +78,15 @@ namespace Infrastructure.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sletning fra blob-lager mislykkedes.
+        /// </summary>
+        public static string BlobStorage_Delete_Failed {
+            get {
+                return ResourceManager.GetString("BlobStorage_Delete_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download af fil mislykkedes.
         /// </summary>
         public static string BlobStorage_Download_Failed {

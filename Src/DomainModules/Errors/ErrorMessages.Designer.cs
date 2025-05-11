@@ -60,6 +60,51 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cover image must be one of the album&apos;s images.
+        /// </summary>
+        public static string Album_CoverImage_MustBeInImages {
+            get {
+                return ResourceManager.GetString("Album_CoverImage_MustBeInImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description must be at most 500 characters long.
+        /// </summary>
+        public static string Album_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Album_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At least one image is required.
+        /// </summary>
+        public static string Album_Images_InvalidSize {
+            get {
+                return ResourceManager.GetString("Album_Images_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Album name must be between 3 and 100 characters.
+        /// </summary>
+        public static string Album_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Album_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Album name must not be empty.
+        /// </summary>
+        public static string Album_Name_NotEmpty {
+            get {
+                return ResourceManager.GetString("Album_Name_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The email attachment has no content, making it invalid.
         /// </summary>
         public static string Attachment_BinaryContent_IsEmpty {
@@ -470,6 +515,69 @@ namespace DomainModules.Errors {
         public static string EventRemoteFile_Url_NotEmpty {
             get {
                 return ResourceManager.GetString("EventRemoteFile_Url_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred.
+        /// </summary>
+        public static string GenericError {
+            get {
+                return ResourceManager.GetString("GenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photo date cannot be in the future.
+        /// </summary>
+        public static string Image_DateTaken_InFuture {
+            get {
+                return ResourceManager.GetString("Image_DateTaken_InFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description must be at most 500 characters.
+        /// </summary>
+        public static string Image_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location must be at most 256 characters.
+        /// </summary>
+        public static string Image_Location_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Location_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please upload an image file.
+        /// </summary>
+        public static string Image_OriginalUpload_NotEmpty {
+            get {
+                return ResourceManager.GetString("Image_OriginalUpload_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Photographer name must be at most 100 characters.
+        /// </summary>
+        public static string Image_PhotographerName_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_PhotographerName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title must be at most 100 characters.
+        /// </summary>
+        public static string Image_Title_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Title_InvalidLength", resourceCulture);
             }
         }
         

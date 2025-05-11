@@ -60,6 +60,51 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Forsidebilledet skal være et af albummets billeder.
+        /// </summary>
+        public static string Album_CoverImage_MustBeInImages {
+            get {
+                return ResourceManager.GetString("Album_CoverImage_MustBeInImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beskrivelsen må højst være 500 tegn lang.
+        /// </summary>
+        public static string Album_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Album_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der skal være mindst ét billede i albummet.
+        /// </summary>
+        public static string Album_Images_InvalidSize {
+            get {
+                return ResourceManager.GetString("Album_Images_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Albumnavn skal være mellem 3 og 100 tegn.
+        /// </summary>
+        public static string Album_Name_InvalidLength {
+            get {
+                return ResourceManager.GetString("Album_Name_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Albumnavn må ikke være tom.
+        /// </summary>
+        public static string Album_Name_NotEmpty {
+            get {
+                return ResourceManager.GetString("Album_Name_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Den vedhæftede fil har ikke noget indhold. Filen er derfor ikke gyldig.
         /// </summary>
         public static string Attachment_BinaryContent_IsEmpty {
@@ -470,6 +515,69 @@ namespace DomainModules.Errors {
         public static string EventRemoteFile_Url_NotEmpty {
             get {
                 return ResourceManager.GetString("EventRemoteFile_Url_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der opstod en fejl.
+        /// </summary>
+        public static string GenericError {
+            get {
+                return ResourceManager.GetString("GenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billedets dato kan ikke ligge i fremtiden.
+        /// </summary>
+        public static string Image_DateTaken_InFuture {
+            get {
+                return ResourceManager.GetString("Image_DateTaken_InFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beskrivelsen må højst være 500 tegn.
+        /// </summary>
+        public static string Image_Description_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Description_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billedets lokation må højst være 256 tegn.
+        /// </summary>
+        public static string Image_Location_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Location_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload venligst en billedfil.
+        /// </summary>
+        public static string Image_OriginalUpload_NotEmpty {
+            get {
+                return ResourceManager.GetString("Image_OriginalUpload_NotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fotografens navn må højst være 100 tegn.
+        /// </summary>
+        public static string Image_PhotographerName_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_PhotographerName_InvalidLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Titlen må højst være 100 tegn.
+        /// </summary>
+        public static string Image_Title_InvalidLength {
+            get {
+                return ResourceManager.GetString("Image_Title_InvalidLength", resourceCulture);
             }
         }
         

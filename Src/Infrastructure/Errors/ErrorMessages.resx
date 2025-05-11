@@ -33,4 +33,7 @@
     <data name="BlobStorage_Download_Failed" xml:space="preserve">
         <value>Failed to download file</value>
     </data>
+    <data name="BlobStorage_Delete_Failed" xml:space="preserve">
+        <value>Blob storage deletion failed</value>
+    </data>
 </root>

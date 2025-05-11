@@ -18,7 +18,6 @@ public class BlobStorageFileValidator : AbstractValidator<BlobStorageFile>
             .Matches("^[a-zA-Z0-9]+$")
             .WithMessage(ErrorMessages.BlobStorageFile_FileExtension_Invalid);
 
-        // The file size is computed, so it must be greater than zero.
         RuleFor(x => x.FileSizeInBytes)
             .GreaterThan(0)
             .WithMessage(ErrorMessages.BlobStorageFile_FileSize_GreaterThanZero);
@@ -26,9 +25,5 @@ public class BlobStorageFileValidator : AbstractValidator<BlobStorageFile>
         RuleFor(x => x.ContentType)
             .NotEmpty()
             .WithMessage(ErrorMessages.BlobStorageFile_ContentType_NotEmpty);
-
-        RuleFor(x => x.BlobGuid)
-            .Must(guid => guid != Guid.Empty)
-            .WithMessage(ErrorMessages.BlobStorageFile_BlobGuid_NotEmpty);
     }
 }

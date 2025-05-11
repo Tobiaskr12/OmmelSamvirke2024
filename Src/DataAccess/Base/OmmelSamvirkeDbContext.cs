@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DomainModules.Common;
 using DomainModules.Emails.Entities;
 using DomainModules.Events.Entities;
+using DomainModules.ImageAlbums.Entities;
 using DomainModules.Newsletters.Entities;
 using DomainModules.Reservations.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -41,6 +42,10 @@ public sealed class OmmelSamvirkeDbContext : DbContext
     
     // BlobStorage
     public DbSet<BlobStorageFile> BlobStorageFiles { get; init; }
+    
+    // Albums
+    public DbSet<Album> Albums { get; init; }
+    public DbSet<Image> Images { get; init; }
 
     public OmmelSamvirkeDbContext(DbContextOptions<OmmelSamvirkeDbContext> options) : base(options) { }
     

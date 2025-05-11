@@ -290,7 +290,7 @@ public class EmailSendingTests : ServiceTestBase
             Assert.That(receivedAttachment, Is.Not.Null);
             Assert.That(receivedAttachment!.IsAttachment, Is.True);
             Assert.That(receivedAttachment.ContentType.MimeType, Is.EqualTo(expectedFile.ContentType));
-            Assert.That(receivedAttachment.FileName, Is.EqualTo($"{expectedFile.FileBaseName}###{expectedFile.BlobGuid}.{expectedFile.FileExtension}"));
+            Assert.That(receivedAttachment.FileName, Is.EqualTo($"{expectedFile.FileBaseName}"));
         });
     }
 }

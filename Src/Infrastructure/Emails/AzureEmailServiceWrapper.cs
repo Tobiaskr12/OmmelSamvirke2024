@@ -104,7 +104,7 @@ public class AzureEmailServiceWrapper : IExternalEmailServiceWrapper
 
         // Convert each BlobStorageFile attachment into an EmailAttachment.
         List<EmailAttachment> emailAttachments = email.Attachments.Select(file => new EmailAttachment(
-            file.FileName,
+            file.FileBaseName,
             file.ContentType,
             BinaryData.FromStream(file.FileContent ?? throw new InvalidOperationException("Email attachment cannot be empty"))
         )).ToList();

@@ -60,6 +60,42 @@ namespace ServiceModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kunne ikke uploade en eller flere billedfiler.
+        /// </summary>
+        public static string Album_BlobUploadFailed {
+            get {
+                return ResourceManager.GetString("Album_BlobUploadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kunne ikke behandle et eller flere billeder.
+        /// </summary>
+        public static string Album_ImageProcessingFailed {
+            get {
+                return ResourceManager.GetString("Album_ImageProcessingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Et album skal indeholde mindst ét billede.
+        /// </summary>
+        public static string Album_Images_InvalidSize {
+            get {
+                return ResourceManager.GetString("Album_Images_InvalidSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mindst ét billede skal angives til upload.
+        /// </summary>
+        public static string Album_Images_MustProvideAtLeastOne {
+            get {
+                return ResourceManager.GetString("Album_Images_MustProvideAtLeastOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Du kan ikke slette denne oprydningskampagne, da den aktiv.
         /// </summary>
         public static string CleanupCampaign_CannotDeleteActiveCampaign {

@@ -8,8 +8,8 @@ namespace DomainModules.Tests.BlobStorage;
 [TestFixture, Category("UnitTests")]
 public class BlobStorageFileValidatorTests
 {
-    private BlobStorageFileValidator _validator;
-    private BlobStorageFile _validBlob;
+    private BlobStorageFileValidator _validator = null!;
+    private BlobStorageFile _validBlob = null!;
 
     [SetUp]
     public void SetUp()
@@ -17,29 +17,36 @@ public class BlobStorageFileValidatorTests
         _validator = new BlobStorageFileValidator();
         _validBlob = new BlobStorageFile
         {
-            FileBaseName = "TestFile",
-            FileExtension = "pdf",
-            ContentType = "application/pdf",
-            // Simulate file content with a length of 1024 bytes.
-            FileContent = new MemoryStream(new byte[1024])
+            FileBaseName = "TestDocument",
+            FileExtension = "txt",
+            ContentType = "text/plain",
+            // FileContent is ignored by validator, but size matters
+            FileContent = new MemoryStream("This is file content."u8.ToArray()) // Use UTF8 literal
         };
-        _validBlob.SetFileSize(1024);
+        // Set the size explicitly as FileContent might be null in some scenarios
+        _validBlob.SetFileSize(_validBlob.FileContent?.Length ?? 100);
     }
 
     [Test]
     public void ValidBlobStorageFile_PassesValidation()
     {
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
         Assert.That(result.IsValid, Is.True);
     }
 
     [Test]
     public void EmptyFileBaseName_FailsValidation()
     {
+        // Arrange
         _validBlob.FileBaseName = "";
+
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsValid, Is.False);
@@ -51,9 +58,13 @@ public class BlobStorageFileValidatorTests
     [Test]
     public void EmptyFileExtension_FailsValidation()
     {
+        // Arrange
         _validBlob.FileExtension = "";
+
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsValid, Is.False);
@@ -65,9 +76,13 @@ public class BlobStorageFileValidatorTests
     [Test]
     public void InvalidFileExtension_FailsValidation()
     {
-        _validBlob.FileExtension = "pdf!";
+        // Arrange
+        _validBlob.FileExtension = "txt?"; // Invalid character
+
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsValid, Is.False);
@@ -79,10 +94,33 @@ public class BlobStorageFileValidatorTests
     [Test]
     public void ZeroFileSize_FailsValidation()
     {
-        _validBlob.FileContent = null;
+        // Arrange
+        _validBlob.FileContent = null; // Ensure FileContent doesn't interfere
         _validBlob.SetFileSize(0);
+
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsValid, Is.False);
+            Assert.That(result.Errors.Any(e =>
+                e.ErrorMessage.Equals(ErrorMessages.BlobStorageFile_FileSize_GreaterThanZero)));
+        });
+    }
+
+    [Test]
+    public void NegativeFileSize_FailsValidation() // Added test case
+    {
+        // Arrange
+        _validBlob.FileContent = null;
+        _validBlob.SetFileSize(-100);
+
+        // Act
+        ValidationResult result = _validator.Validate(_validBlob);
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsValid, Is.False);
@@ -94,36 +132,18 @@ public class BlobStorageFileValidatorTests
     [Test]
     public void EmptyContentType_FailsValidation()
     {
+        // Arrange
         _validBlob.ContentType = "";
+
+        // Act
         ValidationResult result = _validator.Validate(_validBlob);
-        
+
+        // Assert
         Assert.Multiple(() =>
         {
             Assert.That(result.IsValid, Is.False);
             Assert.That(result.Errors.Any(e =>
                 e.ErrorMessage.Equals(ErrorMessages.BlobStorageFile_ContentType_NotEmpty)));
-        });
-    }
-
-    [Test]
-    public void EmptyBlobGuid_FailsValidation()
-    {
-        _validBlob = new BlobStorageFile
-        {
-            BlobGuid = Guid.Empty,
-            FileBaseName = "TestFile",
-            FileExtension = "pdf",
-            ContentType = "application/pdf",
-            FileContent = new MemoryStream(new byte[1024])
-        };
-        _validBlob.SetFileSize(1024);
-        ValidationResult result = _validator.Validate(_validBlob);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(result.IsValid, Is.False);
-            Assert.That(result.Errors.Any(e =>
-                e.ErrorMessage.Equals(ErrorMessages.BlobStorageFile_BlobGuid_NotEmpty)));
         });
     }
 }

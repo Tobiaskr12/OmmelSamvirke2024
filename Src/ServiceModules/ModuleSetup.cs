@@ -1,8 +1,10 @@
+using Contracts.ServiceModules.AlbumImages;
 using Contracts.ServiceModules.Emails.EmailTemplateEngine;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceModules.Emails.EmailTemplateEngine;
 using ServiceModules.Events.IcsFeed;
+using ServiceModules.ImageAlbums.Services;
 using ServiceModules.MediatorConfig.PipelineBehaviors;
 
 namespace ServiceModules;
@@ -16,6 +18,7 @@ public static class ModuleSetup
         serviceCollection.AddScoped<IEmailTemplateEngine, TemplateEngine>();
         
         serviceCollection.AddScoped<IcsFeedService>();
+        serviceCollection.AddSingleton<IImageProcessingService, ImageProcessingService>();
 
         serviceCollection.AddMediatR(config =>
         {

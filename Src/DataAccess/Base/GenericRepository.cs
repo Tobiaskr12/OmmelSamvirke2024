@@ -81,26 +81,43 @@ public sealed class GenericRepository<T> : IRepository<T> where T : BaseEntity
         }
     }
 
-    public async Task<Result<PaginatedResult<T>>> GetPaginatedAsync(int page = 1, int pageSize = 20, bool readOnly = true, CancellationToken cancellationToken = default)
+    public async Task<Result<PaginatedResult<T>>> GetPaginatedAsync(
+        int page = 1, 
+        int pageSize = 20, 
+        bool readOnly = true,
+        SortDirection sortDirection = SortDirection.NewestFirst,
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("GetPaginatedAsync called.");
         try
         {
-            IQueryable<T> query = BuildQuery(readOnly: readOnly);
+            IQueryable<T> query = BuildQuery(predicate, readOnly);
 
-            Task<int> countQuery = query.CountAsync(cancellationToken); 
-            Task<List<T>> entitiesQuery = query
-                .OrderByDescending(x => x.DateCreated)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken: cancellationToken);
+            int totalCount = await query.CountAsync(cancellationToken);
 
-            await Task.WhenAll(countQuery, entitiesQuery);
+            List<T> entities = sortDirection switch
+            {
+                SortDirection.NewestFirst => await query
+                    .OrderByDescending(x => x.DateCreated)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken: cancellationToken),
+                SortDirection.OldestFirst => await query
+                    .OrderBy(x => x.DateCreated)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken: cancellationToken),
+                _ => throw new ArgumentOutOfRangeException(nameof(sortDirection), sortDirection, null)
+            };
 
             return Result.Ok(new PaginatedResult<T>
             {
-                Items = entitiesQuery.Result,
-                TotalCount = countQuery.Result
+                Items = entities,
+                ItemsCount = totalCount,
+                Page = page,
+                PageCount = (int)Math.Ceiling(totalCount / (decimal)pageSize),
+                PageSize = pageSize
             });
         }
         catch (Exception ex)
