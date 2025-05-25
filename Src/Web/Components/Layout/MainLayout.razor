@@ -35,11 +35,9 @@
             </MudNavLink>
         </MudDrawer>
 
-        <MudAppBar Fixed="false" Gutters="false" Color="Color.Primary" Style="@("height: auto; box-shadow: none")" Class="py-4 prevent-select header">
-            <MudGrid Style="max-width: 1600px; margin: 0 auto">
-                <MudItem xs="0" md="1" />
-
-                <MudItem xs="8" md="7" Style="padding-top: 0; padding-left: 0" Class="d-flex align-center">
+        <MudAppBar Fixed="true" Gutters="false" Color="Color.Primary" Style="@("height: auto; box-shadow: none")" Class="py-4 prevent-select header">
+            <MudGrid Style="max-width: 1600px; margin: 0 auto; padding-right: 16px; padding-left: 16px">
+                <MudItem xs="9" Style="padding-top: 0; padding-left: 0" Class="d-flex align-center">
                     <MudText
                         Class="header-text"
                         Align="Align.Left"
@@ -54,7 +52,7 @@
                         Ommel Samvirke
                     </MudText>
                 </MudItem>
-                <MudItem xs="4" md="3" Style="padding-top: 0; padding-left: 0">
+                <MudItem xs="3" Style="padding-top: 0; padding-left: 0">
                     <span class="d-flex flex-row justify-end align-center" style="height: 100%">
                         @if (_bp <= Breakpoint.Md)
                         {
@@ -73,7 +71,6 @@
                         }
                     </span>
                 </MudItem>
-                <MudItem xs="0" md="1"/>
             </MudGrid>
         </MudAppBar>
 
@@ -81,9 +78,8 @@
         @if (_bp > Breakpoint.Md)
         {
             <div class="d-flex py-2 align-start sub-app-bar-height prevent-select large-nav-bar">
-                <MudGrid Style="max-width: 1600px; margin: 0 auto">
-                    <MudItem xs="1"/>
-                    <MudItem xs="7" Class="d-flex flex-row gap-2">
+                <MudGrid Style="max-width: 1600px; margin: 0 auto; padding-left: 16px; padding-right: 16px">
+                    <MudItem xs="8" Class="d-flex flex-row gap-2">
                         <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.Activities ? "active" : string.Empty)"
                               onclick="@(() => NavigateTo(Page.Activities))">
                             <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Primary" Style="height: 28px"/>
@@ -105,7 +101,7 @@
                             <MudText Typo="Typo.h6" Class="nav-link-text">Nyhedsbreve</MudText>
                         </span>
                     </MudItem>
-                    <MudItem xs="3" Class="d-flex flex-row gap-1 justify-end">
+                    <MudItem xs="4" Class="d-flex flex-row gap-1 justify-end">
                         <div class="dropdown-wrapper @(_showDropdown ? "open" : "")">
                             <MudText Typo="Typo.h6" Class="nav-link-text" Style="cursor: pointer; padding: 2px 5px" @onclick="ToggleDropdown">
                                 Foreninger
@@ -136,7 +132,6 @@
                             <MudText Typo="Typo.h6" Class="nav-link-text">Administrator</MudText>
                         </span>
                     </MudItem>
-                    <MudItem xs="1"/>
                 </MudGrid>
             </div>
         }
@@ -144,40 +139,46 @@
         else
         {
             <!--suppress CssUnresolvedCustomProperty -->
-            <div class="d-flex py-2 align-center prevent-select justify-space-evenly small-nav-bar" >
+            <div class="d-flex py-2 align-center prevent-select justify-space-evenly small-nav-bar" style="background: white; z-index: 1000">
                 <span 
                     class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Activities ? "active" : string.Empty)" 
                     onclick="@(() => NavigateTo(Page.Activities))">
-                    <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Primary" Size="Size.Large"/>
+                    <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Primary" Size="Size.Medium"/>
                     <MudText Typo="Typo.h6" Class="nav-link-text">Aktiviteter</MudText>
                 </span>
                 <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Beboerhuset ? "active" : string.Empty)"
                       onclick="@(() => NavigateTo(Page.Beboerhuset))">
-                    <MudIcon Icon="@Icons.Material.Filled.House" Color="Color.Primary" Size="Size.Large"/>
+                    <MudIcon Icon="@Icons.Material.Filled.House" Color="Color.Primary" Size="Size.Medium"/>
                     <MudText Typo="Typo.h6" Class="nav-link-text">Beboerhuset</MudText>
                 </span>
                 <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.PhotoAlbum ? "active" : string.Empty)" 
                       onclick="@(() => NavigateTo(Page.PhotoAlbum))">
-                    <MudIcon Icon="@Icons.Material.Filled.Photo" Color="Color.Primary" Size="Size.Large"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Photo" Color="Color.Primary" Size="Size.Medium"/>
                     <MudText Typo="Typo.h6" Class="nav-link-text">Fotoalbum</MudText>
                 </span>
                 <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Newsletters ? "active" : string.Empty)" 
                       onclick="@(() => NavigateTo(Page.Newsletters))">
-                    <MudIcon Icon="@Icons.Material.Filled.Newspaper" Color="Color.Primary" Size="Size.Large"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Newspaper" Color="Color.Primary" Size="Size.Medium"/>
                     <MudText Typo="Typo.h6" Class="nav-link-text">Nyheder</MudText>
                 </span>
             </div>
         }
         
-        <MudMainContent Style="padding: 0">
-            <MudContainer Gutters="false" Class="main-content" Style="max-width: 1600px">
-                <MudGrid Style="margin: 0" Class="width-100">
-                    <MudItem xs="0" md="1" />
-                    <MudItem xs="12" md="10">
-                        @Body
-                    </MudItem>
-                    <MudItem xs="0" md="1" />
-                </MudGrid>
+        <MudMainContent Style="padding: 0;">
+            <MudContainer 
+                Gutters="false" 
+                Class="main-content" 
+                Style=@($"margin-top: {(_bp > Breakpoint.Md ? "calc(var(--sub-app-bar-height) + var(--app-bar-height))" : "var(--app-bar-height)")}")>
+                <CascadingValue Value="_bp" Name="CurrentBreakpoint">
+                    @Body
+                </CascadingValue>
+
+                @* When rendering the navbar at the bottom of the page, add a container of the same height
+                so the page content can be scrolled fully *@
+                @if (_bp <= Breakpoint.Md)
+                {
+                    <MudContainer Style="height: var(--sub-app-bar-height); width: 100%" />
+                }
             </MudContainer>
             
             @* Use the following concept when adding a footer. The footer will be editable, so we don't know the height*@
@@ -185,12 +186,6 @@
             @*     <MudText Typo="Typo.h1">This is a test</MudText> *@
             @* </MudContainer> *@
             
-            @* When rendering the navbar at the bottom of the page, add a container of the same height
-               so the page content can be scrolled fully *@
-            @if (_bp <= Breakpoint.Md)
-            {
-                <MudContainer Style="height: var(--sub-app-bar-height); width: 100%" />
-            }
         </MudMainContent>
     </MudLayout>
 

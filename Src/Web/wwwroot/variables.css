@@ -22,10 +22,10 @@
     }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1280px) { /* MD Breakpoint */
     :root {
         --app-bar-height: 64px;
-        --sub-app-bar-height: 96px;
+        --sub-app-bar-height: 76px;
     }
 }
 
@@ -39,7 +39,7 @@
 @media (max-width: 380px) {
     :root {
         /* The 3 pixels are a manual fix. Must be the MudBlazor app bar being places weirdly */
-        --sub-app-bar-height: 83px;
+        --sub-app-bar-height: 71px;
     }
 }
 

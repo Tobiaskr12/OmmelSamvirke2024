@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Blazor-ApexCharts" Version="5.1.0" />
       <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+      <PackageReference Include="Heron.MudCalendar" Version="3.2.0" />
       <PackageReference Include="MudBlazor" Version="8.0.0" />
       <PackageReference Include="MudExRichTextEditor" Version="8.0.1" />
     </ItemGroup>

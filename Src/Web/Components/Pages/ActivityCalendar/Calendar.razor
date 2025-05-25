@@ -1,0 +1,18 @@
+@page "/Calendar"
+@page "/Kalender"
+
+@if (CurrentBreakpoint > Breakpoint.Md)
+{
+    <MudCalendar
+        @ref="DesktopCalendar"
+        T="CalendarItem" />
+}
+else
+{
+    <MudCalendar 
+        @ref="MobileCalendar"
+        T="CalendarItem" 
+        ShowDropdownViewSelector="true" 
+        ShowPrevNextButtons="false" 
+        ShowWeek="false" />
+}

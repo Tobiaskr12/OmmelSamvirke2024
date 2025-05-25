@@ -1,4 +1,10 @@
 ﻿@using System.Reflection
+@using MudBlazor.Services
+
+@implements IBrowserViewportObserver
+
+@inject IBrowserViewportService BrowserViewportService
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,7 +26,7 @@
         <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         <title>Ommel Samvirke</title>
     </head>
-    <body>
+    <body style=@($"{(_bp <= Breakpoint.Md ? "background-color: white" : "")}")>
         <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         @* ReSharper disable Html.PathError *@
         <script src="_framework/blazor.web.js"></script>
@@ -45,5 +51,24 @@
         var assembly = Assembly.GetExecutingAssembly();
         FileInfo fi = new(assembly.Location);
         return fi.LastWriteTime.Ticks;
+    }
+    
+    // ViewPort Breakpoint service setup
+    private Breakpoint _bp;
+    public async ValueTask DisposeAsync() => await BrowserViewportService.UnsubscribeAsync(this);
+
+    Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
+
+    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
+    {
+        ReportRate = 250,
+        NotifyOnBreakpointOnly = true
+    };
+
+    Task IBrowserViewportObserver.NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
+    {
+        _bp = browserViewportEventArgs.Breakpoint;
+        
+        return InvokeAsync(StateHasChanged);
     }
 }

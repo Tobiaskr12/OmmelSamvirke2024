@@ -16,6 +16,21 @@ main {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 
+::deep .main-content {
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: white;
+    width: 100%;
+    max-width: 1600px;
+    padding: 16px;
+    min-height: calc(100lvh - (var(--app-bar-height) + var(--sub-app-bar-height)));
+}
+
+::deep .width-100 {
+    width: 100%;
+}
+
+
 .top-row {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -166,8 +181,13 @@ main {
 
 .large-nav-bar {
     border-bottom: 1px solid #ccc;
-    background:white;
+    background: white;
+    z-index: 1000;
     color: var(--mud-palette-primary);
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    top: var(--app-bar-height);
     svg {
         transition: 0ms;
     }
@@ -218,7 +238,8 @@ main {
         }
     }
     .nav-link-container {
-        padding: 12px;
+        padding: 8px;
+        cursor: pointer;
         &:hover {
             background-color: #284844EE;
             color: white;
@@ -243,16 +264,6 @@ main {
     
     ::deep .header-text {
         font-size: 40px;
-    }
-}
-
-@media (max-width: 960px) {
-    ::deep .header-text {
-        margin-left: 16px;
-    }
-    
-    ::deep .burger-menu {
-        margin-right: 4px;
     }
 }
 
@@ -289,17 +300,4 @@ main {
             letter-spacing: 0;
         }
     }
-}
-
-::deep .main-content {
-    overflow-y: auto;
-    box-sizing: border-box;
-    background: white;
-    width: 100%;
-    padding: 16px;
-    min-height: calc(100vh - (var(--app-bar-height) + var(--sub-app-bar-height)));
-}
-
-::deep .width-100 {
-    width: 100%;
 }
