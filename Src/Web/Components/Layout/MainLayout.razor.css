@@ -1,3 +1,7 @@
+::deep .mud-grid-item {
+    padding: 0;
+}
+
 .page {
     position: relative;
     display: flex;
@@ -88,9 +92,214 @@ main {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+::deep .prevent-select {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*** App bar and dropdown ***/
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.sub-app-bar-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 200px;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    z-index: 1000;
+}
+
+.dropdown-caret {
+    margin-left: 4px;
+    transition: transform .2s ease;
+}
+
+.sub-app-bar-dropdown-item {
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.sub-app-bar-dropdown-item:hover {
+    /*noinspection CssUnresolvedCustomProperty*/
+    background: var(--mud-palette-primary);
+    color: white;
+}
+
+#search-input {
+    width: 100%;
+    background: white;
+    color: #333;
+    border-radius: 25px;
+    height: 40px;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    transform: translateX(38px); /* Move over overlay */
+    &:active, &:focus {
+        outline: none;
     }
+}
+
+#search-input-icon-overlay {
+    width: 50px;
+    height: 40px;
+    z-index: 9999;
+    background: white;
+    border-radius: 25px;
+    cursor: pointer;
+    padding-right: 12px;
+}
+
+.large-nav-bar {
+    border-bottom: 1px solid #ccc;
+    background:white;
+    color: var(--mud-palette-primary);
+    svg {
+        transition: 0ms;
+    }
+    .active {
+        background: var(--mud-palette-primary);
+        color: white;
+        border-radius: 25px;
+        svg {
+            fill: white;
+        }
+    }
+    .nav-link-container {
+        padding: 2px 12px;
+        cursor: pointer;
+        &:hover {
+            background-color: #284844EE;
+            color: white;
+            border-radius: 25px;
+            svg {
+                fill: white;
+            }
+        }
+    }
+    ::deep .nav-link-text {
+        font-weight: 400;
+        font-size: 1.25rem
+    }
+}
+
+.small-nav-bar {
+    border-top: 1px solid #ccc; 
+    background: white; 
+    color: var(--mud-palette-primary); 
+    position: fixed; 
+    left: 0; 
+    bottom: 0; 
+    width: 100%; 
+    padding: 8px 0;
+    svg {
+        transition: 0ms;
+    }
+    .active {
+        background: var(--mud-palette-primary);
+        color: white;
+        border-radius: 15px;
+        svg {
+            fill: white;
+        }
+    }
+    .nav-link-container {
+        padding: 12px;
+        &:hover {
+            background-color: #284844EE;
+            color: white;
+            border-radius: 15px;
+            svg {
+                fill: white;
+            }
+        }
+    }
+    ::deep .nav-link-text {
+        font-weight: 300;
+        font-size:0.9rem;
+        margin-top: -6px;
+        margin-bottom: -6px;
+    }
+}
+
+@media (max-width: 1280px) {
+    ::deep .header {
+        padding: 0 !important;
+    }
+    
+    ::deep .header-text {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 960px) {
+    ::deep .header-text {
+        margin-left: 16px;
+    }
+    
+    ::deep .burger-menu {
+        margin-right: 4px;
+    }
+}
+
+@media (max-width: 550px) {
+    .small-nav-bar {
+        .nav-link-text {
+            font-weight: 300;
+            font-size:0.8rem;
+            margin-top: -6px
+        }
+    }
+}
+
+@media (max-width: 440px) {
+    ::deep .header-text {
+        font-size: 30px;
+    }
+    
+    .small-nav-bar {
+        .nav-link-text {
+            font-size:0.7rem;
+            letter-spacing: 0.001rem;
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .small-nav-bar {
+        .nav-link-container {
+            padding: 8px !important;
+        }
+        ::deep .nav-link-text {
+            font-size:0.7rem;
+            letter-spacing: 0;
+        }
+    }
+}
+
+::deep .main-content {
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: white;
+    width: 100%;
+    padding: 16px;
+    min-height: calc(100vh - (var(--app-bar-height) + var(--sub-app-bar-height)));
+}
+
+::deep .width-100 {
+    width: 100%;
+}

@@ -20,11 +20,9 @@ public partial class ThemeViewModel : ObservableObject
     {
         PaletteLight = new PaletteLight
         {
-            Background = "#f4f4f4"
-        };
-        PaletteDark = new PaletteDark
-        {
-            Background = "#2f303a"
+            Primary = "#284844",
+            PrimaryContrastText = "#FFF",
+            Background = "#F4F4F4"
         };
     }
 }

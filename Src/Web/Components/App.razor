@@ -5,12 +5,18 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <base href="/"/>
-        <link rel="stylesheet" href="app.css"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
         @* ReSharper disable Html.PathError *@
         <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="EmailTemplatePreviewGUI.styles.css?v=@Version"/>
+        <link rel="stylesheet" href="Web.styles.css?v=@Version"/>
         @* ReSharper restore Html.PathError *@
+        
+        @* Custom CSS files are loaded after third-party CSS files, so I can override third-party styles *@
+        <link rel="stylesheet" href="app.css"/>
+        <link rel="stylesheet" href="variables.css"/>
         <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         <title>Ommel Samvirke</title>
     </head>

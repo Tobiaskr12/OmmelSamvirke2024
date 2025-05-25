@@ -1,0 +1,57 @@
+:root {
+    --page-horizontal-margin: 20px;
+    --sub-app-bar-height: 54px;
+    --app-bar-height: 96px;
+}
+
+@media (min-width: 640px) {
+    :root {
+        --page-horizontal-margin: 50px;
+    }
+}
+
+@media (min-width: 1024px) {
+    :root {
+        --page-horizontal-margin: 20px;
+    }
+}
+
+@media (min-width: 600px) {
+    :root {
+        --page-horizontal-margin: 20px;
+    }
+}
+
+@media (max-width: 1280px) {
+    :root {
+        --app-bar-height: 64px;
+        --sub-app-bar-height: 96px;
+    }
+}
+
+@media (max-width: 600px) {
+    :root {
+        /* The 3 pixels are a manual fix. Must be the MudBlazor app bar being places weirdly */
+        --app-bar-height: calc(60px - 3px);
+    }
+}
+
+@media (max-width: 380px) {
+    :root {
+        /* The 3 pixels are a manual fix. Must be the MudBlazor app bar being places weirdly */
+        --sub-app-bar-height: 83px;
+    }
+}
+
+.page-horizontal-margin {
+    margin-right: var(--page-horizontal-margin);
+    margin-left: var(--page-horizontal-margin);
+}
+
+.sub-app-bar-height {
+    height: var(--sub-app-bar-height);
+}
+
+.app-bar-height {
+    height: var(--app-bar-height);
+}

@@ -1,8 +1,48 @@
 ﻿@inject NavigationManager NavigationManager
 
 <MudNavMenu>
-    <MudNavLink OnClick="@(() => NavigateTo("/Nyhedsbreve"))" Icon="@Icons.Material.Filled.Newspaper">
-        Nyhedsbreve
+    <span class="d-flex flex-row justify-end align-center" id="search-container">
+        <input type="text" id="search-input" class="d-flex flex-row justify-space-between" placeholder="Søg"/>
+        <div id="search-input-icon-overlay" class="d-flex align-center justify-center">
+            <MudIcon Icon="@Icons.Material.Filled.Search" Style="color: #666"/>
+        </div>
+    </span>
+
+    <MudDivider/>
+    
+    @* Association links *@
+    <MudText Typo="Typo.h6" Style="padding: 8px">Foreninger</MudText>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Beboerforeningen
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Kleven Havn
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Ommel Boldklub
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Flagforeningen
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Jagtforeningen
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Strandbyen Havn
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Ommel Samvirke
+    </MudNavLink>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))">
+        Ærø Hundeklub
+    </MudNavLink>
+
+    <MudDivider/>
+
+    @* Administrator links *@
+    <MudText Typo="Typo.h6" Style="padding: 8px">Administrator</MudText>
+    <MudNavLink OnClick="@(() => NavigateTo("#"))" Icon="@Icons.Material.Filled.Lock">
+        Log ind
     </MudNavLink>
 </MudNavMenu>
 
