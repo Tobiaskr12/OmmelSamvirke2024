@@ -1,0 +1,72 @@
+@using System.Linq
+<div class="mt-2"> @* The div tag is here to ensure we can use scoped CSS *@
+    <MudCalendar T="CalendarItem"
+                 Items="EventItems"
+                 InitialView="CalendarView.Month"
+                 ViewOptions="new[]{CalendarView.Month}"
+                 ShowToolbar="true"
+                 ShowMonth="true"
+                 ShowWeek="false"
+                 ShowDay="false"
+                 CurrentDay="@(CurrentDay ?? new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1))"
+                 Height="400"
+                 Outlined="true"
+                 EnableDragItems="true"
+                 Elevation="0"
+                 CellClicked="OnCellClicked"
+                 AdditionalDateTimeClassesFunc="GetDateClasses"
+                 IsDateTimeDisabledFunc="DisableOutOfRange">
+        <MonthTemplate>
+            @* Don't show any cell content, except the date *@
+        </MonthTemplate>
+    </MudCalendar>
+    <div class="d-flex d-row">
+        <MudText
+            Typo="Typo.body1"
+            Class="my-1">
+            @_selectedDates.Count @(_selectedDates.Count == 1 ? "dato" : "datoer") valgt
+        </MudText>
+        <MudSpacer />
+        <MudButton
+            Variant="Variant.Text"
+            Color="Color.Primary"
+            OnClick="() => { _selectedDates = new HashSet<DateTime>(); StateHasChanged(); }">
+            Nulstil valgte
+        </MudButton>
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime? CurrentDay { get; set; } = new(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+    [Parameter, EditorRequired] public DateTime MinDate { get; set; }
+    [Parameter, EditorRequired] public DateTime MaxDate { get; set; }
+    
+    private bool DisableOutOfRange(DateTime date, CalendarView view) => date < MinDate || date > MaxDate;
+    
+    // Track user selections
+    private HashSet<DateTime> _selectedDates = new();
+
+    // Build calendar items so each selected date renders as an “event”
+    private IEnumerable<CalendarItem> EventItems =>
+        _selectedDates
+            .Select(d => new CalendarItem { Start = d, End = d.AddDays(1), AllDay = true })
+            .ToList();
+
+    // Called by CellClicked – add or remove the clicked date
+    private void OnCellClicked(DateTime date)
+    {
+        if (_selectedDates.Contains(date))
+        {
+            _selectedDates.Remove(date);
+        }
+        else
+        {
+            _selectedDates.Add(date);
+        }
+
+        CurrentDay = date;
+    }
+    
+    private string GetDateClasses(DateTime date, CalendarView calendarView)
+        => _selectedDates.Contains(date) ? "mud-calendar-cell-selected" : null;
+}

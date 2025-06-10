@@ -267,4 +267,7 @@
     <data name="GenericError" xml:space="preserve">
         <value>An error occurred</value>
     </data>
+    <data name="EventCoordinator_EnsureEmailOrPhoneNumber" xml:space="preserve">
+        <value>Event coordinator must have either an email or a phone number</value>
+    </data>
 </root>

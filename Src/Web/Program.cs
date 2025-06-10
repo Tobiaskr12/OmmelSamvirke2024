@@ -76,7 +76,7 @@ public class Program
 
             options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider(async context =>
             {
-                string? acceptLangs = context.Request.Headers["Accept-Language"].ToString();
+                string acceptLangs = context.Request.Headers.AcceptLanguage.ToString();
                 string primaryLanguage = acceptLangs.Split(',').FirstOrDefault() ?? "da";
 
                 if (primaryLanguage.Contains("en", StringComparison.OrdinalIgnoreCase))
@@ -92,7 +92,10 @@ public class Program
                     primaryLanguage = "da";
                 }
 
-                return await Task.FromResult(new ProviderCultureResult(primaryLanguage, primaryLanguage));
+                return await Task.FromResult(new ProviderCultureResult("da", "da"));
+                
+                // Enable to use the browsers language
+                //return await Task.FromResult(new ProviderCultureResult(primaryLanguage, primaryLanguage));
             }));
         });
 

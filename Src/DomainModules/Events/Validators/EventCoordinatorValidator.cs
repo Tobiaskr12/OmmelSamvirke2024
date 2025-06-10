@@ -28,5 +28,9 @@ public class EventCoordinatorValidator : AbstractValidator<EventCoordinator>
                 .Must(ValidationUtils.IsValidPhoneNumber!)
                 .WithMessage(ErrorMessages.EventCoordinator_PhoneNumber_Invalid);
         });
+        
+        RuleFor(x => x)
+            .Must(x => !string.IsNullOrWhiteSpace(x.EmailAddress) || !string.IsNullOrWhiteSpace(x.PhoneNumber))
+            .WithMessage(ErrorMessages.EventCoordinator_EnsureEmailOrPhoneNumber);
     }
 }

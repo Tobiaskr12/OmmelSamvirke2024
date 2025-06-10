@@ -1,0 +1,63 @@
+@using DomainModules.Events.Entities
+
+<MudAutocomplete
+    T="string"
+    Label="Navn"
+    Variant="Variant.Outlined"
+    Dense="true"
+    CoerceText="true"
+    Clearable="true"
+    Required="true"
+    ResetValueOnEmptyText="false"
+    @bind-value="Model.EventCoordinator.Name"
+    For="@(() => Model.EventCoordinator.Name)"
+    SearchFunc="SearchCoordinators" />
+
+<MudTextField
+    T="string"
+    Label="E-mailadresse"
+    Variant="Variant.Outlined"
+    @bind-value="Model.EventCoordinator.EmailAddress"
+    For="@(() => Model.EventCoordinator.EmailAddress)"
+    OnlyValidateIfDirty="true" />
+
+<MudTextField
+    T="string"
+    Label="Telefonnummer"
+    Variant="Variant.Outlined"
+    @bind-Value="Model.EventCoordinator.PhoneNumber"
+    For="@(() => Model.EventCoordinator.PhoneNumber)"
+    OnlyValidateIfDirty="true" />
+
+<MudText Typo="Typo.body1">
+    (E-mailadresse eller telefonnummer skal udfyldes)
+</MudText>
+
+@code {
+    [CascadingParameter] private MudForm? Form { get; set; }
+    
+    [Parameter, EditorRequired] public required Event Model { get; set; }
+    
+    private async Task OnCoordinatorNameChanged(string newName)
+    {
+        Model.EventCoordinator.Name = newName;
+        if (Form != null) await Form.Validate();
+    }
+    
+    // Dummy in-memory data; your real code will fetch this
+    private List<EventCoordinator> _allCoordinators =
+    [
+        new() { Name = "Anna Hansen", EmailAddress = "anna@example.com", PhoneNumber = "+45 12345678" },
+        new() { Name = "Peter Sørensen", EmailAddress = "peter@example.com", PhoneNumber = "+45 87654321" }
+    ];
+
+    private Task<IEnumerable<string>> SearchCoordinators(string value, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(_allCoordinators.Select(x => x.Name));
+        
+        return Task.FromResult(_allCoordinators
+                               .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+                               .Select(x => x.Name));
+    }
+}

@@ -429,6 +429,15 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Event coordinator must have either an email or a phone number.
+        /// </summary>
+        public static string EventCoordinator_EnsureEmailOrPhoneNumber {
+            get {
+                return ResourceManager.GetString("EventCoordinator_EnsureEmailOrPhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event coordinator name must be between 2 and 100 characters.
         /// </summary>
         public static string EventCoordinator_Name_InvalidLength {

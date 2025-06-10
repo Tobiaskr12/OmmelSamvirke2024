@@ -154,10 +154,10 @@
         <value>Tovholderens telefonnummer er ugyldigt</value>
     </data>
     <data name="Event_Title_NotEmpty" xml:space="preserve">
-        <value>Begivenhedens titel må ikke være tom</value>
+        <value>Begivenhedens navn må ikke være tom</value>
     </data>
     <data name="Event_Title_InvalidLength" xml:space="preserve">
-        <value>Begivenhedens titel skal være mellem 3 og 100 tegn</value>
+        <value>Begivenhedens navn skal være mellem 3 og 100 tegn</value>
     </data>
     <data name="Event_Description_NotEmpty" xml:space="preserve">
         <value>Begivenhedsbeskrivelsen må ikke være tom</value>
@@ -266,5 +266,8 @@
     </data>
     <data name="GenericError" xml:space="preserve">
         <value>Der opstod en fejl</value>
+    </data>
+    <data name="EventCoordinator_EnsureEmailOrPhoneNumber" xml:space="preserve">
+        <value>Tovholderen skal have enten en e-mailadresse eller et telefonnummer</value>
     </data>
 </root>

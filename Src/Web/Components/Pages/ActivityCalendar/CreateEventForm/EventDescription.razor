@@ -1,0 +1,89 @@
+@using DomainModules.Events.Entities
+<MudTextField
+    T="string"
+    Label="Begivenhedens navn"
+    @bind-Value="Model.Title"
+    For="@(() => Model.Title)"
+    OnlyValidateIfDirty="true"
+    Variant="Variant.Outlined" />
+
+<MudTextField
+    T="string"
+    Lines="14"
+    Label="Kort beskrivelse"
+    @bind-Value="Model.Description"
+    For="@(() => Model.Description)"
+    OnlyValidateIfDirty="true"
+    AutoGrow="true"
+    Variant="Variant.Outlined" />
+
+<div style="width: 100%">
+    <MudTooltip Text="Upload højst 5 filer. Understøttede formater: PDF, PNG, JPG, JPEG" RootStyle="width: 100%">
+        <MudFileUpload
+            T="IBrowserFile"
+            FilesChanged="UploadFiles"
+            Class="mb-2 mt-1"
+            Accept=".pdf,.png,.jpg,.jpeg"
+            AppendMultipleFiles="true"
+            MaximumFileCount="5">
+            
+            <ActivatorContent>
+                <MudButton FullWidth="true"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload">
+                    Vedhæft filer
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+    </MudTooltip>
+    <MudText Typo="Typo.body1">
+        @_files.Count @(_files.Count == 1 ? "vedhæftet fil" : "vedhæftede filer")
+    </MudText>
+</div>
+
+<MudDivider DividerType="DividerType.Middle" Class="mt-4 mb-6" />
+
+<MudAutocomplete
+    T="string"
+    Label="Hvor foregår begivenheden?"
+    Variant="Variant.Outlined"
+    Dense="true"
+    CoerceText="true"
+    Clearable="true"
+    Required="true"
+    ResetValueOnEmptyText="false"
+    @bind-value="Model.Location"
+    For="@(() => Model.Location)"
+    SearchFunc="SearchLocations" />
+
+<MudCheckBox @bind-Value="_checkBoxCreateBeboerhusReservation" Color="Color.Primary" Dense="true" Class="mt-2">
+    Reservér Beboerhuset
+</MudCheckBox>
+
+@code {
+    [Parameter, EditorRequired] public required Event Model { get; set; }
+    
+    IList<IBrowserFile> _files = new List<IBrowserFile>();
+    private void UploadFiles(IBrowserFile? file)
+    {
+        if (file is null) return;
+        _files.Add(file);
+        //TODO upload the files to the server
+    }
+    
+    private Task<IEnumerable<string>> SearchLocations(string value, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return Task.FromResult(_allLocations.Select(x => x));
+        
+        return Task.FromResult(
+            _allLocations
+                .Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+                .Select(x => x)
+        );
+    }
+    
+    private bool _checkBoxCreateBeboerhusReservation;
+    
+    private IEnumerable<string> _allLocations = ["Beboerhuset", "Kirken"];
+}

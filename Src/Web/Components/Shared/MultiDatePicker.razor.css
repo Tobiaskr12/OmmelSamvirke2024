@@ -1,0 +1,9 @@
+::deep .mud-calendar-cell-selected {
+    background: var(--mud-palette-primary);
+    color: var(--mud-palette-white);
+}
+
+::deep .mud-cal-month-link:hover {
+    background-color: var(--mud-palette-primary-lighten);
+    color: var(--mud-palette-white);
+}

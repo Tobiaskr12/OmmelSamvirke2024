@@ -9,7 +9,7 @@
 @inject ThemeViewModel ThemeViewModel
 @inject NavigationManager NavigationManager
 
-<div>
+<div style="@(_bp <= Breakpoint.Md ? "background-color: white" : "")">
     <MudPopoverProvider />
     <MudThemeProvider Theme="_theme" />
     <MudDialogProvider
@@ -104,11 +104,11 @@
                     <MudItem xs="4" Class="d-flex flex-row gap-1 justify-end">
                         <div class="dropdown-wrapper @(_showDropdown ? "open" : "")">
                             <MudText Typo="Typo.h6" Class="nav-link-text" Style="cursor: pointer; padding: 2px 5px" @onclick="ToggleDropdown">
-                                Foreninger
                                 <MudIcon
                                     Icon="@Icons.Material.Filled.KeyboardArrowDown"
                                     Class="dropdown-caret"
                                     Style="font-size:1.25rem;vertical-align:middle; margin-left:4px"/>
+                                Foreninger
                             </MudText>
 
                             @if (_showDropdown)

@@ -65,4 +65,29 @@ public class EventCoordinatorValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
               .WithErrorMessage(ErrorMessages.EventCoordinator_PhoneNumber_Invalid);
     }
+    
+    [Test]
+    public void InvalidPhoneNumber_OnlyEmailPassesValidation()
+    {
+        _validCoordinator.PhoneNumber = null;
+        TestValidationResult<EventCoordinator>? result = _validator.TestValidate(_validCoordinator);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+    
+    [Test]
+    public void InvalidPhoneNumber_OnlyPhoneNumberPassesValidation()
+    {
+        _validCoordinator.EmailAddress = null;
+        TestValidationResult<EventCoordinator>? result = _validator.TestValidate(_validCoordinator);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+    
+    [Test]
+    public void InvalidPhoneNumber_NeitherEmailOrPhoneNumberFailsValidation()
+    {
+        _validCoordinator.EmailAddress = null;
+        _validCoordinator.PhoneNumber = null;
+        TestValidationResult<EventCoordinator>? result = _validator.TestValidate(_validCoordinator);
+        Assert.That(result.Errors, Has.Count.EqualTo(1));
+    }
 }

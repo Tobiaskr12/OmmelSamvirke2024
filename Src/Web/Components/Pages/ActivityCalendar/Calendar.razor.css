@@ -1,0 +1,17 @@
+::deep .create-form-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    box-shadow: none;
+    align-self: center;
+    position: absolute;
+}
+
+::deep .create-form-close-btn-mobile {
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    box-shadow: none;
+    align-self: center;
+    position: absolute;
+}

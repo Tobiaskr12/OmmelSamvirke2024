@@ -1,0 +1,178 @@
+@using DomainModules.Common
+@using DomainModules.Events.Entities
+@using Web.Components.Shared
+
+@if (IsMobile)
+{
+    <MudDatePicker
+        Label="Dato"
+        Date="_startDate"
+        DateChanged="OnStartDateChanged"
+        MinDate="_minDate"
+        MaxDate="_maxDate"
+        Clearable="true"
+        Editable="true"
+        Style="width: 100%"
+        PickerVariant="PickerVariant.Dialog"
+        Variant="Variant.Outlined" />
+
+    <MudTimePicker
+        Label="Tidspunkt"
+        Time="_startTime"
+        TimeChanged="OnStartTimeChanged"
+        Style="width: 100%"
+        MinuteSelectionStep="5"
+        Clearable="true"
+        Editable="true"
+        PickerVariant="PickerVariant.Dialog"
+        Variant="Variant.Outlined" />
+}
+else
+{
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <MudDatePicker
+            Label="Dato"
+            Date="_startDate"
+            DateChanged="OnStartDateChanged"
+            AnchorOrigin="Origin.BottomLeft"
+            MinDate="_minDate"
+            MaxDate="_maxDate"
+            Clearable="true"
+            Editable="true"
+            Variant="Variant.Outlined"/>
+
+        <MudTimePicker
+            Label="Tidspunkt"
+            Time="_startTime"
+            TimeChanged="OnStartTimeChanged"
+            MinuteSelectionStep="5"
+            Clearable="true"
+            Editable="true"
+            AnchorOrigin="Origin.BottomRight"
+            Variant="Variant.Outlined"/>
+    </div>
+}
+<MudDivider Class="my-4" DividerType="DividerType.Middle" />
+
+<MudSelect
+    T="RecurrenceType"
+    @bind-Value="@SelectedRecurrenceType"
+    Variant="Variant.Outlined"
+    Dense="true"
+    Label="Gentag begivenheden">
+    @foreach (KeyValuePair<RecurrenceType, string> option in _translatedRecurrenceTypes)
+    {
+        <MudSelectItem Value="@option.Key">
+            @option.Value
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@if (_shownRecurrenceSelection == ShownRecurrenceSelection.Interval)
+{
+    <MudDatePicker
+        Label="Gentag indtil denne dato"
+        Required="true"
+        RequiredError="Dette felt skal udfyldes"
+        MinDate="_minDate"
+        MaxDate="_maxDate"
+        @bind-Date="_startDate"
+        Variant="Variant.Outlined" />
+}
+
+@if (_shownRecurrenceSelection == ShownRecurrenceSelection.Calendar)
+{
+    <MultiDatePicker 
+        CurrentDay="_startDate"
+        MinDate="_minDate"
+        MaxDate="_maxDate" />
+}
+
+@code {
+    [CascadingParameter] private MudForm? Form { get; set; }
+    
+    [Parameter, EditorRequired] public bool IsMobile { get; set; }
+    [Parameter, EditorRequired] public required Event Model { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        if (Model.StartTime != default)
+        {
+            _startDate = Model.StartTime.Date;
+            _startTime = Model.StartTime.TimeOfDay;
+        }
+    }
+
+    private DateTime _minDate = DateTime.UtcNow.Date;
+    private DateTime _maxDate = DateTime.UtcNow.AddYears(10).Date;
+    
+    private DateTime? _startDate;
+    private TimeSpan? _startTime;
+    
+    private async Task OnStartDateChanged(DateTime? newDate)
+    {
+        _startDate = newDate;
+        await SyncModelAndValidate();
+    }
+
+    private async Task OnStartTimeChanged(TimeSpan? newTime)
+    {
+        _startTime = newTime;
+        await SyncModelAndValidate();
+    }
+    
+    private async Task SyncModelAndValidate()
+    {
+        if (_startDate.HasValue && _startTime.HasValue)
+        {
+            Model.StartTime = _startDate.Value.Date + _startTime.Value;
+            
+            if (Form != null)
+            {
+                await Form.Validate();
+                await Form.IsValidChanged.InvokeAsync(Form.IsValid);
+            }
+        }
+    }
+    
+    private Dictionary<RecurrenceType, string> _translatedRecurrenceTypes = new()
+    {
+        { RecurrenceType.None, "Gentag ikke" },
+        { RecurrenceType.Daily, "Hver dag" },
+        { RecurrenceType.Weekly, "Hver uge" },
+        { RecurrenceType.Monthly, "Hver måned" },
+        { RecurrenceType.Custom, "Specifikke datoer" }
+    };
+    
+    private RecurrenceType _selectedRecurrenceType;
+    private RecurrenceType SelectedRecurrenceType
+    {
+        get => _selectedRecurrenceType;
+        set
+        {
+            if (_selectedRecurrenceType == value) return;
+            _selectedRecurrenceType = value;
+            OnSelectedRecurrenceTypeChanged(value);
+        }
+    }
+    
+    private enum ShownRecurrenceSelection
+    {
+        None,
+        Interval,
+        Calendar
+    }
+    
+    private ShownRecurrenceSelection _shownRecurrenceSelection = ShownRecurrenceSelection.None;
+    
+    private void OnSelectedRecurrenceTypeChanged(RecurrenceType selectedRecurrenceType)
+    {
+        _shownRecurrenceSelection = selectedRecurrenceType switch
+        {
+            RecurrenceType.None => ShownRecurrenceSelection.None,
+            RecurrenceType.Daily or RecurrenceType.Weekly or RecurrenceType.Monthly => ShownRecurrenceSelection.Interval,
+            RecurrenceType.Custom => ShownRecurrenceSelection.Calendar,
+            _ => _shownRecurrenceSelection
+        };
+    }
+}

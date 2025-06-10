@@ -1,0 +1,48 @@
+@using FluentValidation
+@using Web.Components.Extensions
+@typeparam T
+
+<MudStep Title="@Title"
+         Icon="@GetIcon()"
+         Style="@GetStyle()">
+    <MudForm 
+        @ref="_form"
+        Model="Model"
+        Validation="@(Validator.CreateFieldValidator())"
+        IsValidChanged="OnIsValidChanged"
+        ValidationDelay="200">
+        @ChildContent
+    </MudForm>
+</MudStep>
+
+@code {
+    [Parameter, EditorRequired] public required string Title { get; set; }
+    [Parameter, EditorRequired] public required T Model { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment ChildContent { get; set; }
+    [Parameter, EditorRequired] public IValidator<T> Validator { get; set; } = default!;
+    [Parameter, EditorRequired] public EventCallback<bool> IsValidChanged { get; set; }
+
+    public bool IsValid { get; private set; }
+    
+    private bool _visited;
+    private bool _hasErrors;
+    private MudForm? _form;
+    
+    public void MarkVisited() => _visited = true;
+
+    public async Task OnIsValidChanged(bool isValid)
+    {
+        IsValid = isValid;
+        await IsValidChanged.InvokeAsync(isValid);
+    }
+    
+    private string? GetIcon()
+        => _visited && _hasErrors
+            ? Icons.Material.Filled.ErrorOutline
+            : null;
+
+    private string? GetStyle()
+        => _visited && _hasErrors
+            ? "color: var(--mud-palette-error);"
+            : null;
+}

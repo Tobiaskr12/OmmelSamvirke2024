@@ -38,7 +38,6 @@
 
 @media (max-width: 380px) {
     :root {
-        /* The 3 pixels are a manual fix. Must be the MudBlazor app bar being places weirdly */
         --sub-app-bar-height: 71px;
     }
 }

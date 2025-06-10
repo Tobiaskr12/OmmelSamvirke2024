@@ -1,9 +1,4 @@
 ﻿@using System.Reflection
-@using MudBlazor.Services
-
-@implements IBrowserViewportObserver
-
-@inject IBrowserViewportService BrowserViewportService
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +12,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
         @* ReSharper disable Html.PathError *@
         <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+        <link href="_content/Heron.MudCalendar/Heron.MudCalendar.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="Web.styles.css?v=@Version"/>
         @* ReSharper restore Html.PathError *@
         
@@ -26,11 +22,12 @@
         <HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         <title>Ommel Samvirke</title>
     </head>
-    <body style=@($"{(_bp <= Breakpoint.Md ? "background-color: white" : "")}")>
+    <body>
         <Routes @rendermode="new InteractiveServerRenderMode(prerender: false)"/>
         @* ReSharper disable Html.PathError *@
         <script src="_framework/blazor.web.js"></script>
         <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+        <script src="_content/Heron.MudCalendar/Heron.MudCalendar.min.js"></script>
         @* ReSharper restore Html.PathError *@
     </body>
 </html>
@@ -51,24 +48,5 @@
         var assembly = Assembly.GetExecutingAssembly();
         FileInfo fi = new(assembly.Location);
         return fi.LastWriteTime.Ticks;
-    }
-    
-    // ViewPort Breakpoint service setup
-    private Breakpoint _bp;
-    public async ValueTask DisposeAsync() => await BrowserViewportService.UnsubscribeAsync(this);
-
-    Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
-
-    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
-    {
-        ReportRate = 250,
-        NotifyOnBreakpointOnly = true
-    };
-
-    Task IBrowserViewportObserver.NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
-    {
-        _bp = browserViewportEventArgs.Breakpoint;
-        
-        return InvokeAsync(StateHasChanged);
     }
 }

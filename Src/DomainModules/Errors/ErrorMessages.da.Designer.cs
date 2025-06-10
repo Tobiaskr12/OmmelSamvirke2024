@@ -402,7 +402,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Begivenhedens titel skal være mellem 3 og 100 tegn.
+        ///   Looks up a localized string similar to Begivenhedens navn skal være mellem 3 og 100 tegn.
         /// </summary>
         public static string Event_Title_InvalidLength {
             get {
@@ -411,7 +411,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Begivenhedens titel må ikke være tom.
+        ///   Looks up a localized string similar to Begivenhedens navn må ikke være tom.
         /// </summary>
         public static string Event_Title_NotEmpty {
             get {
@@ -425,6 +425,15 @@ namespace DomainModules.Errors {
         public static string EventCoordinator_EmailAddress_Invalid {
             get {
                 return ResourceManager.GetString("EventCoordinator_EmailAddress_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tovholderen skal have enten en e-mailadresse eller et telefonnummer.
+        /// </summary>
+        public static string EventCoordinator_EnsureEmailOrPhoneNumber {
+            get {
+                return ResourceManager.GetString("EventCoordinator_EnsureEmailOrPhoneNumber", resourceCulture);
             }
         }
         
