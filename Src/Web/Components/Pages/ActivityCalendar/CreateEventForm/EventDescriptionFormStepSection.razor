@@ -1,9 +1,14 @@
 @using DomainModules.Events.Entities
+@using FluentValidation
+@using Web.Components.Shared.MultiStepForm
+
+@inherits AbstractStepSection<Event>
+
 <MudTextField
     T="string"
     Label="Begivenhedens navn"
-    @bind-Value="Model.Title"
-    For="@(() => Model.Title)"
+    @bind-Value="Entity.Title"
+    For="@(() => Entity.Title)"
     OnlyValidateIfDirty="true"
     Variant="Variant.Outlined" />
 
@@ -11,8 +16,8 @@
     T="string"
     Lines="14"
     Label="Kort beskrivelse"
-    @bind-Value="Model.Description"
-    For="@(() => Model.Description)"
+    @bind-Value="Entity.Description"
+    For="@(() => Entity.Description)"
     OnlyValidateIfDirty="true"
     AutoGrow="true"
     Variant="Variant.Outlined" />
@@ -53,8 +58,8 @@
     Clearable="true"
     Required="true"
     ResetValueOnEmptyText="false"
-    @bind-value="Model.Location"
-    For="@(() => Model.Location)"
+    @bind-value="Entity.Location"
+    For="@(() => Entity.Location)"
     SearchFunc="SearchLocations" />
 
 <MudCheckBox @bind-Value="_checkBoxCreateBeboerhusReservation" Color="Color.Primary" Dense="true" Class="mt-2">
@@ -62,8 +67,6 @@
 </MudCheckBox>
 
 @code {
-    [Parameter, EditorRequired] public required Event Model { get; set; }
-    
     IList<IBrowserFile> _files = new List<IBrowserFile>();
     private void UploadFiles(IBrowserFile? file)
     {
@@ -86,4 +89,5 @@
     private bool _checkBoxCreateBeboerhusReservation;
     
     private IEnumerable<string> _allLocations = ["Beboerhuset", "Kirken"];
+    protected override IValidator<Event>? Validator { get; set; } = null;
 }

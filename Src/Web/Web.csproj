@@ -410,6 +410,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\temp\_upload-edit.scss" />
       <_ContentIncludedByDefault Remove="wwwroot\temp\_wobble.scss" />
       <_ContentIncludedByDefault Remove="wwwroot\temp\_zoom.scss" />
+      <_ContentIncludedByDefault Remove="Components\Shared\StepperForm\ValidatedStep.razor" />
     </ItemGroup>
 
     <Target Name="CollectMudBlazorStaticAssets" DependsOnTargets="ResolveStaticWebAssetsInputs" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">

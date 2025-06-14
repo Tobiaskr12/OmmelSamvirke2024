@@ -170,7 +170,9 @@
                 Class="main-content" 
                 Style=@($"margin-top: {(_bp > Breakpoint.Md ? "calc(var(--sub-app-bar-height) + var(--app-bar-height))" : "var(--app-bar-height)")}")>
                 <CascadingValue Value="_bp" Name="CurrentBreakpoint">
-                    @Body
+                    <CascadingValue Value="IsMobile" Name="IsMobile">
+                        @Body
+                    </CascadingValue>
                 </CascadingValue>
 
                 @* When rendering the navbar at the bottom of the page, add a container of the same height
@@ -285,6 +287,7 @@
     // ViewPort Breakpoint service setup
     private Breakpoint _bp;
     public async ValueTask DisposeAsync() => await BrowserViewportService.UnsubscribeAsync(this);
+    private bool IsMobile => _bp <= Breakpoint.Md;
 
     Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
 

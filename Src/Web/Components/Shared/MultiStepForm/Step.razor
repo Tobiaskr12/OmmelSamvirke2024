@@ -1,0 +1,46 @@
+@using Web.Components.Extensions
+@typeparam T where T : DomainModules.Common.BaseEntity
+
+<MudStep Title="@Title">
+    <MudForm
+        Model="ParentForm.Entity"
+        Validation="@(ParentForm.FormValidator.CreateFieldValidator())"
+        IsValidChanged="OnIsValidChanged"
+        ValidationDelay="200">
+        <CascadingValue Value="@this" Name="ParentStep">
+            @ChildContent
+        </CascadingValue>
+    </MudForm>
+</MudStep>
+
+@code {
+    private List<AbstractStepSection<T>> _sections = [];
+    
+    [CascadingParameter(Name = "ParentMultiStepForm")]
+    public required MultiStepForm<T> ParentForm { get; set; }
+    
+    [Parameter, EditorRequired] public required string Title { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment ChildContent { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        ParentForm.RegisterChild(this);
+    }
+    
+    public bool IsValid { get; private set; }
+    public IReadOnlyList<AbstractStepSection<T>> Sections => _sections;
+    
+    public void RegisterChild(AbstractStepSection<T> section)
+    {
+        _sections.Add(section);
+    }
+    
+    private void OnIsValidChanged(bool isValid)
+    {
+        IsValid = isValid;
+        ParentForm.OnStepValidityChanged();
+        StateHasChanged();
+    }
+}

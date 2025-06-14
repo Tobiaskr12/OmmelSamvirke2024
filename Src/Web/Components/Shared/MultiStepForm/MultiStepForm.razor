@@ -1,0 +1,234 @@
+@typeparam T where T : DomainModules.Common.BaseEntity
+@attribute [CascadingTypeParameter(nameof(T))]
+
+@using FluentResults
+@using FluentValidation
+@using FluentValidation.Results
+
+@inject IValidator<T> Validator
+
+<MudDrawer
+    @bind-Open="_isOpen"
+    ClipMode="DrawerClipMode.Docked"
+    Overlay="true"
+    Variant="DrawerVariant.Temporary"
+    Elevation="1"
+    Anchor="@(IsMobile ? Anchor.Bottom : Anchor.Right)"
+    Breakpoint="Breakpoint.Md"
+    Width="@(IsMobile ? "100%" : "550px")"
+    Class="d-flex flex-column mud-height-full"
+    Style="@($"overflow-y: auto; scrollbar-width: none; {(_isOpen ? "" : "display:none")}")">
+    
+    <MudSwipeArea OnSwipeEnd="OnSwipe">
+        <!-- Form header and close button -->
+        <span 
+            class="d-flex flex-row align-center pa-4" 
+            style="background-color: var(--mud-palette-primary); height: var(--app-bar-height)">
+            <MudIconButton
+                Icon="@Icons.Material.Filled.Close"
+                Style="color: white; position: absolute"
+                Variant="Variant.Text"
+                Class="create-form-close-btn-mobile"
+                OnClick="() => _isOpen = false"
+                aria-label="close"/>
+
+            <MudText 
+                Typo="@(IsMobile ? Typo.h5 : Typo.h4)" 
+                Align="Align.Center" 
+                Style="width: 100%; color:  white;">
+                @Title
+            </MudText>
+        </span>
+    </MudSwipeArea>
+    
+    <!-- Stepper form -->
+    <CascadingValue Value="@this" Name="ParentMultiStepForm">
+        <MudStepper
+            Vertical
+            NonLinear="false"
+            @bind-ActiveIndex="StepIndex"
+            Style="margin-right: 16px">
+
+            <!-- Form body -->
+            <ChildContent>
+                @ChildContent
+            </ChildContent>
+
+            <!-- Form button -->
+            <ActionContent Context="stepper">
+                <div class="d-flex flex-column" style="width: 100%; margin-left: 8px;">
+                    <div class="d-flex flex-row">
+                        <MudButton
+                            OnClick="@(() => Previous(stepper))"
+                            StartIcon="@Icons.Material.Filled.ArrowBack"
+                            Color="Color.Primary"
+                            Style="@($"visibility: {(_currentStepIndex <= 0 ? "hidden" : "visible")}")">
+                            Forrige
+                        </MudButton>
+
+                        <MudSpacer/>
+
+                        @if (_currentStepIndex < stepper.Steps.Count - 1)
+                        {
+                            <MudTooltip Text="Udfyld formularen for at gå til næste side" Disabled="_isCurrentValid">
+                                <MudButton
+                                    OnClick="@(() => Next(stepper))"
+                                    EndIcon="@Icons.Material.Filled.ArrowForward"
+                                    Color="Color.Primary"
+                                    Disabled="!_isCurrentValid">
+                                    Næste
+                                </MudButton>
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            // Check for validation errors
+                            <MudTooltip Text="Formularen er ikke udfyldt korrekt" Disabled="AreAllStepsValid">
+                                <MudButton
+                                    ButtonType="ButtonType.Submit"
+                                    OnClick="@(() => Save())"
+                                    Variant="Variant.Filled"
+                                    EndIcon="@Icons.Material.Filled.Save"
+                                    Color="Color.Primary"
+                                    Disabled="!AreAllStepsValid">
+                                    Gem
+                                </MudButton>
+                            </MudTooltip>
+                        }
+                    </div>
+                </div>
+            </ActionContent>
+        </MudStepper>
+    </CascadingValue>
+</MudDrawer>
+
+@code {
+    private bool _isCurrentValid;
+    private readonly List<bool> _isStepValid = [];
+    private bool AreAllStepsValid => _isStepValid.All(v => v);
+    private List<Step<T>> _steps = [];
+    
+    [CascadingParameter(Name = "IsMobile")]
+    public bool IsMobile { get; set; }
+    
+    [Parameter, EditorRequired] public required string Title { get; set; }
+    [Parameter, EditorRequired] public required T Entity { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment ChildContent { get; set; }
+    [Parameter, EditorRequired] public required Func<Task<Result>> OnSave { get; set; }
+    
+    // Validator accessible by child steps
+    public IValidator<T> FormValidator { get; private set; } = default!;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        FormValidator = Validator;
+    }
+
+    /// <summary>
+    /// Must be called by child steps to signal if they're valid or not
+    /// </summary>
+    public void OnStepValidityChanged()
+    {
+        _isCurrentValid = IsCurrentStepValid();
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Must be called by child steps in OnInitialized, so the parent form knows that the step exists
+    /// </summary>
+    public void RegisterChild(Step<T> step)
+    {
+        _steps.Add(step);
+        _isStepValid.Add(step.IsValid);
+    }
+    
+    private bool _isOpen;
+    public void ToggleOpen()
+    {
+        _isOpen = !_isOpen;
+        StateHasChanged();
+    }
+    
+    private int _currentStepIndex;
+    private int StepIndex
+    {
+        get => _currentStepIndex;
+        set
+        {
+            if (value < 0 || value >= _steps.Count) return;
+            if (value == _currentStepIndex) return;
+            
+            _currentStepIndex = value;
+            _isCurrentValid = IsCurrentStepValid();
+
+            StateHasChanged();
+        }
+    }
+    
+    private async Task Next(MudStepper stepper)
+    {
+        Step<T> currentStep = _steps[_currentStepIndex];
+        bool allSectionsValid = currentStep.Sections.All(x => x.Validate().IsValid);
+        
+        if (currentStep.IsValid && allSectionsValid)
+        {
+            await stepper.NextStepAsync();
+            
+            _isCurrentValid = IsCurrentStepValid();
+            StateHasChanged();
+        } else if (!allSectionsValid)
+        {
+            // TODO - Show error list
+        }
+    }
+
+    private bool IsCurrentStepValid()
+    {
+        Step<T> currentStep = _steps[_currentStepIndex];
+        bool allSectionsValid = currentStep.Sections.All(x => x.Validate().IsValid);
+
+        return currentStep.IsValid && allSectionsValid;
+    }
+
+    private async Task Previous(MudStepper stepper)
+    {
+        await stepper.PreviousStepAsync();
+        
+        _isCurrentValid = IsCurrentStepValid();
+        StateHasChanged();
+    }
+
+    private void OnSwipe(SwipeEventArgs args)
+    {
+        if (!IsMobile) return; 
+        
+        if (args.SwipeDirection == SwipeDirection.TopToBottom)
+        {
+            _isOpen = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Save()
+    {
+        ValidationResult? result = await Validator.ValidateAsync(Entity);
+        if (result.IsValid)
+        {
+            Result saveResult = await OnSave();
+            if (saveResult.IsSuccess)
+            {
+                // Close and show some kind of confirmation that all went well (snackbar)
+            }
+            else
+            {
+                // Display result errors
+            }
+        }
+        else
+        {
+            // Display validation errors
+        }
+    }
+}

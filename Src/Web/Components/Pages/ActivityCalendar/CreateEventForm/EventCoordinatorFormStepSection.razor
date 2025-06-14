@@ -1,4 +1,8 @@
 @using DomainModules.Events.Entities
+@using FluentValidation
+@using Web.Components.Shared.MultiStepForm
+
+@inherits AbstractStepSection<Event>
 
 <MudAutocomplete
     T="string"
@@ -9,24 +13,24 @@
     Clearable="true"
     Required="true"
     ResetValueOnEmptyText="false"
-    @bind-value="Model.EventCoordinator.Name"
-    For="@(() => Model.EventCoordinator.Name)"
+    @bind-value="Entity.EventCoordinator.Name"
+    For="@(() => Entity.EventCoordinator.Name)"
     SearchFunc="SearchCoordinators" />
 
 <MudTextField
     T="string"
     Label="E-mailadresse"
     Variant="Variant.Outlined"
-    @bind-value="Model.EventCoordinator.EmailAddress"
-    For="@(() => Model.EventCoordinator.EmailAddress)"
+    @bind-value="Entity.EventCoordinator.EmailAddress"
+    For="@(() => Entity.EventCoordinator.EmailAddress)"
     OnlyValidateIfDirty="true" />
 
 <MudTextField
     T="string"
     Label="Telefonnummer"
     Variant="Variant.Outlined"
-    @bind-Value="Model.EventCoordinator.PhoneNumber"
-    For="@(() => Model.EventCoordinator.PhoneNumber)"
+    @bind-Value="Entity.EventCoordinator.PhoneNumber"
+    For="@(() => Entity.EventCoordinator.PhoneNumber)"
     OnlyValidateIfDirty="true" />
 
 <MudText Typo="Typo.body1">
@@ -36,11 +40,9 @@
 @code {
     [CascadingParameter] private MudForm? Form { get; set; }
     
-    [Parameter, EditorRequired] public required Event Model { get; set; }
-    
     private async Task OnCoordinatorNameChanged(string newName)
     {
-        Model.EventCoordinator.Name = newName;
+        Entity.EventCoordinator.Name = newName;
         if (Form != null) await Form.Validate();
     }
     
@@ -60,4 +62,6 @@
                                .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
                                .Select(x => x.Name));
     }
+
+    protected override IValidator<Event>? Validator { get; set; } = null;
 }

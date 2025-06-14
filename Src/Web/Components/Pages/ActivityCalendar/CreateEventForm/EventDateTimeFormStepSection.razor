@@ -1,8 +1,12 @@
 @using DomainModules.Common
 @using DomainModules.Events.Entities
+@using FluentValidation
+@using Web.Components.Shared.MultiStepForm
 @using Web.Components.Shared
 
-@if (IsMobile)
+@inherits AbstractStepSection<Event>
+
+@if (CurrentBreakpoint <= Breakpoint.Md)
 {
     <!-- Start DateTime -->
     <MudDatePicker
@@ -138,18 +142,8 @@ else
 
 @code {
     [CascadingParameter] private MudForm? Form { get; set; }
-    
-    [Parameter, EditorRequired] public bool IsMobile { get; set; }
-    [Parameter, EditorRequired] public required Event Model { get; set; }
-    
-    protected override void OnParametersSet()
-    {
-        if (Model.StartTime != default)
-        {
-            _startDate = Model.StartTime.Date;
-            _startTime = Model.StartTime.TimeOfDay;
-        }
-    }
+    [CascadingParameter(Name = "CurrentBreakpoint")] 
+    private Breakpoint CurrentBreakpoint { get; set; }
 
     private DateTime _minDate = DateTime.UtcNow.Date;
     private DateTime _maxDate = DateTime.UtcNow.AddYears(10).Date;
@@ -187,7 +181,7 @@ else
     {
         if (_startDate.HasValue && _startTime.HasValue)
         {
-            Model.StartTime = _startDate.Value.Date + _startTime.Value;
+            Entity.StartTime = _startDate.Value.Date + _startTime.Value;
             
             if (Form != null)
             {
@@ -237,4 +231,6 @@ else
             _ => _shownRecurrenceSelection
         };
     }
+
+    protected override IValidator<Event>? Validator { get; set; } = null;
 }

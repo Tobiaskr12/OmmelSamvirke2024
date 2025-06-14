@@ -1,94 +1,77 @@
 @page "/Calendar"
 @page "/Kalender"
+
+@using DomainModules.Events.Entities
+@using FluentResults
+@using Web.Components.Shared.MultiStepForm
 @using Web.Components.Pages.ActivityCalendar.CreateEventForm
 
-@if (CurrentBreakpoint > Breakpoint.Md)
-{ // *************************** Desktop layout ***************************
-    <MudCalendar
-        T="CalendarItem"
-        Outlined="true"
-        Elevation="0" />
-    
-    <MudDrawer
-        @bind-Open="_createEventFormOpen"
-        ClipMode="DrawerClipMode.Docked"
-        Overlay="true"
-        Variant="DrawerVariant.Temporary"
-        Elevation="1"
-        Anchor="Anchor.Right"
-        Breakpoint="Breakpoint.Md"
-        Width="550px"
-        Class="d-flex flex-column mud-height-full"
-        Style="@($"overflow-y: scroll {(_createEventFormOpen ? "" : "display:none")}")">
-    
-        <span class="d-flex flex-row align-center ma-4">
-            <MudIconButton
-                Icon="@Icons.Material.Filled.Close"
-                Color="Color.Primary"
-                Variant="Variant.Text"
-                Class="create-form-close-btn"
-                OnClick="() => _createEventFormOpen = false"
-                aria-label="close"/>
-    
-            <MudText Typo="Typo.h4" Align="Align.Center" Style="width: 100%">
-                Opret Begivenhed
-            </MudText>
-        </span>
-    
-        <CreateEventForm IsMobile="false" />
-    </MudDrawer>
-}
-else
-{ // *************************** Mobile Layout ***************************
+@if (IsMobile)
+{
     <MudCalendar 
         T="CalendarItem" 
         ShowDropdownViewSelector="true" 
         ShowPrevNextButtons="false" 
         ShowWeek="false" />
-
-    <MudDrawer
-        @bind-Open="_createEventFormOpen"
-        ClipMode="DrawerClipMode.Docked"
-        Overlay="true"
-        Variant="DrawerVariant.Temporary"
-        Elevation="1"
-        Anchor="Anchor.Bottom"
-        Breakpoint="Breakpoint.Md"
-        Width="100%"
-        Class="d-flex flex-column mud-height-full"
-        Style="@($"overflow-y: scroll {(_createEventFormOpen ? "" : "display:none")}")">
-    
-        <span class="d-flex flex-row align-center ma-4">
-            <MudIconButton
-                Icon="@Icons.Material.Filled.Close"
-                Color="Color.Primary"
-                Variant="Variant.Text"
-                Class="create-form-close-btn-mobile"
-                OnClick="() => _createEventFormOpen = false"
-                aria-label="close"/>
-    
-            <MudText Typo="Typo.h5" Align="Align.Center" Style="width: 100%">
-                Opret Begivenhed
-            </MudText>
-        </span>
-    
-        <CreateEventForm IsMobile="true" />
-    </MudDrawer>
 }
+else
+{
+    <MudCalendar
+        T="CalendarItem"
+        Outlined="true"
+        Elevation="0" />
+}
+
+<MultiStepForm
+    T="Event"
+    @ref="_createEventForm"
+    Title="Opret Begivenhed"
+    Entity="_event"
+    OnSave="SaveEvent">
+    <Step Title="Beskriv Begivenheden" >
+        <EventDescriptionFormStepSection />
+    </Step>
+    <Step Title="Dato og tidspunkt">
+        <EventDateTimeFormStepSection/>
+    </Step>
+    <Step Title="Tovholder">
+        <EventCoordinatorFormStepSection />
+    </Step>
+</MultiStepForm>
 
 <MudButton 
     Class="mt-4"
     Variant="Variant.Filled" 
     Color="Color.Primary"
     StartIcon="@Icons.Material.Filled.Create"
-    OnClick="() => _createEventFormOpen = true">
+    OnClick="() => _createEventForm.ToggleOpen()">
     Tilføj Begivenhed
 </MudButton>
 
 @code 
 {
-    [CascadingParameter(Name = "CurrentBreakpoint")]
-    public Breakpoint CurrentBreakpoint { get; set; }
-    
-    private bool _createEventFormOpen;
+    [CascadingParameter(Name = "IsMobile")]
+    public bool IsMobile { get; set; }
+
+    private MultiStepForm<Event> _createEventForm = default!;
+
+    private readonly Event _event = new()
+    {
+        Title = string.Empty,
+        Description = string.Empty,
+        Location = string.Empty,
+        StartTime = DateTime.MinValue,
+        EndTime = DateTime.MinValue,
+        EventCoordinator = new EventCoordinator
+        {
+            Name = string.Empty,
+            EmailAddress = string.Empty,
+            PhoneNumber = string.Empty
+        }
+    };
+
+    private async Task<Result> SaveEvent()
+    {
+        return await Task.FromResult(Result.Ok());
+    }
 }
