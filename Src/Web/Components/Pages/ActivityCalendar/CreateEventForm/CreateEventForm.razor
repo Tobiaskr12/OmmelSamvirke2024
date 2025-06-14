@@ -9,7 +9,7 @@
     Vertical
     NonLinear="false"
     @bind-ActiveIndex="StepIndex"
-    Style="margin-right: 8px">
+    Style="@($"margin-right: {(CurrentBreakpoint > Breakpoint.Md ? "8px" : "16px")}")">
     <ChildContent>
         <ValidatedStep T="Event"
                        @ref="_step1"
@@ -85,6 +85,8 @@
 
 @code {
     [Parameter] public bool IsMobile { get; set; }
+    [CascadingParameter(Name = "CurrentBreakpoint")] 
+    public Breakpoint CurrentBreakpoint { get; set; }
     
     private int _stepIndex;
     private int StepIndex

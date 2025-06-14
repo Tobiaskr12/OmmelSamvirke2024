@@ -4,8 +4,9 @@
 
 @if (IsMobile)
 {
+    <!-- Start DateTime -->
     <MudDatePicker
-        Label="Dato"
+        Label="Startdato"
         Date="_startDate"
         DateChanged="OnStartDateChanged"
         MinDate="_minDate"
@@ -26,18 +27,44 @@
         Editable="true"
         PickerVariant="PickerVariant.Dialog"
         Variant="Variant.Outlined" />
+    
+    <div style="height: 16px"></div>
+    
+    <!-- End DateTime -->
+    <MudDatePicker
+        Label="Slutdato"
+        Date="_endDate"
+        DateChanged="OnEndDateChanged"
+        MinDate="_minDate"
+        MaxDate="_maxDate"
+        Clearable="true"
+        Editable="true"
+        Style="width: 100%"
+        PickerVariant="PickerVariant.Dialog"
+        Variant="Variant.Outlined" />
+
+    <MudTimePicker
+        Label="Tidspunkt"
+        Time="_endTime"
+        TimeChanged="OnEndTimeChanged"
+        Style="width: 100%"
+        MinuteSelectionStep="5"
+        Clearable="true"
+        Editable="true"
+        PickerVariant="PickerVariant.Dialog"
+        Variant="Variant.Outlined" />
 }
 else
 {
+    <!-- Start DateTime -->
     <div style="display: flex; align-items: center; gap: 16px;">
         <MudDatePicker
-            Label="Dato"
+            Label="Startdato"
             Date="_startDate"
             DateChanged="OnStartDateChanged"
             AnchorOrigin="Origin.BottomLeft"
             MinDate="_minDate"
             MaxDate="_maxDate"
-            Clearable="true"
             Editable="true"
             Variant="Variant.Outlined"/>
 
@@ -46,7 +73,28 @@ else
             Time="_startTime"
             TimeChanged="OnStartTimeChanged"
             MinuteSelectionStep="5"
-            Clearable="true"
+            Editable="true"
+            AnchorOrigin="Origin.BottomRight"
+            Variant="Variant.Outlined"/>
+    </div>
+    
+    <!-- End DateTime -->
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <MudDatePicker
+            Label="Slutdato"
+            Date="_endDate"
+            DateChanged="OnEndDateChanged"
+            AnchorOrigin="Origin.BottomLeft"
+            MinDate="_minDate"
+            MaxDate="_maxDate"
+            Editable="true"
+            Variant="Variant.Outlined"/>
+
+        <MudTimePicker
+            Label="Tidspunkt"
+            Time="_endTime"
+            TimeChanged="OnEndTimeChanged"
+            MinuteSelectionStep="5"
             Editable="true"
             AnchorOrigin="Origin.BottomRight"
             Variant="Variant.Outlined"/>
@@ -71,7 +119,7 @@ else
 @if (_shownRecurrenceSelection == ShownRecurrenceSelection.Interval)
 {
     <MudDatePicker
-        Label="Gentag indtil denne dato"
+        Label="Gentag indtil"
         Required="true"
         RequiredError="Dette felt skal udfyldes"
         MinDate="_minDate"
@@ -108,6 +156,8 @@ else
     
     private DateTime? _startDate;
     private TimeSpan? _startTime;
+    private DateTime? _endDate;
+    private TimeSpan? _endTime;
     
     private async Task OnStartDateChanged(DateTime? newDate)
     {
@@ -118,6 +168,18 @@ else
     private async Task OnStartTimeChanged(TimeSpan? newTime)
     {
         _startTime = newTime;
+        await SyncModelAndValidate();
+    }
+    
+    private async Task OnEndDateChanged(DateTime? newDate)
+    {
+        _endDate = newDate;
+        await SyncModelAndValidate();
+    }
+
+    private async Task OnEndTimeChanged(TimeSpan? newTime)
+    {
+        _endTime = newTime;
         await SyncModelAndValidate();
     }
     
