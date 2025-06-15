@@ -420,7 +420,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tovholderens emailadresse er ugyldig.
+        ///   Looks up a localized string similar to Arrangørens emailadresse er ugyldig.
         /// </summary>
         public static string EventCoordinator_EmailAddress_Invalid {
             get {
@@ -429,7 +429,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tovholderen skal have enten en e-mailadresse eller et telefonnummer.
+        ///   Looks up a localized string similar to Arrangøren skal have enten en e-mailadresse eller et telefonnummer.
         /// </summary>
         public static string EventCoordinator_EnsureEmailOrPhoneNumber {
             get {
@@ -438,7 +438,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tovholderens navn skal være mellem 2 og 100 tegn.
+        ///   Looks up a localized string similar to Arrangørens navn skal være mellem 2 og 100 tegn.
         /// </summary>
         public static string EventCoordinator_Name_InvalidLength {
             get {
@@ -447,7 +447,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tovholderens navn må ikke være tomt.
+        ///   Looks up a localized string similar to Arrangørens navn må ikke være tomt.
         /// </summary>
         public static string EventCoordinator_Name_NotEmpty {
             get {
@@ -456,7 +456,7 @@ namespace DomainModules.Errors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tovholderens telefonnummer er ugyldigt.
+        ///   Looks up a localized string similar to Arrangørens telefonnummer er ugyldigt.
         /// </summary>
         public static string EventCoordinator_PhoneNumber_Invalid {
             get {

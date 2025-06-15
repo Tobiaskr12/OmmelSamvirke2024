@@ -6,7 +6,7 @@
 
 @inherits AbstractStepSection<Event>
 
-@if (CurrentBreakpoint <= Breakpoint.Md)
+@if (IsMobile)
 {
     <!-- Start DateTime -->
     <MudDatePicker
@@ -61,7 +61,7 @@
 else
 {
     <!-- Start DateTime -->
-    <div style="display: flex; align-items: center; gap: 16px;">
+    <div style="display: flex; align-items: start; gap: 16px;">
         <MudDatePicker
             Label="Startdato"
             Date="_startDate"
@@ -83,7 +83,7 @@ else
     </div>
     
     <!-- End DateTime -->
-    <div style="display: flex; align-items: center; gap: 16px;">
+    <div style="display: flex; align-items: start; gap: 16px;">
         <MudDatePicker
             Label="Slutdato"
             Date="_endDate"
@@ -142,8 +142,8 @@ else
 
 @code {
     [CascadingParameter] private MudForm? Form { get; set; }
-    [CascadingParameter(Name = "CurrentBreakpoint")] 
-    private Breakpoint CurrentBreakpoint { get; set; }
+    [CascadingParameter(Name = "IsMobile")] 
+    private bool IsMobile { get; set; }
 
     private DateTime _minDate = DateTime.UtcNow.Date;
     private DateTime _maxDate = DateTime.UtcNow.AddYears(10).Date;

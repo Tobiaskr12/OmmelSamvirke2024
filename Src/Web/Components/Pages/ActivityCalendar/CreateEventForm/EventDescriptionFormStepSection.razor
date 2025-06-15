@@ -1,5 +1,6 @@
 @using DomainModules.Events.Entities
 @using FluentValidation
+@using Nextended.Core.Extensions
 @using Web.Components.Shared.MultiStepForm
 
 @inherits AbstractStepSection<Event>
@@ -25,11 +26,11 @@
 <div style="width: 100%">
     <MudTooltip Text="Upload højst 5 filer. Understøttede formater: PDF, PNG, JPG, JPEG" RootStyle="width: 100%">
         <MudFileUpload
-            T="IBrowserFile"
+            T="IReadOnlyList<IBrowserFile>"
             FilesChanged="UploadFiles"
             Class="mb-2 mt-1"
             Accept=".pdf,.png,.jpg,.jpeg"
-            AppendMultipleFiles="true"
+            AppendMultipleFiles="false"
             MaximumFileCount="5">
             
             <ActivatorContent>
@@ -43,7 +44,7 @@
         </MudFileUpload>
     </MudTooltip>
     <MudText Typo="Typo.body1">
-        @_files.Count @(_files.Count == 1 ? "vedhæftet fil" : "vedhæftede filer")
+        @_files.Count/5 vedhæftede filer
     </MudText>
 </div>
 
@@ -54,7 +55,7 @@
     Label="Hvor foregår begivenheden?"
     Variant="Variant.Outlined"
     Dense="true"
-    CoerceText="true"
+    CoerceValue="true"
     Clearable="true"
     Required="true"
     ResetValueOnEmptyText="false"
@@ -68,10 +69,12 @@
 
 @code {
     IList<IBrowserFile> _files = new List<IBrowserFile>();
-    private void UploadFiles(IBrowserFile? file)
+    private void UploadFiles(IReadOnlyList<IBrowserFile>? files)
     {
-        if (file is null) return;
-        _files.Add(file);
+        if (files is null or { Count: 0 }) return;
+        if (files.Count + _files.Count > 5) return; // TODO - Show a dedicated warning that can be dismissed (MudAlert)
+        
+        _files.AddRange(files);
         //TODO upload the files to the server
     }
     

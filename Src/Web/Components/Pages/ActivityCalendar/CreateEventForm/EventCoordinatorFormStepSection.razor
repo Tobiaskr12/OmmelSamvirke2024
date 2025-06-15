@@ -1,3 +1,4 @@
+@using DomainModules.Errors
 @using DomainModules.Events.Entities
 @using FluentValidation
 @using Web.Components.Shared.MultiStepForm
@@ -9,12 +10,13 @@
     Label="Navn"
     Variant="Variant.Outlined"
     Dense="true"
-    CoerceText="true"
+    CoerceValue="true"
     Clearable="true"
     Required="true"
     ResetValueOnEmptyText="false"
     @bind-value="Entity.EventCoordinator.Name"
-    For="@(() => Entity.EventCoordinator.Name)"
+    Validation="_nameValidator.ValidateAsRequired(ErrorMessages.EventCoordinator_Name_NotEmpty)"
+    OnlyValidateIfDirty="true"
     SearchFunc="SearchCoordinators" />
 
 <MudTextField
@@ -40,12 +42,18 @@
 @code {
     [CascadingParameter] private MudForm? Form { get; set; }
     
-    private async Task OnCoordinatorNameChanged(string newName)
-    {
-        Entity.EventCoordinator.Name = newName;
-        if (Form != null) await Form.Validate();
-    }
+    // Validation
+    private FieldValidator<string> _nameValidator = null!;
     
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        _nameValidator = new FieldValidator<string>(rule => rule
+            .NotEmpty().WithMessage(ErrorMessages.EventCoordinator_Name_NotEmpty)
+            .Length(2, 100).WithMessage(ErrorMessages.EventCoordinator_Name_InvalidLength));
+    }
+
     // Dummy in-memory data; your real code will fetch this
     private List<EventCoordinator> _allCoordinators =
     [
@@ -59,8 +67,8 @@
             return Task.FromResult(_allCoordinators.Select(x => x.Name));
         
         return Task.FromResult(_allCoordinators
-                               .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
-                               .Select(x => x.Name));
+           .Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+           .Select(x => x.Name));
     }
 
     protected override IValidator<Event>? Validator { get; set; } = null;

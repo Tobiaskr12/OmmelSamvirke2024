@@ -8,6 +8,7 @@ using Web.Components;
 using Web.Components.ViewModels;
 using System.Globalization;
 using Contracts.SupportModules.SecretsManager;
+using MudBlazor.Translations;
 using SupportModules;
 
 namespace Web;
@@ -55,7 +56,7 @@ public class Program
         builder.Services.AddScoped<ThemeViewModel>();
         
         // Add third-party libraries
-        builder.Services.AddMudServices();
+        builder.Services.AddMudServices().AddMudTranslations();
         builder.Services.AddApexCharts();
 
         // Setup localization

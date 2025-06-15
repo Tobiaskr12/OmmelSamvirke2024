@@ -142,16 +142,16 @@
         <value>Slutdatoen for gentagelsen skal være efter startdatoen</value>
     </data>
     <data name="EventCoordinator_Name_NotEmpty" xml:space="preserve">
-        <value>Tovholderens navn må ikke være tomt</value>
+        <value>Arrangørens navn må ikke være tomt</value>
     </data>
     <data name="EventCoordinator_Name_InvalidLength" xml:space="preserve">
-        <value>Tovholderens navn skal være mellem 2 og 100 tegn</value>
+        <value>Arrangørens navn skal være mellem 2 og 100 tegn</value>
     </data>
     <data name="EventCoordinator_EmailAddress_Invalid" xml:space="preserve">
-        <value>Tovholderens emailadresse er ugyldig</value>
+        <value>Arrangørens emailadresse er ugyldig</value>
     </data>
     <data name="EventCoordinator_PhoneNumber_Invalid" xml:space="preserve">
-        <value>Tovholderens telefonnummer er ugyldigt</value>
+        <value>Arrangørens telefonnummer er ugyldigt</value>
     </data>
     <data name="Event_Title_NotEmpty" xml:space="preserve">
         <value>Begivenhedens navn må ikke være tom</value>
@@ -268,6 +268,6 @@
         <value>Der opstod en fejl</value>
     </data>
     <data name="EventCoordinator_EnsureEmailOrPhoneNumber" xml:space="preserve">
-        <value>Tovholderen skal have enten en e-mailadresse eller et telefonnummer</value>
+        <value>Arrangøren skal have enten en e-mailadresse eller et telefonnummer</value>
     </data>
 </root>

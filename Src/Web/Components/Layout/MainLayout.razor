@@ -9,7 +9,7 @@
 @inject ThemeViewModel ThemeViewModel
 @inject NavigationManager NavigationManager
 
-<div style="@(_bp <= Breakpoint.Md ? "background-color: white" : "")">
+<div style="@(IsMobile ? "background-color: white" : "")">
     <MudPopoverProvider />
     <MudThemeProvider Theme="_theme" />
     <MudDialogProvider
@@ -54,7 +54,7 @@
                 </MudItem>
                 <MudItem xs="3" Style="padding-top: 0; padding-left: 0">
                     <span class="d-flex flex-row justify-end align-center" style="height: 100%">
-                        @if (_bp <= Breakpoint.Md)
+                        @if (IsMobile)
                         {
                             <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                            Class="burger-menu"
@@ -75,7 +75,7 @@
         </MudAppBar>
 
         @* On larger screens, show a navbar right under the website header *@
-        @if (_bp > Breakpoint.Md)
+        @if (!IsMobile)
         {
             <div class="d-flex py-2 align-start sub-app-bar-height prevent-select large-nav-bar">
                 <MudGrid Style="max-width: 1600px; margin: 0 auto; padding-left: 16px; padding-right: 16px">
@@ -144,7 +144,7 @@
             <MudContainer 
                 Gutters="false" 
                 Class="main-content" 
-                Style=@($"margin-top: {(_bp > Breakpoint.Md ? "calc(var(--sub-app-bar-height) + var(--app-bar-height))" : "var(--app-bar-height)")}")>
+                Style=@($"margin-top: {(!IsMobile ? "calc(var(--sub-app-bar-height) + var(--app-bar-height))" : "var(--app-bar-height)")}")>
                 <CascadingValue Value="_bp" Name="CurrentBreakpoint">
                     <CascadingValue Value="IsMobile" Name="IsMobile">
                         @Body
@@ -153,7 +153,7 @@
 
                 @* When rendering the navbar at the bottom of the page, add a container of the same height
                 so the page content can be scrolled fully *@
-                @if (_bp <= Breakpoint.Md)
+                @if (IsMobile)
                 {
                     <MudContainer Style="height: var(--sub-app-bar-height); width: 100%" />
                 }
