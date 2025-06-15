@@ -80,26 +80,14 @@
             <div class="d-flex py-2 align-start sub-app-bar-height prevent-select large-nav-bar">
                 <MudGrid Style="max-width: 1600px; margin: 0 auto; padding-left: 16px; padding-right: 16px">
                     <MudItem xs="8" Class="d-flex flex-row gap-2">
-                        <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.Activities ? "active" : string.Empty)"
-                              onclick="@(() => NavigateTo(Page.Activities))">
-                            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Primary" Style="height: 28px"/>
-                            <MudText Typo="Typo.h6" Class="nav-link-text">Aktiviteter</MudText>
-                        </span>
-                        <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.Beboerhuset ? "active" : string.Empty)"
-                              onclick="@(() => NavigateTo(Page.Beboerhuset))">
-                            <MudIcon Icon="@Icons.Material.Filled.House" Color="Color.Primary" Style="height: 28px"/>
-                            <MudText Typo="Typo.h6" Class="nav-link-text">Lej Beboerhuset</MudText>
-                        </span>
-                        <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.PhotoAlbum ? "active" : string.Empty)" 
-                              onclick="@(() => NavigateTo(Page.PhotoAlbum))">
-                            <MudIcon Icon="@Icons.Material.Filled.Photo" Color="Color.Primary" Style="height: 28px"/>
-                            <MudText Typo="Typo.h6" Class="nav-link-text">Fotoalbum</MudText>
-                        </span>
-                        <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.Newsletters ? "active" : string.Empty)" 
-                              onclick="@(() => NavigateTo(Page.Newsletters))">
-                            <MudIcon Icon="@Icons.Material.Filled.Newspaper" Color="Color.Primary" Style="height: 28px"/>
-                            <MudText Typo="Typo.h6" Class="nav-link-text">Nyhedsbreve</MudText>
-                        </span>
+                        @foreach (NavLink navLink in _navLinks)
+                        {
+                            <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == navLink.Page ? "active" : string.Empty)"
+                                  onclick="@(() => NavigateTo(navLink))">
+                                <MudIcon Icon="@navLink.Icon" Color="Color.Primary" Style="height: 28px"/>
+                                <MudText Typo="Typo.h6" Class="nav-link-text">@navLink.Label</MudText>
+                            </span>
+                        }
                     </MudItem>
                     <MudItem xs="4" Class="d-flex flex-row gap-1 justify-end">
                         <div class="dropdown-wrapper @(_showDropdown ? "open" : "")">
@@ -127,9 +115,9 @@
                         </div>
 
                         <span class="d-flex flex-row align-center gap-2 nav-link-container @(_activePage == Page.AdminPanel ? "active" : string.Empty)" 
-                              onclick="@(() => NavigateTo(Page.AdminPanel))">
-                            <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Primary" Style="height: 28px"/>
-                            <MudText Typo="Typo.h6" Class="nav-link-text">Administrator</MudText>
+                              onclick="@(() => NavigateTo(_adminLink))">
+                            <MudIcon Icon="@_adminLink.Icon" Color="Color.Primary" Style="height: 28px"/>
+                            <MudText Typo="Typo.h6" Class="nav-link-text">@_adminLink.Label</MudText>
                         </span>
                     </MudItem>
                 </MudGrid>
@@ -140,27 +128,15 @@
         {
             <!--suppress CssUnresolvedCustomProperty -->
             <div class="d-flex py-2 align-center prevent-select justify-space-evenly small-nav-bar" style="background: white; z-index: 1000">
-                <span 
-                    class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Activities ? "active" : string.Empty)" 
-                    onclick="@(() => NavigateTo(Page.Activities))">
-                    <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Primary" Size="Size.Medium"/>
-                    <MudText Typo="Typo.h6" Class="nav-link-text">Aktiviteter</MudText>
-                </span>
-                <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Beboerhuset ? "active" : string.Empty)"
-                      onclick="@(() => NavigateTo(Page.Beboerhuset))">
-                    <MudIcon Icon="@Icons.Material.Filled.House" Color="Color.Primary" Size="Size.Medium"/>
-                    <MudText Typo="Typo.h6" Class="nav-link-text">Beboerhuset</MudText>
-                </span>
-                <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.PhotoAlbum ? "active" : string.Empty)" 
-                      onclick="@(() => NavigateTo(Page.PhotoAlbum))">
-                    <MudIcon Icon="@Icons.Material.Filled.Photo" Color="Color.Primary" Size="Size.Medium"/>
-                    <MudText Typo="Typo.h6" Class="nav-link-text">Fotoalbum</MudText>
-                </span>
-                <span class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == Page.Newsletters ? "active" : string.Empty)" 
-                      onclick="@(() => NavigateTo(Page.Newsletters))">
-                    <MudIcon Icon="@Icons.Material.Filled.Newspaper" Color="Color.Primary" Size="Size.Medium"/>
-                    <MudText Typo="Typo.h6" Class="nav-link-text">Nyheder</MudText>
-                </span>
+                @foreach (NavLink navLink in _navLinks)
+                {
+                    <span
+                        class="d-flex flex-column align-center gap-2 nav-link-container @(_activePage == navLink.Page ? "active" : string.Empty)"
+                        onclick="@(() => NavigateTo(navLink))">
+                        <MudIcon Icon="@navLink.Icon" Color="Color.Primary" Size="Size.Medium"/>
+                        <MudText Typo="Typo.h6" Class="nav-link-text">@(navLink.ShortLabel == string.Empty ? navLink.Label : navLink.ShortLabel)</MudText>
+                    </span>
+                }
             </div>
         }
         
@@ -199,7 +175,18 @@
 </div>
 
 @code {
+    private record NavLink(string Href, string Label, Page Page, string Icon, string ShortLabel = "");
 
+    private readonly List<NavLink> _navLinks =
+    [
+        new("/kalender", "Aktiviteter", Page.Activities, Icons.Material.Filled.CalendarToday),
+        new("/#", "Lej Beboerhuset", Page.Beboerhuset, Icons.Material.Filled.House, "Beboerhuset"),
+        new("/#", "Fotoalbum", Page.PhotoAlbum, Icons.Material.Filled.Photo),
+        new("/nyhedsbreve", "Nyheder", Page.Newsletters, Icons.Material.Filled.Newspaper),
+    ];
+    private readonly NavLink _adminLink = new("/#", "Administrator", Page.AdminPanel, Icons.Material.Filled.Lock);
+    private readonly List<NavLink> _allLinks = [];
+    
     private enum Page
     {
         Activities,
@@ -211,35 +198,10 @@
 
     private Page? _activePage;
 
-    private void NavigateTo(Page page)
+    private void NavigateTo(NavLink link)
     {
-        switch (page)
-        {
-            case Page.Activities:
-                NavigationManager.NavigateTo("/kalender");
-                _activePage = Page.Activities;
-                break;
-            case Page.Beboerhuset:
-                NavigationManager.NavigateTo("#");
-                _activePage = Page.Beboerhuset;
-                break;
-            case Page.PhotoAlbum:
-                NavigationManager.NavigateTo("#");
-                _activePage = Page.PhotoAlbum;
-                break;
-            case Page.Newsletters:
-                NavigationManager.NavigateTo("/nyhedsbreve");
-                _activePage = Page.Newsletters;
-                break;
-            case Page.AdminPanel:
-                NavigationManager.NavigateTo("#");
-                _activePage = Page.AdminPanel;
-                break;
-            default:
-                NavigationManager.NavigateTo("/");
-                _activePage = null;
-                break;
-        }
+        NavigationManager.NavigateTo(link.Href);
+        _activePage = link.Page;
     }
     
     private readonly MudTheme _theme = new()
@@ -267,6 +229,19 @@
 
         _theme.PaletteLight = ThemeViewModel.PaletteLight;
         _theme.PaletteDark = ThemeViewModel.PaletteDark;
+        
+        _allLinks.AddRange(_navLinks);
+        _allLinks.Add(_adminLink);
+
+        string currentUri = NavigationManager.Uri;
+        foreach (NavLink link in _allLinks)
+        {
+            if (currentUri.Contains(link.Href))
+            {
+                _activePage = link.Page;
+                break;
+            }
+        }
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
